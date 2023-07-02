@@ -8,6 +8,7 @@ import Conclusion from "./Conclusion";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import { MantineProvider } from "@mantine/core";
+import Home from "./pages/Home";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -36,7 +37,7 @@ root.render(
     >
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<Home />} />
           <Route path="/conclusion" element={<Conclusion />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
