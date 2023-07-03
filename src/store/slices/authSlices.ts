@@ -10,6 +10,13 @@ interface UserState {
   loading: boolean;
 }
 
+interface UserPayload {
+  token: string | null;
+  name: string | null;
+  email: string | null;
+  _id: string | null;
+}
+
 const initialState: UserState = {
   token: null,
   name: null,
@@ -38,6 +45,20 @@ export const logInUser = createAsyncThunk("login", async (user: UserObj) => {
 export const logOutUser = createAsyncThunk("logout", async () => {
   await localStorage.removeItem("user");
   return true;
+});
+
+export const getUserInfo = createAsyncThunk("getUser", async () => {
+  const userInfo = await localStorage.getItem("user");
+  let userObj: UserPayload = {
+    token: null,
+    name: null,
+    email: null,
+    _id: null,
+  };
+  if (userInfo !== null) {
+    userObj = JSON.parse(userInfo);
+  }
+  return userObj;
 });
 
 export const UserSlice = createSlice({
@@ -75,6 +96,22 @@ export const UserSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(logOutUser.rejected, (state) => {
+      state.error = "Error";
+      state.loading = false;
+    });
+    builder.addCase(getUserInfo.fulfilled, (state, action) => {
+      state.token = action.payload.token;
+      state.name = action.payload.name;
+      state.email = action.payload.email;
+      state.userId = action.payload._id;
+      state.error = null;
+      state.loading = false;
+    });
+    builder.addCase(getUserInfo.pending, (state) => {
+      state.error = null;
+      state.loading = true;
+    });
+    builder.addCase(getUserInfo.rejected, (state) => {
       state.error = "Error";
       state.loading = false;
     });
