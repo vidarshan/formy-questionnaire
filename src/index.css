@@ -3,3 +3,11 @@
 html, div{
   font-family: 'Manrope', sans-serif !important;
 }
+
+body{
+margin: 0;
+}
+
+a{
+  text-decoration: none;
+}

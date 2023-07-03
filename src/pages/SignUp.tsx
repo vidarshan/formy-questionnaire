@@ -8,6 +8,7 @@ import {
   Paper,
   Title,
   TextInput,
+  PasswordInput,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { BsReverseListColumnsReverse } from "react-icons/bs";
@@ -34,17 +35,18 @@ const SignUp = () => {
           placeholder="Enter your email"
           label="Email"
         />
-        <TextInput
+        <PasswordInput
           mt={20}
           radius="xs"
           placeholder="Enter your password"
+          visible={false}
           label="Password"
         />
         <Button color="deep.0" mt={30} radius="xs" fullWidth>
           Sign Up
         </Button>
         <Flex justify="center" mt={20}>
-          <Link to="/login">
+          <Link to="/">
             <Anchor size="sm" color="deep.0" href="/signup">
               Current User?
             </Anchor>
