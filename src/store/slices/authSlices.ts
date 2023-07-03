@@ -31,6 +31,27 @@ interface UserObj {
   password: string;
 }
 
+interface RegisterObj {
+  name: string;
+  email: string;
+  password: string;
+  isAdmin: boolean;
+}
+
+export const registerUser = createAsyncThunk(
+  "register",
+  async (user: RegisterObj) => {
+    const authResponse = await axios.post(
+      `${process.env.REACT_APP_BE_BASE_URL}/api/users/register`,
+      user
+    );
+    if (authResponse?.status === 200) {
+      localStorage.setItem("user", JSON.stringify(authResponse?.data));
+    }
+    return authResponse?.data;
+  }
+);
+
 export const logInUser = createAsyncThunk("login", async (user: UserObj) => {
   const authResponse = await axios.post(
     `${process.env.REACT_APP_BE_BASE_URL}/api/users/login`,
@@ -66,6 +87,23 @@ export const UserSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(registerUser.fulfilled, (state, action) => {
+      state.token = action.payload.token;
+      state.name = action.payload.name;
+      state.email = action.payload.email;
+      state.userId = action.payload._id;
+      state.error = null;
+      state.loading = false;
+    });
+    builder.addCase(registerUser.pending, (state) => {
+      state.error = null;
+      state.loading = true;
+    });
+    builder.addCase(registerUser.rejected, (state, action) => {
+      console.log(action);
+      state.error = "Existing credentials. Try again.";
+      state.loading = false;
+    });
     builder.addCase(logInUser.fulfilled, (state, action) => {
       state.token = action.payload.token;
       state.name = action.payload.name;
