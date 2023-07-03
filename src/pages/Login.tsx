@@ -2,9 +2,7 @@ import {
   Anchor,
   Box,
   Button,
-  Card,
   Flex,
-  Paper,
   Title,
   TextInput,
   Alert,
@@ -14,7 +12,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { BsReverseListColumnsReverse } from "react-icons/bs";
 import { useForm } from "@mantine/form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logInUser } from "../store/slices/authSlices";
 import { AppDispatch } from "../../store";
 import { useAppSelector } from "../store/store";

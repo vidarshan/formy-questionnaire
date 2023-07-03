@@ -35,6 +35,11 @@ export const logInUser = createAsyncThunk("login", async (user: UserObj) => {
   return authResponse?.data;
 });
 
+export const logOutUser = createAsyncThunk("logout", async () => {
+  await localStorage.removeItem("user");
+  return true;
+});
+
 export const UserSlice = createSlice({
   name: "User",
   initialState,
@@ -55,6 +60,22 @@ export const UserSlice = createSlice({
     builder.addCase(logInUser.rejected, (state, action) => {
       console.log(action);
       state.error = "Wrong credentials. Try again.";
+      state.loading = false;
+    });
+    builder.addCase(logOutUser.fulfilled, (state) => {
+      state.token = null;
+      state.name = null;
+      state.email = null;
+      state.userId = null;
+      state.error = null;
+      state.loading = false;
+    });
+    builder.addCase(logOutUser.pending, (state) => {
+      state.error = null;
+      state.loading = true;
+    });
+    builder.addCase(logOutUser.rejected, (state) => {
+      state.error = "Error";
       state.loading = false;
     });
   },

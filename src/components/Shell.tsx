@@ -21,7 +21,12 @@ import {
 } from "react-icons/bs";
 import { IoLogOut } from "react-icons/io5";
 import { IShell } from "../interfaces/Shell";
+import { AppDispatch } from "../../store";
+import { useDispatch } from "react-redux";
+import { logOutUser } from "../store/slices/authSlices";
 const Shell: FC<IShell> = ({ children }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
     <AppShell
       padding="md"
@@ -79,7 +84,12 @@ const Shell: FC<IShell> = ({ children }) => {
                   </Text>
                 </Flex>
               </Flex>
-              <ActionIcon color="red" radius="xs" variant="light">
+              <ActionIcon
+                color="red"
+                radius="xs"
+                variant="light"
+                onClick={() => dispatch(logOutUser())}
+              >
                 <IoLogOut />
               </ActionIcon>
             </Flex>

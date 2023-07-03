@@ -26,15 +26,15 @@ function App() {
 
   return (
     <BrowserRouter>
-      {token === null ? (
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
-      ) : (
+      {token !== null ? (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/conclusion" element={<Conclusion />} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       )}
     </BrowserRouter>
