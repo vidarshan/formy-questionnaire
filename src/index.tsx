@@ -11,6 +11,7 @@ import { MantineProvider } from "@mantine/core";
 import Home from "./pages/Home";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+import { Notifications } from "@mantine/notifications";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -22,10 +23,11 @@ root.render(
             deep: ["#FD7E14"],
           },
           radius: {
-            xs: 0,
+            xs: "0",
           },
         }}
       >
+        <Notifications />
         <App />
       </MantineProvider>
     </Provider>

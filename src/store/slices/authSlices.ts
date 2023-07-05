@@ -99,8 +99,7 @@ export const UserSlice = createSlice({
       state.error = null;
       state.loading = true;
     });
-    builder.addCase(registerUser.rejected, (state, action) => {
-      console.log(action);
+    builder.addCase(registerUser.rejected, (state) => {
       state.error = "Existing credentials. Try again.";
       state.loading = false;
     });
@@ -117,7 +116,6 @@ export const UserSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(logInUser.rejected, (state, action) => {
-      console.log(action);
       state.error = "Wrong credentials. Try again.";
       state.loading = false;
     });
