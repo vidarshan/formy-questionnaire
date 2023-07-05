@@ -1,122 +1,128 @@
 import {
-  ActionIcon,
-  AppShell,
-  Avatar,
   Box,
   Button,
+  Card,
+  Container,
   Flex,
+  Grid,
   Header,
-  Navbar,
-  Paper,
-  Text,
-  ThemeIcon,
+  Modal,
+  Switch,
+  TextInput,
+  Textarea,
 } from "@mantine/core";
-import React, { FC } from "react";
-import {
-  BsPlusLg,
-  BsFileTextFill,
-  BsReverseListColumnsReverse,
-  BsFillFilePersonFill,
-  BsFillHouseFill,
-} from "react-icons/bs";
-import { IoLogOut } from "react-icons/io5";
+import React, { FC, useState } from "react";
+import { BsFileTextFill } from "react-icons/bs";
 import { IShell } from "../interfaces/Shell";
 import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
-import { logOutUser } from "../store/slices/authSlices";
+
 const Shell: FC<IShell> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [open, setOpen] = useState(false);
+  const [questionOpen, setQuestionOpen] = useState(false);
 
   return (
-    <AppShell
-      padding="md"
-      navbar={
-        <Navbar width={{ base: 300 }} height="100vh" pl={10} pr={10}>
-          <Flex
-            sx={{ height: "calc(100% - 60px)" }}
-            direction="column"
-            justify="space-between"
+    <Box>
+      <Modal
+        size="lg"
+        radius="xs"
+        opened={open}
+        onClose={() => setOpen(false)}
+        title="Create Questionnaire"
+      >
+        <TextInput
+          radius="xs"
+          placeholder="Questionnaire title"
+          label="Title"
+          withAsterisk
+        />
+        <Textarea
+          mt={10}
+          radius="xs"
+          placeholder="Questionnaire description"
+          label="Description"
+          withAsterisk
+        />
+        <Switch
+          mt={10}
+          color="deep.0"
+          label="Open questionnaire"
+          description="This allows your questionnaire to be answered with an account"
+        />
+        <Switch
+          mt={10}
+          color="deep.0"
+          label="Publish on create"
+          description="Create questionaire and open it for responses"
+        />
+        <Switch
+          mt={10}
+          color="deep.0"
+          label="One time answer"
+          description="One response per one user"
+        />
+        <Grid mt={10}>
+          <Grid.Col span={6}>
+            <Button variant="outline" color="deep.0" radius="xs" fullWidth>
+              Cancel
+            </Button>
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Button
+              color="deep.0"
+              radius="xs"
+              fullWidth
+              onClick={() => setQuestionOpen(true)}
+            >
+              Add question
+            </Button>
+          </Grid.Col>
+        </Grid>
+      </Modal>
+      <Modal
+        opened={questionOpen}
+        onClose={() => setQuestionOpen(false)}
+        withCloseButton={false}
+      >
+        Modal without header, press escape or click on overlay to close
+      </Modal>
+      <Header height={60}>
+        <Flex pr={10} h="100%" align="center" justify="flex-end">
+          <Button
+            leftIcon={<BsFileTextFill />}
+            mr={10}
+            color="green"
+            radius="xs"
+            onClick={() => setOpen(true)}
           >
-            <Paper sx={{ backgroundColor: "transparent", width: "100%" }}>
-              <Button
-                mt={10}
-                leftIcon={<BsPlusLg />}
-                radius="xs"
-                color="deep.0"
-                fullWidth
-              >
-                Create New
-              </Button>
-              <Flex mt={20} align="center">
-                <ThemeIcon color="green" radius="xs" variant="light">
-                  <BsFillHouseFill />
-                </ThemeIcon>
-                <Text ml={6} size={14} weight={600}>
-                  Home
-                </Text>
-              </Flex>
-              <Flex mt={20} align="center">
-                <ThemeIcon color="indigo" radius="xs" variant="light">
-                  <BsFileTextFill />
-                </ThemeIcon>
-                <Text ml={6} size={14} weight={600}>
-                  Questionnaires
-                </Text>
-              </Flex>
-              <Flex mt={20} align="center">
-                <ThemeIcon color="red" radius="xs" variant="light">
-                  <BsFillFilePersonFill />
-                </ThemeIcon>
-                <Text ml={6} size={14} weight={600}>
-                  Profile
-                </Text>
-              </Flex>
-            </Paper>
-            <Flex mt={20} mb={20} align="center" justify="space-between">
-              <Flex>
-                <Avatar></Avatar>
-                <Flex direction="column">
-                  <Text ml={6} size={14} weight={300}>
-                    Vidarshan R.
-                  </Text>
-                  <Text ml={6} size={12} weight={600}>
-                    User
-                  </Text>
-                </Flex>
-              </Flex>
-              <ActionIcon
-                color="red"
-                radius="xs"
-                variant="light"
-                onClick={() => dispatch(logOutUser())}
-              >
-                <IoLogOut />
-              </ActionIcon>
-            </Flex>
-          </Flex>
-        </Navbar>
-      }
-      header={
-        <Header
-          sx={{ display: "flex", alignItems: "center" }}
-          height={60}
-          p="xs"
-        >
-          <BsReverseListColumnsReverse />
-          <Text sx={{ marginLeft: "10px" }}>Questionnaires</Text>
-        </Header>
-      }
-      styles={(theme) => ({
-        main: {
-          backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
-        },
-      })}
-    >
-      <Box>{children}</Box>
-    </AppShell>
+            Create questionnaire
+          </Button>
+          <Button color="red" radius="xs">
+            Logout
+          </Button>
+        </Flex>
+      </Header>
+      <Container mt={10} size="xl">
+        <Grid>
+          <Grid.Col span={4}>
+            <Card radius="xs" withBorder>
+              sss
+            </Card>
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <Card radius="xs" withBorder>
+              sss
+            </Card>
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <Card radius="xs" withBorder>
+              sss
+            </Card>
+          </Grid.Col>
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 

@@ -1,17 +1,4 @@
-import {
-  Button,
-  Container,
-  Flex,
-  Text,
-  ActionIcon,
-  TextInput,
-  Checkbox,
-  Radio,
-  Textarea,
-  NumberInput,
-} from "@mantine/core";
 import React, { useEffect } from "react";
-import { BiArrowBack, BiArrowToRight } from "react-icons/bi";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
@@ -26,7 +13,6 @@ import { getUserInfo } from "./store/slices/authSlices";
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { token } = useAppSelector((state) => state.user);
-  console.log("🚀 ~ file: App.tsx:25 ~ App ~ token:", token);
 
   useEffect(() => {
     dispatch(getUserInfo());
