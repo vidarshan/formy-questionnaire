@@ -14,6 +14,9 @@ interface QuestionnaireState {
   isOneTime: boolean;
   createLoading: boolean;
   createError: boolean;
+  questionnaires: any[];
+  getLoading: boolean;
+  getError: boolean;
 }
 
 interface QuestionnairePayload {
@@ -35,6 +38,9 @@ const initialState: QuestionnaireState = {
   isOneTime: false,
   createLoading: false,
   createError: false,
+  questionnaires: [],
+  getLoading: false,
+  getError: false,
 };
 
 interface UserObj {
@@ -48,6 +54,26 @@ interface RegisterObj {
   password: string;
   isAdmin: boolean;
 }
+
+export const getQuestionnaires = createAsyncThunk(
+  "get",
+  async (_, { getState }) => {
+    const state: RootState = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.user.token}`,
+      },
+    };
+
+    const authResponse = await axios.get(
+      `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire`,
+      config
+    );
+    return authResponse?.data;
+  }
+);
 
 export const createQuestionnaire = createAsyncThunk(
   "create",
@@ -93,7 +119,19 @@ export const QuestionnaireSlice = createSlice({
       state.createLoading = true;
     });
     builder.addCase(createQuestionnaire.rejected, (state, action) => {
-      console.log(action);
+      state.createError = true;
+      state.createLoading = false;
+    });
+    builder.addCase(getQuestionnaires.fulfilled, (state, action) => {
+      state.questionnaires = action.payload;
+      state.createError = false;
+      state.createLoading = false;
+    });
+    builder.addCase(getQuestionnaires.pending, (state) => {
+      state.createError = false;
+      state.createLoading = true;
+    });
+    builder.addCase(getQuestionnaires.rejected, (state, action) => {
       state.createError = true;
       state.createLoading = false;
     });

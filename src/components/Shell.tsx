@@ -144,25 +144,7 @@ const Shell: FC<IShell> = ({ children }) => {
           </Button>
         </Flex>
       </Header>
-      <Container mt={10} size="xl">
-        <Grid>
-          <Grid.Col span={4}>
-            <Card radius="xs" withBorder>
-              sss
-            </Card>
-          </Grid.Col>
-          <Grid.Col span={4}>
-            <Card radius="xs" withBorder>
-              sss
-            </Card>
-          </Grid.Col>
-          <Grid.Col span={4}>
-            <Card radius="xs" withBorder>
-              sss
-            </Card>
-          </Grid.Col>
-        </Grid>
-      </Container>
+      {children}
     </Box>
   );
 };
