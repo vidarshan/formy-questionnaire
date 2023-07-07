@@ -51,7 +51,7 @@ const Login = () => {
           <BsReverseListColumnsReverse size={30} color="#FD7E14" />
         </Flex>
         <Title order={2} weight={500} align="center">
-          Login
+          Login - Make home page
         </Title>
         {error && (
           <Alert variant="filled" radius="xs" mt={10} color="red">

@@ -9,6 +9,7 @@ import { useAppSelector } from "./store/store";
 import { AppDispatch } from "../store";
 import { useDispatch } from "react-redux";
 import { getUserInfo } from "./store/slices/authSlices";
+import Questionnaire from "./pages/Questionnaire";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +24,7 @@ function App() {
       {token !== null ? (
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/questionnaire/:id" element={<Questionnaire />} />
           <Route path="/conclusion" element={<Conclusion />} />
         </Routes>
       ) : (
