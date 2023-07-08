@@ -39,26 +39,26 @@ const Questionnaire = () => {
     <Shell>
       <Container mt={20} size="xl">
         <Modal
+          h={300}
           size="lg"
           opened={open}
           onClose={() => setOpen(!open)}
           title="New Question"
         >
           <Select
+            radius="xs"
             value={selectedInput}
             label="Your favorite framework/library"
             placeholder="Pick one"
             dropdownPosition="bottom"
             onChange={(v) => setSelectedInput(v)}
             data={[
-              { value: "rating", label: "Rating" },
-              { value: "checkbox", label: "Multi Option" },
-              { value: "radio", label: "Single Option" },
               { value: "text", label: "Text Input" },
               { value: "number", label: "Number Input" },
+              { value: "radio", label: "Single Option" },
+              { value: "checkbox", label: "Multi Option" },
               { value: "switch", label: "Switch Input" },
-              { value: "slider", label: "Slider Input" },
-              { value: "file", label: "File Input" },
+              { value: "rating", label: "Rating" },
             ]}
           />
           <Inputs selected={selectedInput} />

@@ -100,7 +100,7 @@ const Inputs: FC<IInputs> = ({ selected = "" }) => {
       case "checkbox":
         return (
           <>
-            <Title order={4}>Multi Input</Title>
+            <Title order={4}>Multi Option</Title>
             <TextInput
               mt={10}
               label="Input title"
@@ -179,52 +179,165 @@ const Inputs: FC<IInputs> = ({ selected = "" }) => {
         );
       case "radio":
         return (
-          <Radio.Group
-            name="favoriteFramework"
-            label="Select your favorite framework/library"
-            description="This is anonymous"
-            withAsterisk
-          >
-            <Group mt="xs">
-              <Radio value="react" label="React" />
-              <Radio value="svelte" label="Svelte" />
-              <Radio value="ng" label="Angular" />
-              <Radio value="vue" label="Vue" />
-            </Group>
-          </Radio.Group>
+          <>
+            <Title order={4}>Single Option</Title>
+            <TextInput
+              mt={10}
+              label="Input title"
+              placeholder="Question title"
+              withAsterisk
+            />
+            <Textarea
+              mt={10}
+              label="Input description"
+              placeholder="Question description"
+              withAsterisk
+            />
+            <Radio.Group mt={10} withAsterisk>
+              {checkboxlist.map((ch: any) => {
+                console.log(checkboxes);
+                return (
+                  <Flex
+                    mt={5}
+                    mb={5}
+                    direction="row"
+                    justify="space-between"
+                    align="center"
+                  >
+                    {" "}
+                    <Radio mt={10} value={ch.value} label={ch.value} />
+                  </Flex>
+                );
+              })}
+            </Radio.Group>
+            <Grid mt={20}>
+              <Grid.Col span={10}>
+                <TextInput
+                  value={addingItemValue}
+                  placeholder="New checkbox"
+                  onChange={(e) => setAddingItemValue(e.target.value)}
+                />
+              </Grid.Col>
+              <Grid.Col span={2}>
+                <Button
+                  variant="filled"
+                  color="dark"
+                  radius="xs"
+                  fullWidth
+                  onClick={() => {
+                    if (addingItemValue !== "") {
+                      setCheckboxlist([
+                        ...checkboxlist,
+                        { value: addingItemValue, label: addingItemValue },
+                      ]);
+                      setAddingItemValue("");
+                    }
+                  }}
+                >
+                  Add
+                </Button>
+              </Grid.Col>
+            </Grid>
+            <Checkbox
+              mt={10}
+              checked={answerEnabled}
+              label="Add an answer to this question"
+              onChange={() => setAnswerEnabled(!answerEnabled)}
+            />
+            <Radio.Group mt={10} withAsterisk>
+              {checkboxlist.map((ch: any) => {
+                console.log(checkboxes);
+                return (
+                  <Flex mt={5} mb={5}>
+                    {" "}
+                    <Radio mt={10} value={ch.value} label={ch.value} />
+                  </Flex>
+                );
+              })}
+            </Radio.Group>
+          </>
         );
       case "text":
         return (
-          <Textarea
-            placeholder="Your comment"
-            label="Your comment"
-            withAsterisk
-          />
+          <>
+            <Title order={4}>Text Input</Title>
+            <TextInput
+              mt={10}
+              label="Input title"
+              placeholder="Question title"
+            />
+            <Textarea
+              mt={10}
+              placeholder="Your comment"
+              label="Your comment"
+              withAsterisk
+            />
+            <Checkbox
+              mt={10}
+              checked={answerEnabled}
+              label="Add an answer to this question"
+              onChange={() => setAnswerEnabled(!answerEnabled)}
+            />
+            {answerEnabled && (
+              <Textarea
+                mt={10}
+                placeholder="Your comment"
+                label="Your comment"
+                withAsterisk
+              />
+            )}
+          </>
         );
       case "number":
         return (
-          <NumberInput
-            defaultValue={18}
-            placeholder="Your age"
-            label="Your age"
-            withAsterisk
-          />
+          <>
+            <Title order={4}>Number Input</Title>
+            <TextInput
+              mt={10}
+              label="Input title"
+              placeholder="Question title"
+            />
+            <NumberInput
+              mt={10}
+              defaultValue={18}
+              placeholder="Your age"
+              label="Your age"
+            />
+            <Checkbox
+              mt={10}
+              checked={answerEnabled}
+              label="Add an answer to this question"
+              onChange={() => setAnswerEnabled(!answerEnabled)}
+            />
+            {answerEnabled && (
+              <NumberInput
+                mt={10}
+                defaultValue={18}
+                placeholder="Your age"
+                label="Your age"
+              />
+            )}
+          </>
         );
       case "switch":
-        return <Switch label="I agree to sell my privacy" />;
-      case "file":
         return (
-          <FileInput placeholder="Pick file" label="Your resume" withAsterisk />
-        );
-      case "slider":
-        return (
-          <Slider
-            marks={[
-              { value: 20, label: "20%" },
-              { value: 50, label: "50%" },
-              { value: 80, label: "80%" },
-            ]}
-          />
+          <>
+            {" "}
+            <Title order={4}>Switch Input</Title>
+            <TextInput
+              mt={10}
+              label="Input title"
+              placeholder="Question title"
+            />
+            <Switch mt={10} />
+            <Checkbox
+              mt={10}
+              checked={answerEnabled}
+              label="Add an answer to this question"
+              onChange={() => setAnswerEnabled(!answerEnabled)}
+            />
+            {answerEnabled && <Switch mt={10} />}
+          </>
         );
       default:
         <Textarea
