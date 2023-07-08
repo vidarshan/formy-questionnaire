@@ -34,9 +34,11 @@ const Questionnaire = () => {
           opened={open}
           onClose={() => setOpen(!open)}
           title="New Question"
+          radius="xs"
         >
           <Select
             radius="xs"
+            color="deep.0"
             value={selectedInput}
             label="Your favorite framework/library"
             placeholder="Pick one"
