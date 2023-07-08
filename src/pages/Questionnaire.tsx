@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Shell from "../components/Shell";
 import {
   Box,
@@ -18,14 +18,22 @@ import {
   Slider,
   Switch,
   Text,
-  TextInput,
-  Textarea,
 } from "@mantine/core";
 import Inputs from "../components/Inputs";
+import { getQuestionnaire } from "../store/slices/questionnaireSlice";
+import { AppDispatch } from "../../store";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const Questionnaire = () => {
+  const { id = "" } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
   const [selectedInput, setSelectedInput] = useState<string | null>("text");
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch(getQuestionnaire(id));
+  }, [dispatch, id]);
 
   return (
     <Shell>

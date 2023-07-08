@@ -15,6 +15,7 @@ interface QuestionnaireState {
   createLoading: boolean;
   createError: boolean;
   questionnaires: any[];
+  questionnaire: any | null;
   getLoading: boolean;
   getError: boolean;
 }
@@ -27,18 +28,37 @@ interface QuestionnairePayload {
   questions: any[];
 }
 
+interface QuestionPayload {
+  title: string;
+  subtitle: string;
+  type: string | null;
+  content: string;
+  answer: string;
+  response: string | null;
+}
+
+interface QuesionnaireEditPayload {
+  id: string;
+  title: string;
+  description: string;
+  isPublic: boolean;
+  isOneTime: boolean;
+  question: QuestionPayload[] | null;
+}
+
 const initialState: QuestionnaireState = {
   title: "",
   description: "",
   isPublic: false,
   questions: [],
   user: null,
-  isPublished: true,
+  isPublished: false,
   isLinkValid: false,
   isOneTime: false,
   createLoading: false,
   createError: false,
   questionnaires: [],
+  questionnaire: null,
   getLoading: false,
   getError: false,
 };
@@ -55,8 +75,28 @@ interface RegisterObj {
   isAdmin: boolean;
 }
 
-export const getQuestionnaires = createAsyncThunk(
+export const getQuestionnaire = createAsyncThunk(
   "get",
+  async (id: string, { getState }) => {
+    const state: RootState = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.user.token}`,
+      },
+    };
+
+    const authResponse = await axios.get(
+      `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/${id}`,
+      config
+    );
+    return authResponse?.data;
+  }
+);
+
+export const getQuestionnaires = createAsyncThunk(
+  "getAll",
   async (_, { getState }) => {
     const state: RootState = getState();
 
@@ -78,10 +118,6 @@ export const getQuestionnaires = createAsyncThunk(
 export const createQuestionnaire = createAsyncThunk(
   "create",
   async (questionnaire: QuestionnairePayload, { getState }) => {
-    console.log(
-      "🚀 ~ file: questionnaireSlice.ts:54 ~ questionnaire:",
-      questionnaire
-    );
     const state: RootState = getState();
 
     const config = {
@@ -94,6 +130,37 @@ export const createQuestionnaire = createAsyncThunk(
     const authResponse = await axios.post(
       `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire`,
       questionnaire,
+      config
+    );
+
+    return authResponse?.data;
+  }
+);
+
+export const editQuestionnaire = createAsyncThunk(
+  "edit",
+  async (editPayload: QuesionnaireEditPayload, { getState }) => {
+    const state: RootState = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.user.token}`,
+      },
+    };
+
+    const questionObj = {
+      title: editPayload.title,
+      description: editPayload.description,
+      isPublic: editPayload.isPublic,
+      isPublished: false,
+      isLinkValid: false,
+      questions: editPayload.question,
+    };
+
+    const authResponse = await axios.put(
+      `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/${editPayload.id}`,
+      questionObj,
       config
     );
 
@@ -132,6 +199,19 @@ export const QuestionnaireSlice = createSlice({
       state.createLoading = true;
     });
     builder.addCase(getQuestionnaires.rejected, (state, action) => {
+      state.createError = true;
+      state.createLoading = false;
+    });
+    builder.addCase(getQuestionnaire.fulfilled, (state, action) => {
+      state.questionnaire = action.payload;
+      state.createError = false;
+      state.createLoading = false;
+    });
+    builder.addCase(getQuestionnaire.pending, (state) => {
+      state.createError = false;
+      state.createLoading = true;
+    });
+    builder.addCase(getQuestionnaire.rejected, (state, action) => {
       state.createError = true;
       state.createLoading = false;
     });
