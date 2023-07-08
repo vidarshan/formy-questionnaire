@@ -30,11 +30,11 @@ interface QuestionnairePayload {
 
 interface QuestionPayload {
   title: string;
-  subtitle: string;
   type: string | null;
-  content: string;
-  answer: string;
+  values: string | number | null;
+  answers: string | null;
   response: string | null;
+  required: boolean;
 }
 
 interface QuesionnaireEditPayload {

@@ -1,6 +1,3 @@
 import { Questionnaire } from "./Questionnaire";
 
-export interface IInputs {
-  selected: string | null;
-  questionnaire?: Questionnaire;
-}
+export interface IInputs {}

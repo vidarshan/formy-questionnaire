@@ -6,6 +6,7 @@ import {
   Container,
   Flex,
   Modal,
+  ScrollArea,
   Select,
   Text,
 } from "@mantine/core";
@@ -35,25 +36,11 @@ const Questionnaire = () => {
           onClose={() => setOpen(!open)}
           title="New Question"
           radius="xs"
+          scrollAreaComponent={ScrollArea.Autosize}
+          closeOnClickOutside={false}
+          centered
         >
-          <Select
-            radius="xs"
-            color="deep.0"
-            value={selectedInput}
-            label="Your favorite framework/library"
-            placeholder="Pick one"
-            dropdownPosition="bottom"
-            onChange={(v) => setSelectedInput(v)}
-            data={[
-              { value: "text", label: "Text Input" },
-              { value: "number", label: "Number Input" },
-              { value: "radio", label: "Single Option" },
-              { value: "checkbox", label: "Multi Option" },
-              { value: "switch", label: "Switch Input" },
-              { value: "rating", label: "Rating" },
-            ]}
-          />
-          <Inputs selected={selectedInput} />
+          <Inputs />
         </Modal>
         <Card bg="yellow" radius="xs">
           <Flex direction="row" align="center" justify="space-between">
@@ -61,9 +48,11 @@ const Questionnaire = () => {
             <Button radius="xs">Switch to Participant View</Button>
           </Flex>
         </Card>
-        <Button mt={20} radius="xs" fullWidth onClick={() => setOpen(true)}>
-          Add new Question
-        </Button>
+        <Flex>
+          <Button mt={20} radius="xs" fullWidth onClick={() => setOpen(true)}>
+            Add new Question
+          </Button>
+        </Flex>
       </Container>
     </Shell>
   );

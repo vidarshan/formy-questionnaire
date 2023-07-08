@@ -7,6 +7,7 @@ import {
   NumberInput,
   Radio,
   Rating,
+  Select,
   Switch,
   Text,
   TextInput,
@@ -21,7 +22,7 @@ import { editQuestionnaire } from "../store/slices/questionnaireSlice";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 
-const Inputs: FC<IInputs> = ({ selected = "" }) => {
+const Inputs: FC<IInputs> = () => {
   const { id = "" } = useParams();
   const checkboxes = [{ label: "test", value: "test" }];
   console.log("🚀 ~ file: Inputs.tsx:34 ~ checkboxes:", checkboxes);
@@ -36,6 +37,11 @@ const Inputs: FC<IInputs> = ({ selected = "" }) => {
   const [answer, setAnswer] = useState("");
   const [response, setResponse] = useState("");
   const [addingItemValue, setAddingItemValue] = useState<any | undefined>("");
+  const [selectedInput, setSelectedInput] = useState<string | null>("text");
+  const [currentValue, setCurrentValue] = useState<null | string | number>(
+    null
+  );
+  const [values, setValues] = useState<string | null | number>(null);
 
   const onQuestionnaireEdit = () => {
     dispatch(
@@ -48,11 +54,11 @@ const Inputs: FC<IInputs> = ({ selected = "" }) => {
         question: [
           {
             title,
-            subtitle,
-            type: selected,
-            content,
-            answer,
-            response: "",
+            type: selectedInput,
+            values: currentValue,
+            answers: null,
+            response: null,
+            required: false,
           },
         ],
       })
@@ -60,7 +66,7 @@ const Inputs: FC<IInputs> = ({ selected = "" }) => {
   };
 
   const renderSelectedInput = () => {
-    switch (selected) {
+    switch (selectedInput) {
       case "text":
         return (
           <>
@@ -85,9 +91,20 @@ const Inputs: FC<IInputs> = ({ selected = "" }) => {
                 color="deep.0"
                 checked={answerEnabled}
                 label="Add an answer to this question"
-                onChange={() => setAnswerEnabled(!answerEnabled)}
+                onChange={() => {
+                  setAnswerEnabled(!answerEnabled);
+                  setCurrentValue(null);
+                }}
               />
-              {answerEnabled && <Textarea radius="xs" mt={10} label={title} />}
+              {answerEnabled && (
+                <Textarea
+                  value={currentValue === null ? "" : currentValue}
+                  radius="xs"
+                  mt={10}
+                  label={title}
+                  onChange={(e) => setCurrentValue(e.target.value)}
+                />
+              )}
             </Card>
           </>
         );
@@ -390,18 +407,48 @@ const Inputs: FC<IInputs> = ({ selected = "" }) => {
 
   return (
     <>
-      {renderSelectedInput()}
-
-      <Button
-        disabled={title === ""}
-        color="deep.0"
-        mt={10}
+      <Select
         radius="xs"
-        fullWidth
-        onClick={() => {}}
-      >
-        Add Question
-      </Button>
+        color="deep.0"
+        value={selectedInput}
+        label="Your favorite framework/library"
+        placeholder="Pick one"
+        dropdownPosition="bottom"
+        onChange={(v) => {
+          setTitle("");
+          setCurrentValue(null);
+          setSelectedInput(v);
+        }}
+        data={[
+          { value: "text", label: "Text Input" },
+          { value: "number", label: "Number Input" },
+          { value: "radio", label: "Radio Buttons" },
+          { value: "checkbox", label: "Checkboxes" },
+          { value: "switch", label: "Switch Input" },
+          { value: "rating", label: "Rating" },
+        ]}
+      />
+      {renderSelectedInput()}
+      <Grid mt={10}>
+        <Grid.Col span={6}>
+          <Button variant="outline" color="gray" radius="xs" fullWidth>
+            Cancel
+          </Button>
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Button
+            disabled={title === ""}
+            color="deep.0"
+            radius="xs"
+            fullWidth
+            onClick={() => {
+              onQuestionnaireEdit();
+            }}
+          >
+            Add Question
+          </Button>
+        </Grid.Col>
+      </Grid>
     </>
   );
 };
