@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Shell from "../components/Shell";
 import {
-  Box,
   Button,
   Card,
-  Checkbox,
-  ColorInput,
   Container,
-  FileInput,
   Flex,
-  Group,
   Modal,
-  NumberInput,
-  Radio,
-  Rating,
   Select,
-  Slider,
-  Switch,
   Text,
 } from "@mantine/core";
 import Inputs from "../components/Inputs";
@@ -69,7 +59,7 @@ const Questionnaire = () => {
             <Button radius="xs">Switch to Participant View</Button>
           </Flex>
         </Card>
-        <Button radius="xs" fullWidth onClick={() => setOpen(true)}>
+        <Button mt={20} radius="xs" fullWidth onClick={() => setOpen(true)}>
           Add new Question
         </Button>
       </Container>
