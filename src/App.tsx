@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Conclusion from "./Conclusion";
 import Login from "./pages/Login";
@@ -10,30 +10,26 @@ import { AppDispatch } from "../store";
 import { useDispatch } from "react-redux";
 import { getUserInfo } from "./store/slices/authSlices";
 import Questionnaire from "./pages/Questionnaire";
+import AppRoutes from "./PrivateRoute";
+import PrivateRoutes from "./PrivateRoute";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const { token } = useAppSelector((state) => state.user);
-
   useEffect(() => {
     dispatch(getUserInfo());
   }, [dispatch]);
 
   return (
-    <BrowserRouter>
-      {token !== null ? (
-        <Routes>
+    <Router>
+      <Routes>
+        <Route element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
           <Route path="/questionnaire/:id" element={<Questionnaire />} />
-          <Route path="/conclusion" element={<Conclusion />} />
-        </Routes>
-      ) : (
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
-      )}
-    </BrowserRouter>
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -45,7 +45,8 @@ export const registerUser = createAsyncThunk(
       `${process.env.REACT_APP_BE_BASE_URL}/api/users/register`,
       user
     );
-    if (authResponse?.status === 200) {
+    console.log("🚀 ~ file: authSlices.ts:48 ~ authResponse:", authResponse);
+    if (authResponse?.status === 201) {
       localStorage.setItem("user", JSON.stringify(authResponse?.data));
     }
     return authResponse?.data;
@@ -85,7 +86,11 @@ export const getUserInfo = createAsyncThunk("getUser", async () => {
 export const UserSlice = createSlice({
   name: "User",
   initialState,
-  reducers: {},
+  reducers: {
+    resetErrors(state) {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.token = action.payload.token;
@@ -154,4 +159,5 @@ export const UserSlice = createSlice({
   },
 });
 
+export const { resetErrors } = UserSlice.actions;
 export default UserSlice.reducer;

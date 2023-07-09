@@ -79,7 +79,6 @@ export const getQuestionnaire = createAsyncThunk(
   "get",
   async (id: string, { getState }) => {
     const state: RootState = getState();
-
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -87,11 +86,11 @@ export const getQuestionnaire = createAsyncThunk(
       },
     };
 
-    const authResponse = await axios.get(
+    const questionnaireResponse = await axios.get(
       `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/${id}`,
       config
     );
-    return authResponse?.data;
+    return questionnaireResponse?.data;
   }
 );
 

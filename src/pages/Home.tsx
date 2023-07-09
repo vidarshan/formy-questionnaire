@@ -120,7 +120,6 @@ const Home = () => {
         ) : (
           <Grid mt={10}>
             {questionnaires.map((questionnaire) => {
-              console.log(questionnaire);
               return (
                 <Grid.Col key={questionnaire._id} span={6}>
                   <Card radius="xs" withBorder>

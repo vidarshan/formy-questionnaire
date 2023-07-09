@@ -4,9 +4,11 @@ import {
   Checkbox,
   Flex,
   Grid,
+  Modal,
   NumberInput,
   Radio,
   Rating,
+  ScrollArea,
   Select,
   Switch,
   Text,
@@ -21,13 +23,14 @@ import { AppDispatch } from "../../store";
 import { editQuestionnaire } from "../store/slices/questionnaireSlice";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../store/store";
+import { setAddQuestionOpen } from "../store/slices/interfaceSlice";
 
 const Inputs: FC<IInputs> = () => {
   const { id = "" } = useParams();
   const checkboxes = [{ label: "test", value: "test" }];
-  console.log("🚀 ~ file: Inputs.tsx:34 ~ checkboxes:", checkboxes);
   const dispatch = useDispatch<AppDispatch>();
   const { questionnaire } = useAppSelector((state) => state.questionnaire);
+  const { addQuestionOpen } = useAppSelector((state) => state.interface);
   const [title, setTitle] = useState("");
   const [subtitle, subTitle] = useState("");
   const [content, setContent] = useState("");
@@ -41,7 +44,24 @@ const Inputs: FC<IInputs> = () => {
   const [currentValue, setCurrentValue] = useState<null | string | number>(
     null
   );
-  const [values, setValues] = useState<string | null | number>(null);
+  const [currentNumberValue, setCurrentNumberValue] = useState<number | "">(0);
+  const [radioButtonValue, setRadioButtonValue] = useState("");
+  const [checkboxValue, setCheckboxValue] = useState<string[]>([]);
+  const [switchValue, setSwitchValue] = useState<any>(false);
+  const [ratingValue, setRatingValue] = useState<number>();
+
+  const resetState = () => {
+    setTitle("");
+    setSelectedInput("");
+    setCurrentValue(null);
+    setCurrentNumberValue(0);
+    setAnswerEnabled(false);
+    setRadioButtonValue("");
+    setCheckboxValue([]);
+    setAddingItemValue("");
+    setSwitchValue(false);
+    setRatingValue(0);
+  };
 
   const onQuestionnaireEdit = () => {
     dispatch(
@@ -63,6 +83,7 @@ const Inputs: FC<IInputs> = () => {
         ],
       })
     );
+    resetState();
   };
 
   const renderSelectedInput = () => {
@@ -72,7 +93,13 @@ const Inputs: FC<IInputs> = () => {
           <>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Question Preview</Title>
-              <Textarea disabled radius="xs" mt={10} label={title} />
+              <Textarea
+                value={currentValue === null ? "" : currentValue}
+                disabled
+                radius="xs"
+                mt={10}
+                label={title}
+              />
             </Card>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Set Details</Title>
@@ -113,16 +140,24 @@ const Inputs: FC<IInputs> = () => {
           <>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Question Preview</Title>
-              <NumberInput radius="xs" disabled mt={10} label={title} />
+              <NumberInput
+                value={currentNumberValue}
+                radius="xs"
+                disabled
+                mt={10}
+                label={title}
+              />
             </Card>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Set Details</Title>
               <TextInput
                 mt={10}
+                value={title}
                 radius="xs"
                 label="Input title"
                 placeholder="Question title"
                 onChange={(e) => setTitle(e.target.value)}
+                withAsterisk
               />
               <Checkbox
                 mt={20}
@@ -133,7 +168,16 @@ const Inputs: FC<IInputs> = () => {
                 label="Add an answer to this question"
                 onChange={() => setAnswerEnabled(!answerEnabled)}
               />
-              {answerEnabled && <NumberInput mt={10} label={title} />}
+              {answerEnabled && (
+                <NumberInput
+                  value={currentNumberValue}
+                  mt={10}
+                  label={title}
+                  onChange={(e) => {
+                    setCurrentNumberValue(e);
+                  }}
+                />
+              )}
             </Card>
           </>
         );
@@ -142,7 +186,7 @@ const Inputs: FC<IInputs> = () => {
           <>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Question Preview</Title>
-              <Radio.Group label={title} mt={10}>
+              <Radio.Group value={radioButtonValue} label={title} mt={10}>
                 {radiolist.map((rd: any) => {
                   return (
                     <Flex
@@ -187,6 +231,7 @@ const Inputs: FC<IInputs> = () => {
                     color="deep.0"
                     radius="xs"
                     fullWidth
+                    disabled={addingItemValue === ""}
                     onClick={() => {
                       if (addingItemValue !== "") {
                         setRadiolist([
@@ -211,7 +256,12 @@ const Inputs: FC<IInputs> = () => {
                 onChange={() => setAnswerEnabled(!answerEnabled)}
               />
               {answerEnabled && (
-                <Radio.Group mt={10} withAsterisk>
+                <Radio.Group
+                  value={radioButtonValue}
+                  onChange={(e) => setRadioButtonValue(e)}
+                  mt={10}
+                  withAsterisk
+                >
                   {radiolist.map((rd: any) => {
                     return (
                       <Flex mt={5} mb={5}>
@@ -232,10 +282,9 @@ const Inputs: FC<IInputs> = () => {
       case "checkbox":
         return (
           <>
-            {console.log(title)}
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Question Preview</Title>
-              <Checkbox.Group label={title} mt={10}>
+              <Checkbox.Group value={checkboxValue} label={title} mt={10}>
                 {checkboxlist.map((ch: any) => {
                   return (
                     <Flex
@@ -246,6 +295,7 @@ const Inputs: FC<IInputs> = () => {
                       align="center"
                     >
                       <Checkbox
+                        disabled
                         color="deep.0"
                         mt={10}
                         value={ch.value}
@@ -279,6 +329,7 @@ const Inputs: FC<IInputs> = () => {
                     color="deep.0"
                     radius="xs"
                     fullWidth
+                    disabled={addingItemValue === ""}
                     onClick={() => {
                       if (addingItemValue !== "") {
                         setCheckboxlist([
@@ -293,6 +344,7 @@ const Inputs: FC<IInputs> = () => {
                   </Button>
                 </Grid.Col>
               </Grid>
+
               <Checkbox
                 mt={20}
                 mb={20}
@@ -302,23 +354,30 @@ const Inputs: FC<IInputs> = () => {
                 label="Add an answer to this question"
                 onChange={() => setAnswerEnabled(!answerEnabled)}
               />
-              <Checkbox.Group label={title} mt={10}>
-                {checkboxlist.map((ch: any) => {
-                  console.log(checkboxes);
-                  return (
-                    <Flex mt={5} mb={5}>
-                      {" "}
-                      <Checkbox
-                        color="deep.0"
-                        mt={10}
-                        value={ch.value}
-                        label={ch.value}
-                        radius="xs"
-                      />
-                    </Flex>
-                  );
-                })}
-              </Checkbox.Group>
+
+              {answerEnabled && (
+                <Checkbox.Group
+                  label={title}
+                  mt={10}
+                  value={checkboxValue}
+                  onChange={(e) => setCheckboxValue(e)}
+                >
+                  {checkboxlist.map((ch: any) => {
+                    return (
+                      <Flex mt={5} mb={5}>
+                        {" "}
+                        <Checkbox
+                          color="deep.0"
+                          mt={10}
+                          value={ch.value}
+                          label={ch.value}
+                          radius="xs"
+                        />
+                      </Flex>
+                    );
+                  })}
+                </Checkbox.Group>
+              )}
             </Card>
           </>
         );
@@ -328,7 +387,13 @@ const Inputs: FC<IInputs> = () => {
           <>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Question Preview</Title>
-              <Switch color="deep.0" label={title} mt={10} />
+              <Switch
+                checked={switchValue}
+                disabled
+                color="deep.0"
+                label={title}
+                mt={10}
+              />
             </Card>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Set Details</Title>
@@ -350,7 +415,15 @@ const Inputs: FC<IInputs> = () => {
                 onChange={() => setAnswerEnabled(!answerEnabled)}
               />
 
-              {answerEnabled && <Switch color="deep.0" label={title} mt={10} />}
+              {answerEnabled && (
+                <Switch
+                  color="deep.0"
+                  label={title}
+                  mt={10}
+                  checked={switchValue}
+                  onChange={(e) => setSwitchValue(e.currentTarget.checked)}
+                />
+              )}
             </Card>
           </>
         );
@@ -363,7 +436,7 @@ const Inputs: FC<IInputs> = () => {
                 <Text mt={10} size={14}>
                   {title}
                 </Text>
-                <Rating title={title} mt={10} value={0} />
+                <Rating title={title} mt={10} value={ratingValue} readOnly />
               </Flex>
             </Card>
             <Card mt={20} radius="xs" withBorder>
@@ -390,7 +463,12 @@ const Inputs: FC<IInputs> = () => {
                   <Text mt={10} size={14}>
                     {title}
                   </Text>
-                  <Rating title={title} mt={10} value={0} />
+                  <Rating
+                    title={title}
+                    mt={10}
+                    value={ratingValue}
+                    onChange={(e) => setRatingValue(e)}
+                  />
                 </Flex>
               )}
             </Card>
@@ -406,7 +484,17 @@ const Inputs: FC<IInputs> = () => {
   };
 
   return (
-    <>
+    <Modal
+      h={300}
+      size="lg"
+      opened={addQuestionOpen}
+      onClose={() => dispatch(setAddQuestionOpen(false))}
+      title="New Question"
+      radius="xs"
+      scrollAreaComponent={ScrollArea.Autosize}
+      closeOnClickOutside={false}
+      centered
+    >
       <Select
         radius="xs"
         color="deep.0"
@@ -415,6 +503,7 @@ const Inputs: FC<IInputs> = () => {
         placeholder="Pick one"
         dropdownPosition="bottom"
         onChange={(v) => {
+          resetState();
           setTitle("");
           setCurrentValue(null);
           setSelectedInput(v);
@@ -449,7 +538,7 @@ const Inputs: FC<IInputs> = () => {
           </Button>
         </Grid.Col>
       </Grid>
-    </>
+    </Modal>
   );
 };
 

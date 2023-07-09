@@ -18,9 +18,12 @@ import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
 import { useForm } from "@mantine/form";
 import { createQuestionnaire } from "../store/slices/questionnaireSlice";
+import { logOutUser } from "../store/slices/authSlices";
+import { useNavigate } from "react-router-dom";
 
 const Shell: FC<IShell> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [questionOpen, setQuestionOpen] = useState(false);
 
@@ -41,10 +44,6 @@ const Shell: FC<IShell> = ({ children }) => {
   });
 
   const onQuestionnaireCreate = (values: any) => {
-    console.log(
-      "🚀 ~ file: Shell.tsx:44 ~ onQuestionnaireCreate ~ values:",
-      values
-    );
     const { title, description, isPublic, isOneTime } = values;
     dispatch(
       createQuestionnaire({
@@ -139,7 +138,14 @@ const Shell: FC<IShell> = ({ children }) => {
           >
             Create questionnaire
           </Button>
-          <Button color="red" radius="xs">
+          <Button
+            color="red"
+            radius="xs"
+            onClick={() => {
+              dispatch(logOutUser());
+              navigate("/");
+            }}
+          >
             Logout
           </Button>
         </Flex>

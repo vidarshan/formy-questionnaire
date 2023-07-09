@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Anchor,
   Box,
@@ -9,18 +9,23 @@ import {
   PasswordInput,
   Alert,
 } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsReverseListColumnsReverse } from "react-icons/bs";
-import { registerUser } from "../store/slices/authSlices";
+import {
+  getUserInfo,
+  registerUser,
+  resetErrors,
+} from "../store/slices/authSlices";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { useForm } from "@mantine/form";
 import { useAppSelector } from "../store/store";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [visible, setVisible] = useState(false);
-  const { loading, error } = useAppSelector((state) => state.user);
+  const { loading, error, token } = useAppSelector((state) => state.user);
 
   interface IValues {
     name: string;
@@ -48,7 +53,14 @@ const SignUp = () => {
   const onRegister = (values: IValues) => {
     const { email, password, name } = values;
     dispatch(registerUser({ name, email, password, isAdmin: false }));
+    dispatch(getUserInfo());
   };
+
+  useEffect(() => {
+    if (token !== null) {
+      navigate("/");
+    }
+  }, [navigate, token]);
 
   return (
     <Flex h={"100vh"} align="center" justify="center">
@@ -100,7 +112,7 @@ const SignUp = () => {
           </Button>
         </form>
         <Flex justify="center" mt={20}>
-          <Link to="/">
+          <Link to="/" onClick={() => dispatch(resetErrors())}>
             <Anchor size="sm" color="deep.0" href="/signup">
               Current User?
             </Anchor>
