@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Shell from "../components/Shell";
 import {
+  ActionIcon,
   Button,
   Card,
   Container,
@@ -20,6 +21,7 @@ import {
   answerQuestion,
   editQuestionnaire,
   getQuestionnaire,
+  publishQuestionnaire,
   switchView,
 } from "../store/slices/questionnaireSlice";
 import { AppDispatch } from "../../store";
@@ -28,17 +30,22 @@ import { useParams } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { Question } from "../interfaces/Question";
 import { setAddQuestionOpen } from "../store/slices/interfaceSlice";
-import { BsFillCheckCircleFill, BsFillXCircleFill } from "react-icons/bs";
+import {
+  BsEye,
+  BsFileCheck,
+  BsFileEarmarkCheck,
+  BsFillCheckCircleFill,
+  BsFillXCircleFill,
+  BsPlusCircle,
+  BsPlusLg,
+} from "react-icons/bs";
+import Spinner from "../components/Spinner";
 
 const Questionnaire = () => {
   const { id = "" } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { questionnaire, participantMode, editableQuestionnaire } =
+  const { questionnaire, participantMode, editableQuestionnaire, getLoading } =
     useAppSelector((state) => state.questionnaire);
-  const [open, setOpen] = useState(false);
-  const [submitObj, setSubmitObj] = useState([]);
-
-  const [textResponse, setTextResponse] = useState("");
 
   const onAnswerQuestion = (index: number, value: any) => {
     const answerObj = {
@@ -49,6 +56,10 @@ const Questionnaire = () => {
   };
 
   const renderSelectedInput = (question: any, index: number) => {
+    console.log(
+      "🚀 ~ file: Questionnaire.tsx:58 ~ renderSelectedInput ~ question:",
+      question
+    );
     switch (question?.type) {
       case "text":
         return (
@@ -65,7 +76,14 @@ const Questionnaire = () => {
       case "number":
         return (
           <>
-            <NumberInput radius="xs" mt={10} label={question?.title} />
+            <NumberInput
+              type="number"
+              radius="xs"
+              mt={10}
+              min={0}
+              label={question?.title}
+              onChange={(e) => onAnswerQuestion(index, e)}
+            />
           </>
         );
       case "radio":
@@ -94,57 +112,89 @@ const Questionnaire = () => {
     }
   };
 
+  const onPublishQuestionnaire = () => {
+    dispatch(publishQuestionnaire(id));
+  };
+
   useEffect(() => {
     dispatch(getQuestionnaire(id));
   }, [dispatch, id]);
 
   return (
     <Shell>
-      <Container mt={20} size="xl">
-        <Inputs />
-        {!participantMode ? (
-          <Card radius="xs" withBorder>
-            <Flex direction="row" align="center" justify="space-between">
-              <Text>You are viewing this questionnaire as the editor</Text>
-              <Button radius="xs" onClick={() => dispatch(switchView(true))}>
-                Switch to Participant View
+      {getLoading ? (
+        <Spinner
+          title="Loading questionnaire data..."
+          color="indigo"
+          size="md"
+        />
+      ) : (
+        <Container mt={20} size="xl">
+          <Inputs />
+          <Flex direction="row" justify="space-between" align="center">
+            <Flex direction="column">
+              <Title order={2} color="orange">
+                {questionnaire.title}
+              </Title>
+              <Title order={4} color="gray">
+                {questionnaire.description}
+              </Title>
+            </Flex>
+            <Flex>
+              <Button
+                mr={10}
+                w="fit-content"
+                size="xs"
+                radius="xs"
+                fullWidth
+                onClick={() => dispatch(setAddQuestionOpen(true))}
+                leftIcon={<BsPlusLg />}
+              >
+                Add new Question
+              </Button>
+              <Button
+                mr={10}
+                variant="filled"
+                color={participantMode ? "pink" : "lime"}
+                radius="xs"
+                size="xs"
+                leftIcon={<BsEye />}
+              >
+                {participantMode ? "Guest View" : "Creator View"}
+              </Button>
+              <Button
+                variant="filled"
+                color="lime"
+                radius="xs"
+                size="xs"
+                leftIcon={<BsFileCheck />}
+              >
+                Check Answers
               </Button>
             </Flex>
+          </Flex>
+          <Card mt={30} radius="xs" withBorder>
+            {editableQuestionnaire !== null &&
+              (editableQuestionnaire.questions || []).map(
+                (q: Question, index: number) => {
+                  return <>{renderSelectedInput(q, index)}</>;
+                }
+              )}
           </Card>
-        ) : (
-          <Card radius="xs" withBorder>
-            <Flex direction="row" align="center" justify="space-between">
-              <Text>You are viewing this questionnaire as the participant</Text>
-              <Button radius="xs" onClick={() => dispatch(switchView(false))}>
-                Switch to Participant View
-              </Button>
-            </Flex>
-          </Card>
-        )}
-        {editableQuestionnaire !== null &&
-          (editableQuestionnaire.questions || []).map(
-            (q: Question, index: number) => {
-              return (
-                <Card mt={10} radius="xs" withBorder>
-                  {renderSelectedInput(q, index)}
-                </Card>
-              );
-            }
-          )}
-        <Flex>
-          <Button
-            mt={20}
-            radius="xs"
-            fullWidth
-            onClick={() => dispatch(setAddQuestionOpen(true))}
-          >
-            Add new Question
-          </Button>
-          <Button mt={20} radius="xs" fullWidth>
-            Answer
-          </Button>
-        </Flex>
-      </Container>
+          <Flex direction="row" justify="flex-end">
+            <Button
+              w="fit-content"
+              mt={20}
+              size="xs"
+              radius="xs"
+              fullWidth
+              onClick={() => onPublishQuestionnaire()}
+            >
+              Publish Questionnaire
+            </Button>
+          </Flex>
+        </Container>
+      )}
     </Shell>
   );
 };

@@ -70,6 +70,7 @@ const Inputs: FC<IInputs> = () => {
         title: questionnaire?.title,
         description: questionnaire?.description,
         isPublic: questionnaire?.isPublic,
+        isPublished: questionnaire?.isPublished,
         isOneTime: questionnaire?.isOneTime,
         question: [
           {

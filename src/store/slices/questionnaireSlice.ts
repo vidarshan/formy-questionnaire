@@ -21,6 +21,8 @@ interface QuestionnaireState {
   getAllError: boolean;
   getLoading: boolean;
   getError: boolean;
+  editLoading: boolean;
+  editError: boolean;
   participantMode: boolean;
 }
 
@@ -60,6 +62,7 @@ interface QuesionnaireEditPayload {
   title: string;
   description: string;
   isPublic: boolean;
+  isPublished: boolean;
   isOneTime: boolean;
   question: QuestionPayload[] | null;
 }
@@ -89,11 +92,25 @@ const initialState: QuestionnaireState = {
     createdAt: "",
     updatedAt: "",
   },
-  questionnaire: null,
+  questionnaire: {
+    _id: "",
+    title: "",
+    description: "",
+    isLinkValid: false,
+    isOneTime: false,
+    isPublic: false,
+    isPublished: false,
+    questions: [],
+    user: "",
+    createdAt: "",
+    updatedAt: "",
+  },
   getAllLoading: false,
   getAllError: false,
   getLoading: false,
   getError: false,
+  editLoading: false,
+  editError: false,
   participantMode: true,
 };
 
@@ -112,6 +129,7 @@ interface RegisterObj {
 export const getQuestionnaire = createAsyncThunk(
   "get",
   async (id: string, { getState }) => {
+    console.log("🚀 ~ file: questionnaireSlice.ts:115 ~ id:", id);
     const state: RootState = getState();
     const config = {
       headers: {
@@ -185,18 +203,39 @@ export const editQuestionnaire = createAsyncThunk(
       title: editPayload.title,
       description: editPayload.description,
       isPublic: editPayload.isPublic,
-      isPublished: false,
+      isPublished: editPayload.isPublished,
       isLinkValid: false,
       questions: editPayload.question,
     };
 
-    const authResponse = await axios.put(
+    const questionnaire = await axios.put(
       `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/${editPayload.id}`,
       questionObj,
       config
     );
 
-    return authResponse?.data;
+    return questionnaire?.data;
+  }
+);
+
+export const publishQuestionnaire = createAsyncThunk(
+  "publish",
+  async (id: string, { getState }) => {
+    const state: RootState = getState();
+    console.log("🚀 ~ file: questionnaireSlice.ts:225 ~ state:", state);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.user.token}`,
+      },
+    };
+
+    const questionnaire = await axios.put(
+      `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/${id}/publish`,
+      {},
+      config
+    );
+    return questionnaire?.data;
   }
 );
 
@@ -250,16 +289,29 @@ export const QuestionnaireSlice = createSlice({
     builder.addCase(getQuestionnaire.fulfilled, (state, action) => {
       state.questionnaire = action.payload;
       state.editableQuestionnaire = action.payload;
-      state.createError = false;
-      state.createLoading = false;
+      state.getError = false;
+      state.getLoading = false;
     });
     builder.addCase(getQuestionnaire.pending, (state) => {
-      state.createError = false;
-      state.createLoading = true;
+      state.getError = false;
+      state.getLoading = true;
     });
     builder.addCase(getQuestionnaire.rejected, (state, action) => {
-      state.createError = true;
-      state.createLoading = false;
+      state.getError = true;
+      state.getLoading = false;
+    });
+    builder.addCase(publishQuestionnaire.fulfilled, (state, action) => {
+      state.questionnaire = action.payload;
+      state.editError = false;
+      state.editLoading = false;
+    });
+    builder.addCase(publishQuestionnaire.pending, (state) => {
+      state.editError = false;
+      state.editLoading = true;
+    });
+    builder.addCase(publishQuestionnaire.rejected, (state, action) => {
+      state.editError = true;
+      state.editLoading = false;
     });
   },
 });
