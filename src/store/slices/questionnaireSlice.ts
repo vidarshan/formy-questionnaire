@@ -16,6 +16,8 @@ interface QuestionnaireState {
   createError: boolean;
   questionnaires: any[];
   questionnaire: any | null;
+  getAllLoading: boolean;
+  getAllError: boolean;
   getLoading: boolean;
   getError: boolean;
 }
@@ -59,6 +61,8 @@ const initialState: QuestionnaireState = {
   createError: false,
   questionnaires: [],
   questionnaire: null,
+  getAllLoading: false,
+  getAllError: false,
   getLoading: false,
   getError: false,
 };
@@ -79,7 +83,6 @@ export const getQuestionnaire = createAsyncThunk(
   "get",
   async (id: string, { getState }) => {
     const state: RootState = getState();
-    console.log("🚀 ~ file: questionnaireSlice.ts:82 ~ state:", state);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -97,15 +100,13 @@ export const getQuestionnaire = createAsyncThunk(
 
 export const getQuestionnaires = createAsyncThunk(
   "getAll",
-  async (test, { getState }) => {
+  async (_, { getState }) => {
     const state: RootState = getState();
-    console.log("🚀 ~ file: questionnaireSlice.ts:82 ~ state:", state.user);
-    const token = localStorage.getItem("user");
 
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer`,
+        Authorization: `Bearer ${state?.user?.token}`,
       },
     };
 
@@ -121,7 +122,6 @@ export const createQuestionnaire = createAsyncThunk(
   "create",
   async (questionnaire: QuestionnairePayload, { getState, dispatch }) => {
     const state: RootState = getState();
-
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -194,16 +194,16 @@ export const QuestionnaireSlice = createSlice({
     });
     builder.addCase(getQuestionnaires.fulfilled, (state, action) => {
       state.questionnaires = action.payload;
-      state.createError = false;
-      state.createLoading = false;
+      state.getAllError = false;
+      state.getAllLoading = false;
     });
     builder.addCase(getQuestionnaires.pending, (state) => {
-      state.createError = false;
-      state.createLoading = true;
+      state.getAllError = false;
+      state.getAllLoading = true;
     });
     builder.addCase(getQuestionnaires.rejected, (state, action) => {
-      state.createError = true;
-      state.createLoading = false;
+      state.getAllError = true;
+      state.getAllLoading = false;
     });
     builder.addCase(getQuestionnaire.fulfilled, (state, action) => {
       state.questionnaire = action.payload;

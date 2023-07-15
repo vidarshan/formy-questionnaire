@@ -8,7 +8,6 @@ import Conclusion from "./Conclusion";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import { MantineProvider } from "@mantine/core";
-import Home from "./pages/Home";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { Notifications } from "@mantine/notifications";

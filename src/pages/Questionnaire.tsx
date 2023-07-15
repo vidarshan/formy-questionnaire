@@ -38,10 +38,6 @@ const Questionnaire = () => {
   const onAnswerQuestion = () => {};
 
   const renderSelectedInput = (question: any) => {
-    console.log(
-      "🚀 ~ file: Questionnaire.tsx:41 ~ renderSelectedInput ~ question:",
-      question
-    );
     switch (question?.type) {
       case "text":
         return (
@@ -101,7 +97,6 @@ const Questionnaire = () => {
 
         {questionnaire !== null &&
           (questionnaire.questions || []).map((q: Question) => {
-            console.log(q);
             return (
               <Card mt={10} radius="xs" withBorder>
                 {renderSelectedInput(q)}

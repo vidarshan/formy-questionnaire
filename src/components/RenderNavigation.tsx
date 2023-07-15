@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
-import { nav } from "../paths/nav";
 
 export const RenderRoutes = () => {
   return <Routes></Routes>;

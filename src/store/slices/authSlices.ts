@@ -45,7 +45,6 @@ export const registerUser = createAsyncThunk(
       `${process.env.REACT_APP_BE_BASE_URL}/api/users/register`,
       user
     );
-    console.log("🚀 ~ file: authSlices.ts:48 ~ authResponse:", authResponse);
     if (authResponse?.status === 201) {
       localStorage.setItem("user", JSON.stringify(authResponse?.data));
     }
@@ -68,7 +67,6 @@ export const getUserInfo = createAsyncThunk("getUser", async () => {
 });
 
 export const logInUser = createAsyncThunk("login", async (user: UserObj,{getState, dispatch}) => {
-  console.log("🚀 ~ file: authSlices.ts:57 ~ logInUser ~ user:", user);
   const authResponse = await axios.post(
     `${process.env.REACT_APP_BE_BASE_URL}/api/users/login`,
     user
