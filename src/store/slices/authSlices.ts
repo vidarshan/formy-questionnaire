@@ -53,7 +53,22 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const logInUser = createAsyncThunk("login", async (user: UserObj) => {
+export const getUserInfo = createAsyncThunk("getUser", async () => {
+  const userInfo = await localStorage.getItem("user");
+  let userObj: UserPayload = {
+    token: null,
+    name: null,
+    email: null,
+    _id: null,
+  };
+  if (userInfo !== null) {
+    userObj = JSON.parse(userInfo);
+  }
+  return userObj;
+});
+
+export const logInUser = createAsyncThunk("login", async (user: UserObj,{getState, dispatch}) => {
+  console.log("🚀 ~ file: authSlices.ts:57 ~ logInUser ~ user:", user);
   const authResponse = await axios.post(
     `${process.env.REACT_APP_BE_BASE_URL}/api/users/login`,
     user
@@ -67,20 +82,6 @@ export const logInUser = createAsyncThunk("login", async (user: UserObj) => {
 export const logOutUser = createAsyncThunk("logout", async () => {
   await localStorage.removeItem("user");
   return true;
-});
-
-export const getUserInfo = createAsyncThunk("getUser", async () => {
-  const userInfo = await localStorage.getItem("user");
-  let userObj: UserPayload = {
-    token: null,
-    name: null,
-    email: null,
-    _id: null,
-  };
-  if (userInfo !== null) {
-    userObj = JSON.parse(userInfo);
-  }
-  return userObj;
 });
 
 export const UserSlice = createSlice({

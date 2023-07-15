@@ -11,21 +11,27 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { BsFileTextFill } from "react-icons/bs";
 import { IShell } from "../interfaces/Shell";
 import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
 import { useForm } from "@mantine/form";
-import { createQuestionnaire } from "../store/slices/questionnaireSlice";
-import { logOutUser } from "../store/slices/authSlices";
+import {
+  createQuestionnaire,
+  getQuestionnaires,
+} from "../store/slices/questionnaireSlice";
+import { getUserInfo, logOutUser } from "../store/slices/authSlices";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../store/store";
 
 const Shell: FC<IShell> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [questionOpen, setQuestionOpen] = useState(false);
+  const { createLoading } = useAppSelector((state) => state.questionnaire);
+  const { token } = useAppSelector((state) => state.user);
 
   const form = useForm({
     initialValues: {
@@ -54,7 +60,19 @@ const Shell: FC<IShell> = ({ children }) => {
         questions: [],
       })
     );
+    form.reset();
+    setOpen(false);
   };
+
+  const onLogout = () => {
+    dispatch(logOutUser());
+  };
+
+  useEffect(() => {
+    if (token === null) {
+      navigate("/login");
+    }
+  }, [navigate, token]);
 
   return (
     <Box>
@@ -138,14 +156,7 @@ const Shell: FC<IShell> = ({ children }) => {
           >
             Create questionnaire
           </Button>
-          <Button
-            color="red"
-            radius="xs"
-            onClick={() => {
-              dispatch(logOutUser());
-              navigate("/");
-            }}
-          >
+          <Button color="red" radius="xs" onClick={() => onLogout()}>
             Logout
           </Button>
         </Flex>

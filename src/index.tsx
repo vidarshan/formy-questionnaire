@@ -12,8 +12,10 @@ import Home from "./pages/Home";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { Notifications } from "@mantine/notifications";
+import Protected from "./utils/PrivateRoute";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>
@@ -28,7 +30,19 @@ root.render(
         }}
       >
         <Notifications />
-        <App />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <Protected>
+                  <App />
+                </Protected>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
       </MantineProvider>
     </Provider>
   </React.StrictMode>

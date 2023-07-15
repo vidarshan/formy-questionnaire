@@ -51,10 +51,11 @@ const Login = () => {
   };
 
   useEffect(() => {
+    dispatch(getUserInfo());
     if (token !== null) {
       navigate("/");
     }
-  }, [navigate, token]);
+  }, [dispatch, navigate, token]);
 
   return (
     <Flex h="100vh" align="center" justify="center">

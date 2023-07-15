@@ -6,6 +6,8 @@ import {
   Container,
   Flex,
   Modal,
+  NumberInput,
+  Radio,
   ScrollArea,
   Select,
   Text,
@@ -29,37 +31,53 @@ const Questionnaire = () => {
   const { questionnaire } = useAppSelector((state) => state.questionnaire);
   const [open, setOpen] = useState(false);
 
-  const renderSelectedInput = (title: string, selection: string | null) => {
-    switch (selection) {
+  const [submitObj, setSubmitObj] = useState([]);
+
+  const [textResponse, setTextResponse] = useState("");
+
+  const onAnswerQuestion = () => {};
+
+  const renderSelectedInput = (question: any) => {
+    console.log(
+      "🚀 ~ file: Questionnaire.tsx:41 ~ renderSelectedInput ~ question:",
+      question
+    );
+    switch (question?.type) {
       case "text":
         return (
           <>
-            <Textarea radius="xs" label={title} withAsterisk />
+            <Textarea
+              value={textResponse}
+              radius="xs"
+              label={question?.title}
+              onChange={(e) => setTextResponse(e.target.value)}
+              withAsterisk
+            />
           </>
         );
       case "number":
         return (
           <>
-            <Textarea radius="xs" label={title} withAsterisk />
-            <Card bg="green" p={10} mt={10} radius="xs">
-              <Flex direction="row" align="center">
-                <BsFillCheckCircleFill color="#fff" />
-                <Text ml={10} color="white" size={14} weight={500}>
-                  Correct! The answer is 0
-                </Text>
-              </Flex>
-            </Card>
-            <Card bg="red" p={10} mt={10} radius="xs">
-              <Flex direction="row" align="center">
-                <BsFillXCircleFill color="#fff" />
-                <Text ml={10} color="white" size={14} weight={500}>
-                  Wrong Answer. The correct answer is 0
-                </Text>
-              </Flex>
-            </Card>
+            <NumberInput radius="xs" mt={10} label={question?.title} />
           </>
         );
-
+      case "radio":
+        return (
+          <Radio.Group mt={10}>
+            {/* {radiolist.map((rd: any) => {
+              return (
+                <Flex mt={5} mb={5}>
+                  <Radio
+                    color="deep.0"
+                    mt={10}
+                    value={rd.value}
+                    label={rd.value}
+                  />
+                </Flex>
+              );
+            })} */}
+          </Radio.Group>
+        );
       default:
         <Textarea
           placeholder="Your comment"
@@ -69,9 +87,6 @@ const Questionnaire = () => {
     }
   };
 
-  useEffect(() => {
-    dispatch(getQuestionnaire(id));
-  }, [dispatch, id]);
   return (
     <Shell>
       <Container mt={20} size="xl">
@@ -86,9 +101,10 @@ const Questionnaire = () => {
 
         {questionnaire !== null &&
           (questionnaire.questions || []).map((q: Question) => {
+            console.log(q);
             return (
               <Card mt={10} radius="xs" withBorder>
-                {renderSelectedInput(q.title, q.type)}
+                {renderSelectedInput(q)}
               </Card>
             );
           })}
@@ -100,6 +116,14 @@ const Questionnaire = () => {
             onClick={() => dispatch(setAddQuestionOpen(true))}
           >
             Add new Question
+          </Button>
+          <Button
+            mt={20}
+            radius="xs"
+            fullWidth
+            onClick={() => onAnswerQuestion()}
+          >
+            Answer
           </Button>
         </Flex>
       </Container>

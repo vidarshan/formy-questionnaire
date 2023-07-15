@@ -79,10 +79,11 @@ export const getQuestionnaire = createAsyncThunk(
   "get",
   async (id: string, { getState }) => {
     const state: RootState = getState();
+    console.log("🚀 ~ file: questionnaireSlice.ts:82 ~ state:", state);
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${state.user.token}`,
+        Authorization: `Bearer`,
       },
     };
 
@@ -96,13 +97,15 @@ export const getQuestionnaire = createAsyncThunk(
 
 export const getQuestionnaires = createAsyncThunk(
   "getAll",
-  async (_, { getState }) => {
+  async (test, { getState }) => {
     const state: RootState = getState();
+    console.log("🚀 ~ file: questionnaireSlice.ts:82 ~ state:", state.user);
+    const token = localStorage.getItem("user");
 
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${state.user.token}`,
+        Authorization: `Bearer`,
       },
     };
 
@@ -116,7 +119,7 @@ export const getQuestionnaires = createAsyncThunk(
 
 export const createQuestionnaire = createAsyncThunk(
   "create",
-  async (questionnaire: QuestionnairePayload, { getState }) => {
+  async (questionnaire: QuestionnairePayload, { getState, dispatch }) => {
     const state: RootState = getState();
 
     const config = {
@@ -131,7 +134,7 @@ export const createQuestionnaire = createAsyncThunk(
       questionnaire,
       config
     );
-
+    dispatch(getQuestionnaires());
     return authResponse?.data;
   }
 );
@@ -178,8 +181,9 @@ export const QuestionnaireSlice = createSlice({
     });
     builder.addCase(createQuestionnaire.pending, (state) => {
       notifications.show({
-        title: "You've been compromised",
-        message: "Leave the building immediately",
+        title: "Questionnaire Created",
+        message: "Proceed to add your content",
+        radius: "xs",
       });
       state.createError = false;
       state.createLoading = true;

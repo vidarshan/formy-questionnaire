@@ -53,15 +53,7 @@ const SignUp = () => {
   const onRegister = (values: IValues) => {
     const { email, password, name } = values;
     dispatch(registerUser({ name, email, password, isAdmin: false }));
-    dispatch(getUserInfo());
   };
-
-  useEffect(() => {
-    if (token !== null) {
-      navigate("/");
-    }
-  }, [navigate, token]);
-
   return (
     <Flex h={"100vh"} align="center" justify="center">
       <Box sx={{ minWidth: "500px" }}>

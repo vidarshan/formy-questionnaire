@@ -37,6 +37,7 @@ import { getQuestionnaires } from "../store/slices/questionnaireSlice";
 import { useAppSelector } from "../store/store";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { getUserInfo } from "../store/slices/authSlices";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -60,11 +61,6 @@ const Home = () => {
       <td>{element.mass}</td>
     </tr>
   ));
-
-  useEffect(() => {
-    dispatch(getQuestionnaires());
-  }, [dispatch]);
-
   return (
     <Shell>
       <Container mt={20} size="xl">
