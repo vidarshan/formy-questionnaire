@@ -48,15 +48,33 @@ const App = () => {
 
   const ths = (
     <tr>
-      <th>Element Description</th>
       <th>Element name</th>
+      <th>Element Description</th>
+      <th>Published</th>
+      <th>Responses</th>
+      <th>Created</th>
+      <th></th>
+      <th></th>
     </tr>
   );
 
   const rows = questionnaires.map((q) => (
     <tr key={q._id}>
-      <td>{q.description}</td>
       <td>{q.title}</td>
+      <td>{q.description}</td>
+      <td>{q.isPublished ? "true" : "false"}</td>
+      <td>0</td>
+      <td>{moment(q.createdAt).format("hh:mm a DD-MMM-YYYY")}</td>
+      <td>
+        <Button color="green" radius="xs">
+          View Responses
+        </Button>
+      </td>
+      <td>
+        <Button color="red" radius="xs">
+          Close
+        </Button>
+      </td>
     </tr>
   ));
 
@@ -126,110 +144,20 @@ const App = () => {
                 </Flex>
               </Card>
             ) : (
-              <Grid mt={10}>
-                {questionnaires.map((questionnaire) => {
-                  return (
-                    <Grid.Col key={questionnaire._id} span={6}>
-                      <Card radius="xs" withBorder>
-                        <Flex
-                          direction="row"
-                          justify="space-between"
-                          align="center"
-                        >
-                          <Flex direction="column">
-                            <Text color="blue" size="xl" weight={500}>
-                              {questionnaire.title}
-                            </Text>
-                            <Text color="dark" size="md" weight={400}>
-                              {questionnaire.description}
-                            </Text>
-                          </Flex>
-                          <ActionIcon>
-                            <BsFileTextFill />
-                          </ActionIcon>
-                        </Flex>
-                        <Text color="gray" mt={4} size="sm">
-                          Created{" "}
-                          {moment(questionnaire.createdAt).format(
-                            "YYYY-MM-DD HH:mm A"
-                          )}
-                        </Text>
-                        <Grid mt={4}>
-                          <Grid.Col span={4}>
-                            <Card radius="xs" withBorder p={4}>
-                              <Flex justify="center" align="center">
-                                {questionnaire.isPublic ? (
-                                  <BsFillUnlockFill />
-                                ) : (
-                                  <BsFillLockFill />
-                                )}
-                                <Text size="md" ml={4}>
-                                  Public
-                                </Text>
-                              </Flex>
-                            </Card>
-                          </Grid.Col>
-                          <Grid.Col span={4}>
-                            <Card radius="xs" withBorder p={4}>
-                              <Flex justify="center" align="center">
-                                {questionnaire.isPublished ? (
-                                  <BsBookmarkCheckFill />
-                                ) : (
-                                  <BsFillLockFill />
-                                )}
-                                <Text size="md" ml={4}>
-                                  Published
-                                </Text>
-                              </Flex>
-                            </Card>
-                          </Grid.Col>
-                          <Grid.Col span={4}>
-                            <Card radius="xs" withBorder p={4}>
-                              <Flex justify="center" align="center">
-                                {questionnaire.isOneTime ? (
-                                  <BsClockFill />
-                                ) : (
-                                  <BsClockFill />
-                                )}
-                                <Text size="md" ml={4}>
-                                  One time
-                                </Text>
-                              </Flex>
-                            </Card>
-                          </Grid.Col>
-                        </Grid>
-                        <Grid>
-                          <Grid.Col span={6}>
-                            <Button
-                              color="deep.0"
-                              variant="filled"
-                              mt={10}
-                              fullWidth
-                              radius="xs"
-                              onClick={() =>
-                                navigate(`/questionnaire/${questionnaire._id}`)
-                              }
-                            >
-                              View Responses
-                            </Button>
-                          </Grid.Col>
-                          <Grid.Col span={6}>
-                            <Button
-                              color="deep.0"
-                              variant="outline"
-                              mt={10}
-                              fullWidth
-                              radius="xs"
-                            >
-                              End questionnaire
-                            </Button>
-                          </Grid.Col>
-                        </Grid>
-                      </Card>
-                    </Grid.Col>
-                  );
-                })}
-              </Grid>
+              <>
+                <Table
+                  mt={20}
+                  captionSide="bottom"
+                  verticalSpacing="sm"
+                  fontSize="md"
+                  striped
+                  withBorder
+                  highlightOnHover
+                >
+                  <thead>{ths}</thead>
+                  <tbody>{rows}</tbody>
+                </Table>
+              </>
             )}
           </>
         )}
