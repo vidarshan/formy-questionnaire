@@ -16,13 +16,29 @@ interface QuestionnaireState {
   createError: boolean;
   questionnaires: any[];
   questionnaire: any | null;
+  editableQuestionnaire: QuestionnairePayload;
   getAllLoading: boolean;
   getAllError: boolean;
   getLoading: boolean;
   getError: boolean;
+  participantMode: boolean;
 }
 
 interface QuestionnairePayload {
+  _id: string;
+  title: string;
+  description: string;
+  isLinkValid: boolean;
+  isOneTime: boolean;
+  isPublic: boolean;
+  isPublished: boolean;
+  questions: any[];
+  user: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CreateQuestionnairePayload {
   title: string;
   description: string;
   isPublic: boolean;
@@ -60,11 +76,25 @@ const initialState: QuestionnaireState = {
   createLoading: false,
   createError: false,
   questionnaires: [],
+  editableQuestionnaire: {
+    _id: "",
+    title: "",
+    description: "",
+    isLinkValid: false,
+    isOneTime: false,
+    isPublic: false,
+    isPublished: false,
+    questions: [],
+    user: "",
+    createdAt: "",
+    updatedAt: "",
+  },
   questionnaire: null,
   getAllLoading: false,
   getAllError: false,
   getLoading: false,
   getError: false,
+  participantMode: true,
 };
 
 interface UserObj {
@@ -86,7 +116,7 @@ export const getQuestionnaire = createAsyncThunk(
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer`,
+        Authorization: `Bearer ${state?.user?.token}`,
       },
     };
 
@@ -120,7 +150,7 @@ export const getQuestionnaires = createAsyncThunk(
 
 export const createQuestionnaire = createAsyncThunk(
   "create",
-  async (questionnaire: QuestionnairePayload, { getState, dispatch }) => {
+  async (questionnaire: CreateQuestionnairePayload, { getState, dispatch }) => {
     const state: RootState = getState();
     const config = {
       headers: {
@@ -173,7 +203,19 @@ export const editQuestionnaire = createAsyncThunk(
 export const QuestionnaireSlice = createSlice({
   name: "Questionnaire",
   initialState,
-  reducers: {},
+  reducers: {
+    switchView(state, action) {
+      state.participantMode = action.payload;
+    },
+    answerQuestion(state, action: any) {
+      console.log(
+        "🚀 ~ file: questionnaireSlice.ts:211 ~ answerQuestion ~ action:",
+        action.payload
+      );
+      state.editableQuestionnaire.questions[action.payload.index].values =
+        action.payload.value;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(createQuestionnaire.fulfilled, (state, action) => {
       state.createError = false;
@@ -207,6 +249,7 @@ export const QuestionnaireSlice = createSlice({
     });
     builder.addCase(getQuestionnaire.fulfilled, (state, action) => {
       state.questionnaire = action.payload;
+      state.editableQuestionnaire = action.payload;
       state.createError = false;
       state.createLoading = false;
     });
@@ -221,4 +264,5 @@ export const QuestionnaireSlice = createSlice({
   },
 });
 
+export const { switchView, answerQuestion } = QuestionnaireSlice.actions;
 export default QuestionnaireSlice.reducer;

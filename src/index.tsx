@@ -12,6 +12,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { Notifications } from "@mantine/notifications";
 import Protected from "./utils/PrivateRoute";
+import Questionnaire from "./pages/Questionnaire";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
@@ -37,6 +38,14 @@ root.render(
               element={
                 <Protected>
                   <App />
+                </Protected>
+              }
+            />
+            <Route
+              path="/questionnaire/:id"
+              element={
+                <Protected>
+                  <Questionnaire />
                 </Protected>
               }
             />

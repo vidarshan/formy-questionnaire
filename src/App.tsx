@@ -66,7 +66,11 @@ const App = () => {
       <td>0</td>
       <td>{moment(q.createdAt).format("hh:mm a DD-MMM-YYYY")}</td>
       <td>
-        <Button color="green" radius="xs">
+        <Button
+          color="green"
+          radius="xs"
+          onClick={() => navigate(`/questionnaire/${q._id}`)}
+        >
           View Responses
         </Button>
       </td>

@@ -16,7 +16,12 @@ import {
   Title,
 } from "@mantine/core";
 import Inputs from "../components/Inputs";
-import { getQuestionnaire } from "../store/slices/questionnaireSlice";
+import {
+  answerQuestion,
+  editQuestionnaire,
+  getQuestionnaire,
+  switchView,
+} from "../store/slices/questionnaireSlice";
 import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -28,25 +33,31 @@ import { BsFillCheckCircleFill, BsFillXCircleFill } from "react-icons/bs";
 const Questionnaire = () => {
   const { id = "" } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { questionnaire } = useAppSelector((state) => state.questionnaire);
+  const { questionnaire, participantMode, editableQuestionnaire } =
+    useAppSelector((state) => state.questionnaire);
   const [open, setOpen] = useState(false);
-
   const [submitObj, setSubmitObj] = useState([]);
 
   const [textResponse, setTextResponse] = useState("");
 
-  const onAnswerQuestion = () => {};
+  const onAnswerQuestion = (index: number, value: any) => {
+    const answerObj = {
+      index,
+      value,
+    };
+    dispatch(answerQuestion(answerObj));
+  };
 
-  const renderSelectedInput = (question: any) => {
+  const renderSelectedInput = (question: any, index: number) => {
     switch (question?.type) {
       case "text":
         return (
           <>
             <Textarea
-              value={textResponse}
+              value={question.values}
               radius="xs"
               label={question?.title}
-              onChange={(e) => setTextResponse(e.target.value)}
+              onChange={(e) => onAnswerQuestion(index, e.target.value)}
               withAsterisk
             />
           </>
@@ -83,26 +94,43 @@ const Questionnaire = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(getQuestionnaire(id));
+  }, [dispatch, id]);
+
   return (
     <Shell>
       <Container mt={20} size="xl">
         <Inputs />
-
-        <Card bg="yellow" radius="xs">
-          <Flex direction="row" align="center" justify="space-between">
-            <Text>You are viewing this questionnaire as the editor</Text>
-            <Button radius="xs">Switch to Participant View</Button>
-          </Flex>
-        </Card>
-
-        {questionnaire !== null &&
-          (questionnaire.questions || []).map((q: Question) => {
-            return (
-              <Card mt={10} radius="xs" withBorder>
-                {renderSelectedInput(q)}
-              </Card>
-            );
-          })}
+        {!participantMode ? (
+          <Card radius="xs" withBorder>
+            <Flex direction="row" align="center" justify="space-between">
+              <Text>You are viewing this questionnaire as the editor</Text>
+              <Button radius="xs" onClick={() => dispatch(switchView(true))}>
+                Switch to Participant View
+              </Button>
+            </Flex>
+          </Card>
+        ) : (
+          <Card radius="xs" withBorder>
+            <Flex direction="row" align="center" justify="space-between">
+              <Text>You are viewing this questionnaire as the participant</Text>
+              <Button radius="xs" onClick={() => dispatch(switchView(false))}>
+                Switch to Participant View
+              </Button>
+            </Flex>
+          </Card>
+        )}
+        {editableQuestionnaire !== null &&
+          (editableQuestionnaire.questions || []).map(
+            (q: Question, index: number) => {
+              return (
+                <Card mt={10} radius="xs" withBorder>
+                  {renderSelectedInput(q, index)}
+                </Card>
+              );
+            }
+          )}
         <Flex>
           <Button
             mt={20}
@@ -112,12 +140,7 @@ const Questionnaire = () => {
           >
             Add new Question
           </Button>
-          <Button
-            mt={20}
-            radius="xs"
-            fullWidth
-            onClick={() => onAnswerQuestion()}
-          >
+          <Button mt={20} radius="xs" fullWidth>
             Answer
           </Button>
         </Flex>
