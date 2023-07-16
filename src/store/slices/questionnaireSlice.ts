@@ -129,7 +129,6 @@ interface RegisterObj {
 export const getQuestionnaire = createAsyncThunk(
   "get",
   async (id: string, { getState }) => {
-    console.log("🚀 ~ file: questionnaireSlice.ts:115 ~ id:", id);
     const state: RootState = getState();
     const config = {
       headers: {
@@ -222,7 +221,6 @@ export const publishQuestionnaire = createAsyncThunk(
   "publish",
   async (id: string, { getState }) => {
     const state: RootState = getState();
-    console.log("🚀 ~ file: questionnaireSlice.ts:225 ~ state:", state);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -247,10 +245,6 @@ export const QuestionnaireSlice = createSlice({
       state.participantMode = action.payload;
     },
     answerQuestion(state, action: any) {
-      console.log(
-        "🚀 ~ file: questionnaireSlice.ts:211 ~ answerQuestion ~ action:",
-        action.payload
-      );
       state.editableQuestionnaire.questions[action.payload.index].values =
         action.payload.value;
     },

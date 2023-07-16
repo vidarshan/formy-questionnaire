@@ -38,7 +38,7 @@ const Shell: FC<IShell> = ({ children }) => {
       title: "",
       description: "",
       isPublic: false,
-      isPublished: true,
+      isPublished: false,
       isOneTime: false,
     },
 

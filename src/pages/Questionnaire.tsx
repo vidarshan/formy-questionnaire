@@ -46,6 +46,19 @@ const Questionnaire = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { questionnaire, participantMode, editableQuestionnaire, getLoading } =
     useAppSelector((state) => state.questionnaire);
+  const { userId } = useAppSelector((state) => state.user);
+  console.log(
+    "🚀 ~ file: Questionnaire.tsx:50 ~ Questionnaire ~ userId:",
+    userId
+  );
+  console.log(
+    "🚀 ~ file: Questionnaire.tsx:48 ~ Questionnaire ~ questionnaire:",
+    questionnaire?.user
+  );
+  console.log(
+    "🚀 ~ file: Questionnaire.tsx:48 ~ Questionnaire ~ questionnaire:",
+    questionnaire?.isPublished
+  );
 
   const onAnswerQuestion = (index: number, value: any) => {
     const answerObj = {
@@ -55,16 +68,13 @@ const Questionnaire = () => {
     dispatch(answerQuestion(answerObj));
   };
 
-  const renderSelectedInput = (question: any, index: number) => {
-    console.log(
-      "🚀 ~ file: Questionnaire.tsx:58 ~ renderSelectedInput ~ question:",
-      question
-    );
+  const renderSelectedInput = (question: any, index: number, user: string) => {
     switch (question?.type) {
       case "text":
         return (
           <>
             <Textarea
+              disabled={user === userId}
               value={question.values}
               radius="xs"
               label={question?.title}
@@ -77,6 +87,7 @@ const Questionnaire = () => {
         return (
           <>
             <NumberInput
+              disabled={user === userId}
               type="number"
               radius="xs"
               mt={10}
@@ -141,43 +152,58 @@ const Questionnaire = () => {
               </Title>
             </Flex>
             <Flex>
-              <Button
-                mr={10}
-                w="fit-content"
-                size="xs"
-                radius="xs"
-                fullWidth
-                onClick={() => dispatch(setAddQuestionOpen(true))}
-                leftIcon={<BsPlusLg />}
-              >
-                Add new Question
-              </Button>
-              <Button
-                mr={10}
-                variant="filled"
-                color={participantMode ? "pink" : "lime"}
-                radius="xs"
-                size="xs"
-                leftIcon={<BsEye />}
-              >
-                {participantMode ? "Guest View" : "Creator View"}
-              </Button>
-              <Button
-                variant="filled"
-                color="lime"
-                radius="xs"
-                size="xs"
-                leftIcon={<BsFileCheck />}
-              >
-                Check Answers
-              </Button>
+              {userId === questionnaire?.user && (
+                <>
+                  {!questionnaire?.isPublished && (
+                    <Button
+                      mr={10}
+                      w="fit-content"
+                      size="xs"
+                      radius="xs"
+                      fullWidth
+                      onClick={() => dispatch(setAddQuestionOpen(true))}
+                      leftIcon={<BsPlusLg />}
+                    >
+                      Add new Question
+                    </Button>
+                  )}
+                  <Button
+                    mr={10}
+                    variant="filled"
+                    color={participantMode ? "pink" : "lime"}
+                    radius="xs"
+                    size="xs"
+                    leftIcon={<BsEye />}
+                  >
+                    {participantMode ? "Guest View" : "Creator View"}
+                  </Button>
+                  <Button
+                    variant="filled"
+                    color="lime"
+                    radius="xs"
+                    size="xs"
+                    leftIcon={<BsFileCheck />}
+                  >
+                    Check Answers
+                  </Button>
+                </>
+              )}
             </Flex>
           </Flex>
+          {}
           <Card mt={30} radius="xs" withBorder>
             {editableQuestionnaire !== null &&
               (editableQuestionnaire.questions || []).map(
                 (q: Question, index: number) => {
-                  return <>{renderSelectedInput(q, index)}</>;
+                  return (
+                    <>
+                      {renderSelectedInput(
+                        q,
+                        index,
+                        editableQuestionnaire.user
+                      )}
+                    </>
+                  );
                 }
               )}
           </Card>
@@ -188,9 +214,12 @@ const Questionnaire = () => {
               size="xs"
               radius="xs"
               fullWidth
+              color={questionnaire.isPublished ? "red" : "violet"}
               onClick={() => onPublishQuestionnaire()}
             >
-              Publish Questionnaire
+              {questionnaire.isPublished
+                ? "Close Questionnaire"
+                : "Publish Questionnaire"}
             </Button>
           </Flex>
         </Container>
