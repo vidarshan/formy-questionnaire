@@ -38,7 +38,6 @@ const Shell: FC<IShell> = ({ children }) => {
       title: "",
       description: "",
       isPublic: false,
-      isPublished: false,
       isOneTime: false,
     },
 
@@ -109,13 +108,6 @@ const Shell: FC<IShell> = ({ children }) => {
             label="Open questionnaire"
             description="This allows your questionnaire to be answered with an account"
             {...form.getInputProps("isPublic")}
-          />
-          <Switch
-            mt={10}
-            color="deep.0"
-            label="Publish on create"
-            description="Create questionaire and open it for responses"
-            {...form.getInputProps("isPublished", { type: "checkbox" })}
           />
           <Switch
             mt={10}

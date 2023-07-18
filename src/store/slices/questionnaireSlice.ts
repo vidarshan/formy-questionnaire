@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../../../store";
 import { notifications } from "@mantine/notifications";
+import { v4 as uuidv4 } from "uuid";
 
 interface QuestionnaireState {
   title: string;
@@ -16,6 +17,9 @@ interface QuestionnaireState {
   createError: boolean;
   questionnaires: any[];
   questionnaire: any | null;
+  option: Option;
+  options: Option[] | [];
+  editableQuestion: any;
   editableQuestionnaire: QuestionnairePayload;
   getAllLoading: boolean;
   getAllError: boolean;
@@ -24,6 +28,12 @@ interface QuestionnaireState {
   editLoading: boolean;
   editError: boolean;
   participantMode: boolean;
+}
+
+interface Option {
+  id: string;
+  value: string;
+  label: string;
 }
 
 interface QuestionnairePayload {
@@ -53,6 +63,7 @@ interface QuestionPayload {
   type: string | null;
   values: string | number | null;
   answers: string | null;
+  options: any[];
   response: string | null;
   required: boolean;
 }
@@ -79,6 +90,17 @@ const initialState: QuestionnaireState = {
   createLoading: false,
   createError: false,
   questionnaires: [],
+  option: { id: uuidv4(), label: "", value: "" },
+  options: [],
+  editableQuestion: {
+    title: "",
+    type: "text",
+    values: null,
+    options: [],
+    answers: "",
+    response: "",
+    required: false,
+  },
   editableQuestionnaire: {
     _id: "",
     title: "",
@@ -188,7 +210,7 @@ export const createQuestionnaire = createAsyncThunk(
 
 export const editQuestionnaire = createAsyncThunk(
   "edit",
-  async (editPayload: QuesionnaireEditPayload, { getState }) => {
+  async (editPayload: QuesionnaireEditPayload, { getState, dispatch }) => {
     const state: RootState = getState();
 
     const config = {
@@ -212,7 +234,6 @@ export const editQuestionnaire = createAsyncThunk(
       questionObj,
       config
     );
-
     return questionnaire?.data;
   }
 );
@@ -247,6 +268,36 @@ export const QuestionnaireSlice = createSlice({
     answerQuestion(state, action: any) {
       state.editableQuestionnaire.questions[action.payload.index].values =
         action.payload.value;
+    },
+    setQuestion(state, action: any) {
+      state.editableQuestion[action.payload.property] = action.payload.value;
+    },
+    setOption(state, action) {
+      state.option.id = action.payload.id;
+      state.option.label = action.payload.label;
+      state.option.value = action.payload.value;
+    },
+    setQuestionOptions(state) {
+      state.options.push(state.option as never);
+      state.editableQuestion.options.push(state.option);
+    },
+    setQuestionType(state, action) {
+      state.editableQuestion.title = "";
+      state.editableQuestion.type = action.payload;
+      state.editableQuestion.values = null;
+      state.editableQuestion.options = [];
+      state.editableQuestion.answers = "";
+      state.editableQuestion.response = "";
+      state.editableQuestion.required = false;
+    },
+    resetQuestion(state) {
+      state.editableQuestion.title = "";
+      state.editableQuestion.type = "text";
+      state.editableQuestion.values = null;
+      state.editableQuestion.options = [];
+      state.editableQuestion.answers = "";
+      state.editableQuestion.response = "";
+      state.editableQuestion.required = false;
     },
   },
   extraReducers: (builder) => {
@@ -310,5 +361,13 @@ export const QuestionnaireSlice = createSlice({
   },
 });
 
-export const { switchView, answerQuestion } = QuestionnaireSlice.actions;
+export const {
+  switchView,
+  answerQuestion,
+  setQuestion,
+  resetQuestion,
+  setQuestionType,
+  setQuestionOptions,
+  setOption,
+} = QuestionnaireSlice.actions;
 export default QuestionnaireSlice.reducer;

@@ -40,6 +40,7 @@ import {
   BsPlusLg,
 } from "react-icons/bs";
 import Spinner from "../components/Spinner";
+import Empty from "../components/Empty";
 
 const Questionnaire = () => {
   const { id = "" } = useParams();
@@ -47,18 +48,6 @@ const Questionnaire = () => {
   const { questionnaire, participantMode, editableQuestionnaire, getLoading } =
     useAppSelector((state) => state.questionnaire);
   const { userId } = useAppSelector((state) => state.user);
-  console.log(
-    "🚀 ~ file: Questionnaire.tsx:50 ~ Questionnaire ~ userId:",
-    userId
-  );
-  console.log(
-    "🚀 ~ file: Questionnaire.tsx:48 ~ Questionnaire ~ questionnaire:",
-    questionnaire?.user
-  );
-  console.log(
-    "🚀 ~ file: Questionnaire.tsx:48 ~ Questionnaire ~ questionnaire:",
-    questionnaire?.isPublished
-  );
 
   const onAnswerQuestion = (index: number, value: any) => {
     const answerObj = {
@@ -98,6 +87,7 @@ const Questionnaire = () => {
           </>
         );
       case "radio":
+        console.log(question);
         return (
           <Radio.Group mt={10}>
             {/* {radiolist.map((rd: any) => {
@@ -190,23 +180,21 @@ const Questionnaire = () => {
               )}
             </Flex>
           </Flex>
-          {}
-          <Card mt={30} radius="xs" withBorder>
-            {editableQuestionnaire !== null &&
-              (editableQuestionnaire.questions || []).map(
-                (q: Question, index: number) => {
-                  return (
-                    <>
-                      {renderSelectedInput(
-                        q,
-                        index,
-                        editableQuestionnaire.user
-                      )}
-                    </>
-                  );
-                }
-              )}
-          </Card>
+          {questionnaire?.questions?.length === 0 ? (
+            <Empty title="No questions in this questionnaire" />
+          ) : (
+            <Card mt={30} radius="xs" withBorder>
+              {questionnaire !== null &&
+                (questionnaire.questions || []).map(
+                  (q: Question, index: number) => {
+                    return (
+                      <>{renderSelectedInput(q, index, questionnaire.user)}</>
+                    );
+                  }
+                )}
+            </Card>
+          )}
+
           <Flex direction="row" justify="flex-end">
             <Button
               w="fit-content"
@@ -214,6 +202,7 @@ const Questionnaire = () => {
               size="xs"
               radius="xs"
               fullWidth
+              disabled={getLoading || questionnaire?.questions.length === 0}
               color={questionnaire.isPublished ? "red" : "violet"}
               onClick={() => onPublishQuestionnaire()}
             >

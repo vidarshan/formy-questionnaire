@@ -4,10 +4,10 @@ import { SpinnerProps } from "../interfaces/Spinner";
 
 const Spinner: FC<SpinnerProps> = ({ title, color, size }) => {
   return (
-    <Container h="calc(100vh - 100px)">
+    <Container h={200}>
       <Flex h="100%" direction="column" justify="center" align="center">
         <Loader color={color} size={size} />
-        <Title weight={500} order={5} mt={10}>
+        <Title weight={500} order={6} mt={10}>
           {title}
         </Title>
       </Flex>
