@@ -281,6 +281,9 @@ export const QuestionnaireSlice = createSlice({
       state.options.push(state.option as never);
       state.editableQuestion.options.push(state.option);
     },
+    resetQuestionOptions(state) {
+      state.options = [];
+    },
     setQuestionType(state, action) {
       state.editableQuestion.title = "";
       state.editableQuestion.type = action.payload;
@@ -368,6 +371,6 @@ export const {
   resetQuestion,
   setQuestionType,
   setQuestionOptions,
-  setOption,
+  setOption, resetQuestionOptions
 } = QuestionnaireSlice.actions;
 export default QuestionnaireSlice.reducer;

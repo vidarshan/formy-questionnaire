@@ -24,6 +24,7 @@ import {
   editQuestionnaire,
   getQuestionnaire,
   resetQuestion,
+  resetQuestionOptions,
   setOption,
   setQuestion,
   setQuestionOptions,
@@ -50,29 +51,22 @@ const Inputs: FC<IInputs> = () => {
   const [title, setTitle] = useState("");
   const [answerEnabled, setAnswerEnabled] = useState(false);
   const [checkboxlist, setCheckboxlist] = useState<any>([]);
-  const [radiolist, setRadiolist] = useState<any>([]);
   const [addingItemValue, setAddingItemValue] = useState<any | undefined>("");
-  const [selectedInput, setSelectedInput] = useState<string | null>("text");
-  const [currentValue, setCurrentValue] = useState<null | string | number>(
-    null
-  );
-  const [currentNumberValue, setCurrentNumberValue] = useState<number | "">(0);
-  const [radioButtonValue, setRadioButtonValue] = useState("");
   const [checkboxValue, setCheckboxValue] = useState<string[]>([]);
   const [switchValue, setSwitchValue] = useState<any>(false);
   const [ratingValue, setRatingValue] = useState<number>();
 
   const resetState = () => {
-    setTitle("");
-    setSelectedInput("");
-    setCurrentValue(null);
-    setCurrentNumberValue(0);
-    setAnswerEnabled(false);
-    setRadioButtonValue("");
-    setCheckboxValue([]);
-    setAddingItemValue("");
-    setSwitchValue(false);
-    setRatingValue(0);
+    dispatch(resetQuestion());
+    dispatch(resetQuestionOptions());
+    dispatch(setAddAnswerOpen(false));
+    dispatch(
+      setOption({
+        id: uuidv4(),
+        value: "",
+        label: "",
+      })
+    );
   };
 
   const onQuestionnaireEdit = () => {
@@ -98,13 +92,12 @@ const Inputs: FC<IInputs> = () => {
       })
     );
     dispatch(getQuestionnaire(id));
-    dispatch(resetQuestion());
+    resetState();
   };
 
   const renderSelectedInput = (type: string) => {
     switch (type) {
       case "text":
-        console.log(editableQuestion);
         return (
           <>
             <Card mt={20} radius="xs" withBorder>
@@ -188,7 +181,7 @@ const Inputs: FC<IInputs> = () => {
               <Title order={4}>Set Details</Title>
               <TextInput
                 mt={10}
-                value={title}
+                value={editableQuestion?.title}
                 radius="xs"
                 label="Input title"
                 placeholder="Question title"
@@ -215,7 +208,11 @@ const Inputs: FC<IInputs> = () => {
               />
               {addAnswerOpen && (
                 <NumberInput
-                  value={editableQuestion?.values}
+                  value={
+                    editableQuestion.values === null
+                      ? 0
+                      : editableQuestion.values
+                  }
                   mt={10}
                   label={editableQuestion?.title}
                   onChange={(e) => {
@@ -232,7 +229,6 @@ const Inputs: FC<IInputs> = () => {
           </>
         );
       case "radio":
-        console.log(editableQuestion);
         return (
           <>
             <Card mt={20} radius="xs" withBorder>
@@ -270,6 +266,7 @@ const Inputs: FC<IInputs> = () => {
                 mt={10}
                 label="Input title"
                 placeholder="Question title"
+                value={editableQuestion?.title}
                 onChange={(e) =>
                   dispatch(
                     setQuestion({
@@ -282,8 +279,143 @@ const Inputs: FC<IInputs> = () => {
               <Grid mt={20}>
                 <Grid.Col span={10}>
                   <TextInput
-                    value={option.value}
                     placeholder="New radio input"
+                    value={option.value}
+                    onChange={(e) =>
+                      dispatch(
+                        setOption({
+                          id: option?.id,
+                          value: e.target.value,
+                          label: e.target.value,
+                        })
+                      )
+                    }
+                  />
+                </Grid.Col>
+                <Grid.Col span={2}>
+                  <Button
+                    variant="outline"
+                    color="deep.0"
+                    radius="xs"
+                    fullWidth
+                    disabled={option.value === ""}
+                    onClick={() => {
+                      if (option.value !== "") {
+                        dispatch(setQuestionOptions());
+                        dispatch(
+                          setOption({
+                            id: uuidv4(),
+                            value: "",
+                            label: "",
+                          })
+                        );
+                      }
+                    }}
+                  >
+                    Add
+                  </Button>
+                </Grid.Col>
+              </Grid>
+              <Checkbox
+                mt={20}
+                mb={20}
+                radius="xs"
+                color="pink"
+                label="Add an answer to this question"
+                checked={addAnswerOpen}
+                onChange={() => {
+                  dispatch(setAddAnswerOpen(!addAnswerOpen));
+                }}
+              />
+              {addAnswerOpen && (
+                <Radio.Group
+                  value={editableQuestion.values}
+                  onChange={(e) =>
+                    dispatch(
+                      setQuestion({
+                        property: "values",
+                        value: e,
+                      })
+                    )
+                  }
+                  mt={10}
+                  withAsterisk
+                >
+                  {options.map((rd: any) => {
+                    return (
+                      <Flex mt={5} mb={5}>
+                        <Radio
+                          color="deep.0"
+                          mt={10}
+                          value={rd.value}
+                          label={rd.value}
+                        />
+                      </Flex>
+                    );
+                  })}
+                </Radio.Group>
+              )}
+            </Card>
+          </>
+        );
+      case "checkbox":
+        console.log(editableQuestion);
+        return (
+          <>
+            <Card mt={20} radius="xs" withBorder>
+              <Title order={4}>Question Preview</Title>
+              <Checkbox.Group
+                value={
+                  editableQuestion?.values === null
+                    ? []
+                    : editableQuestion.values
+                }
+                label={editableQuestion?.title}
+                mt={10}
+              >
+                {editableQuestion?.options.map((ch: any) => {
+                  return (
+                    <Flex
+                      mt={5}
+                      mb={5}
+                      direction="row"
+                      justify="space-between"
+                      align="center"
+                    >
+                      <Checkbox
+                        disabled
+                        color="deep.0"
+                        mt={10}
+                        value={ch.value}
+                        label={ch.value}
+                        radius="xs"
+                      />
+                    </Flex>
+                  );
+                })}
+              </Checkbox.Group>
+            </Card>
+            <Card mt={20} radius="xs" withBorder>
+              <Title order={4}>Set Details</Title>
+              <TextInput
+                mt={10}
+                label="Input title"
+                placeholder="Question title"
+                value={editableQuestion?.title}
+                onChange={(e) =>
+                  dispatch(
+                    setQuestion({
+                      property: "title",
+                      value: e.target.value,
+                    })
+                  )
+                }
+              />
+              <Grid mt={20}>
+                <Grid.Col span={10}>
+                  <TextInput
+                    placeholder="New checkbox"
+                    value={option.value}
                     onChange={(e) =>
                       dispatch(
                         setOption({
@@ -331,120 +463,23 @@ const Inputs: FC<IInputs> = () => {
                 }}
               />
               {addAnswerOpen && (
-                <Radio.Group
-                  value={editableQuestion.values}
-                  onChange={(e) =>
+                <Checkbox.Group
+                  mt={10}
+                  value={
+                    editableQuestion.values === null
+                      ? []
+                      : editableQuestion.values
+                  }
+                  onChange={(e) => {
                     dispatch(
                       setQuestion({
                         property: "values",
                         value: e,
                       })
-                    )
-                  }
-                  mt={10}
-                  withAsterisk
-                >
-                  {options.map((rd: any) => {
-                    return (
-                      <Flex mt={5} mb={5}>
-                        <Radio
-                          color="deep.0"
-                          mt={10}
-                          value={rd.value}
-                          label={rd.value}
-                        />
-                      </Flex>
                     );
-                  })}
-                </Radio.Group>
-              )}
-            </Card>
-          </>
-        );
-      case "checkbox":
-        return (
-          <>
-            <Card mt={20} radius="xs" withBorder>
-              <Title order={4}>Question Preview</Title>
-              <Checkbox.Group value={checkboxValue} label={title} mt={10}>
-                {checkboxlist.map((ch: any) => {
-                  return (
-                    <Flex
-                      mt={5}
-                      mb={5}
-                      direction="row"
-                      justify="space-between"
-                      align="center"
-                    >
-                      <Checkbox
-                        disabled
-                        color="deep.0"
-                        mt={10}
-                        value={ch.value}
-                        label={ch.value}
-                        radius="xs"
-                      />
-                    </Flex>
-                  );
-                })}
-              </Checkbox.Group>
-            </Card>
-            <Card mt={20} radius="xs" withBorder>
-              <Title order={4}>Set Details</Title>
-              <TextInput
-                mt={10}
-                label="Input title"
-                placeholder="Question title"
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <Grid mt={20}>
-                <Grid.Col span={10}>
-                  <TextInput
-                    value={addingItemValue}
-                    placeholder="New checkbox"
-                    onChange={(e) => setAddingItemValue(e.target.value)}
-                  />
-                </Grid.Col>
-                <Grid.Col span={2}>
-                  <Button
-                    variant="outline"
-                    color="deep.0"
-                    radius="xs"
-                    fullWidth
-                    disabled={addingItemValue === ""}
-                    onClick={() => {
-                      if (addingItemValue !== "") {
-                        setCheckboxlist([
-                          ...checkboxlist,
-                          { value: addingItemValue, label: addingItemValue },
-                        ]);
-                        setAddingItemValue("");
-                      }
-                    }}
-                  >
-                    Add
-                  </Button>
-                </Grid.Col>
-              </Grid>
-
-              <Checkbox
-                mt={20}
-                mb={20}
-                radius="xs"
-                color="dark"
-                checked={answerEnabled}
-                label="Add an answer to this question"
-                onChange={() => setAnswerEnabled(!answerEnabled)}
-              />
-
-              {answerEnabled && (
-                <Checkbox.Group
-                  label={title}
-                  mt={10}
-                  value={checkboxValue}
-                  onChange={(e) => setCheckboxValue(e)}
+                  }}
                 >
-                  {checkboxlist.map((ch: any) => {
+                  {options.map((ch: any) => {
                     return (
                       <Flex mt={5} mb={5}>
                         {" "}
@@ -465,23 +500,35 @@ const Inputs: FC<IInputs> = () => {
         );
 
       case "switch":
+        console.log(editableQuestion);
         return (
           <>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Question Preview</Title>
               <Switch
-                checked={switchValue}
+                label={editableQuestion.title}
+                checked={
+                  editableQuestion.values === null
+                    ? false
+                    : editableQuestion.values
+                }
                 disabled
                 color="deep.0"
-                label={title}
                 mt={10}
               />
             </Card>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Set Details</Title>
               <TextInput
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={editableQuestion.title}
+                onChange={(e) =>
+                  dispatch(
+                    setQuestion({
+                      property: "title",
+                      value: e.target.value,
+                    })
+                  )
+                }
                 radius="xs"
                 mt={10}
                 label="Input title"
@@ -500,10 +547,21 @@ const Inputs: FC<IInputs> = () => {
               {answerEnabled && (
                 <Switch
                   color="deep.0"
-                  label={title}
+                  label={editableQuestion.title}
                   mt={10}
-                  checked={switchValue}
-                  onChange={(e) => setSwitchValue(e.currentTarget.checked)}
+                  checked={
+                    editableQuestion.values === null
+                      ? false
+                      : editableQuestion.values
+                  }
+                  onChange={(e) =>
+                    dispatch(
+                      setQuestion({
+                        property: "values",
+                        value: e.target.checked,
+                      })
+                    )
+                  }
                 />
               )}
             </Card>
@@ -516,20 +574,35 @@ const Inputs: FC<IInputs> = () => {
               <Title order={4}>Question Preview</Title>
               <Flex direction="column">
                 <Text mt={10} size={14}>
-                  {title}
+                  {editableQuestion.title}
                 </Text>
-                <Rating title={title} mt={10} value={ratingValue} readOnly />
+                <Rating
+                  title={editableQuestion.title}
+                  mt={10}
+                  value={
+                    editableQuestion.values === null
+                      ? 0
+                      : editableQuestion.values
+                  }
+                  readOnly
+                />
               </Flex>
             </Card>
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Set Details</Title>
               <TextInput
                 mt={10}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={editableQuestion.title}
+                onChange={(e) =>
+                  dispatch(
+                    setQuestion({
+                      property: "title",
+                      value: e.target.value,
+                    })
+                  )
+                }
                 label="Input title"
                 placeholder="Question title"
-                withAsterisk
               />
               <Checkbox
                 mt={20}
@@ -543,13 +616,24 @@ const Inputs: FC<IInputs> = () => {
               {answerEnabled && (
                 <Flex direction="column">
                   <Text mt={10} size={14}>
-                    {title}
+                    {editableQuestion.title}
                   </Text>
                   <Rating
-                    title={title}
+                    title={editableQuestion.title}
                     mt={10}
-                    value={ratingValue}
-                    onChange={(e) => setRatingValue(e)}
+                    value={
+                      editableQuestion.values === null
+                        ? 0
+                        : editableQuestion.values
+                    }
+                    onChange={(e) =>
+                      dispatch(
+                        setQuestion({
+                          property: "values",
+                          value: e,
+                        })
+                      )
+                    }
                   />
                 </Flex>
               )}
@@ -572,7 +656,7 @@ const Inputs: FC<IInputs> = () => {
       opened={addQuestionOpen}
       onClose={() => {
         dispatch(setAddQuestionOpen(false));
-        dispatch(resetQuestion());
+        resetState();
       }}
       title="New Question"
       radius="xs"
@@ -588,7 +672,7 @@ const Inputs: FC<IInputs> = () => {
         placeholder="Pick one"
         dropdownPosition="bottom"
         onChange={(v) => {
-          console.log(v);
+          resetState();
           dispatch(setQuestionType(v));
         }}
         data={[
@@ -606,7 +690,7 @@ const Inputs: FC<IInputs> = () => {
           <Button
             onClick={() => {
               dispatch(setAddQuestionOpen(false));
-              dispatch(resetQuestion());
+              resetState();
             }}
             variant="outline"
             color="pink"
