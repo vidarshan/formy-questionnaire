@@ -4,13 +4,16 @@ import {
   ActionIcon,
   Button,
   Card,
+  Checkbox,
   Container,
   Flex,
   Modal,
   NumberInput,
   Radio,
+  Rating,
   ScrollArea,
   Select,
+  Switch,
   Text,
   TextInput,
   Textarea,
@@ -58,17 +61,19 @@ const Questionnaire = () => {
   };
 
   const renderSelectedInput = (question: any, index: number, user: string) => {
+    console.log(
+      "🚀 ~ file: Questionnaire.tsx:61 ~ renderSelectedInput ~ question:",
+      question
+    );
     switch (question?.type) {
       case "text":
         return (
           <>
             <Textarea
-              disabled={user === userId}
-              value={question.values}
+              key={question._id}
               radius="xs"
               label={question?.title}
               onChange={(e) => onAnswerQuestion(index, e.target.value)}
-              withAsterisk
             />
           </>
         );
@@ -76,7 +81,7 @@ const Questionnaire = () => {
         return (
           <>
             <NumberInput
-              disabled={user === userId}
+              key={question._id}
               type="number"
               radius="xs"
               mt={10}
@@ -89,8 +94,8 @@ const Questionnaire = () => {
       case "radio":
         console.log(question);
         return (
-          <Radio.Group mt={10}>
-            {/* {radiolist.map((rd: any) => {
+          <Radio.Group key={question._id} label={question.title} mt={10}>
+            {question.options.map((rd: any) => {
               return (
                 <Flex mt={5} mb={5}>
                   <Radio
@@ -101,9 +106,32 @@ const Questionnaire = () => {
                   />
                 </Flex>
               );
-            })} */}
+            })}
           </Radio.Group>
         );
+      case "checkbox":
+        return (
+          <Checkbox.Group mt={10} key={question._id} label={question.title}>
+            {question.options.map((ch: any) => {
+              return (
+                <Flex mt={5} mb={5}>
+                  {" "}
+                  <Checkbox
+                    color="deep.0"
+                    mt={10}
+                    value={ch.value}
+                    label={ch.value}
+                    radius="xs"
+                  />
+                </Flex>
+              );
+            })}
+          </Checkbox.Group>
+        );
+      case "switch":
+        return <Switch color="deep.0" label={question.title} mt={10} />;
+      case "rating":
+        return <Rating title={question.title} mt={10} />;
       default:
         <Textarea
           placeholder="Your comment"

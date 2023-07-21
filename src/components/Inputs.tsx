@@ -40,7 +40,6 @@ import { v4 as uuidv4 } from "uuid";
 
 const Inputs: FC<IInputs> = () => {
   const { id = "" } = useParams();
-  const checkboxes = [{ label: "test", value: "test" }];
   const dispatch = useDispatch<AppDispatch>();
   const { questionnaire, editableQuestion, options, option } = useAppSelector(
     (state) => state.questionnaire
@@ -48,13 +47,7 @@ const Inputs: FC<IInputs> = () => {
   const { addQuestionOpen, addAnswerOpen } = useAppSelector(
     (state) => state.interface
   );
-  const [title, setTitle] = useState("");
   const [answerEnabled, setAnswerEnabled] = useState(false);
-  const [checkboxlist, setCheckboxlist] = useState<any>([]);
-  const [addingItemValue, setAddingItemValue] = useState<any | undefined>("");
-  const [checkboxValue, setCheckboxValue] = useState<string[]>([]);
-  const [switchValue, setSwitchValue] = useState<any>(false);
-  const [ratingValue, setRatingValue] = useState<number>();
 
   const resetState = () => {
     dispatch(resetQuestion());
@@ -108,7 +101,7 @@ const Inputs: FC<IInputs> = () => {
                     ? ""
                     : editableQuestion.answers
                 }
-                disabled
+                readOnly
                 radius="xs"
                 mt={10}
                 label={editableQuestion.title}
@@ -148,7 +141,7 @@ const Inputs: FC<IInputs> = () => {
                   }
                   radius="xs"
                   mt={10}
-                  label={title}
+                  label={editableQuestion.title}
                   onChange={(e) =>
                     dispatch(
                       setQuestion({
@@ -172,7 +165,7 @@ const Inputs: FC<IInputs> = () => {
                   editableQuestion.values === null ? 0 : editableQuestion.values
                 }
                 radius="xs"
-                disabled
+                readOnly
                 mt={10}
                 label={editableQuestion?.title}
               />
@@ -235,7 +228,7 @@ const Inputs: FC<IInputs> = () => {
               <Title order={4}>Question Preview</Title>
               <Radio.Group
                 value={editableQuestion?.values}
-                label={title}
+                label={editableQuestion?.title}
                 mt={10}
               >
                 {options?.map((rd: any) => {
@@ -498,7 +491,6 @@ const Inputs: FC<IInputs> = () => {
             </Card>
           </>
         );
-
       case "switch":
         console.log(editableQuestion);
         return (
@@ -708,6 +700,7 @@ const Inputs: FC<IInputs> = () => {
             fullWidth
             onClick={() => {
               onQuestionnaireEdit();
+              dispatch(setAddQuestionOpen(false));
             }}
           >
             Add Question

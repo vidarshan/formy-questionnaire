@@ -13,6 +13,7 @@ import { store } from "./store/store";
 import { Notifications } from "@mantine/notifications";
 import Protected from "./utils/PrivateRoute";
 import Questionnaire from "./pages/Questionnaire";
+import Paper from "./pages/Paper";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
@@ -47,6 +48,14 @@ root.render(
               element={
                 <Protected>
                   <Questionnaire />
+                </Protected>
+              }
+            />
+            <Route
+              path="/paper/:id"
+              element={
+                <Protected>
+                  <Paper />
                 </Protected>
               }
             />
