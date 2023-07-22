@@ -3,17 +3,10 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Conclusion from "./Conclusion";
-import SignUp from "./pages/SignUp";
-import Login from "./pages/Login";
 import { MantineProvider } from "@mantine/core";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { Notifications } from "@mantine/notifications";
-import Protected from "./utils/PrivateRoute";
-import Questionnaire from "./pages/Questionnaire";
-import Paper from "./pages/Paper";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
@@ -22,6 +15,7 @@ root.render(
     <Provider store={store}>
       <MantineProvider
         theme={{
+          colorScheme: "light",
           colors: {
             deep: ["#FD7E14"],
           },
@@ -30,37 +24,8 @@ root.render(
           },
         }}
       >
+        <App />
         <Notifications />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/register" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <Protected>
-                  <App />
-                </Protected>
-              }
-            />
-            <Route
-              path="/questionnaire/:id"
-              element={
-                <Protected>
-                  <Questionnaire />
-                </Protected>
-              }
-            />
-            <Route
-              path="/paper/:id"
-              element={
-                <Protected>
-                  <Paper />
-                </Protected>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
       </MantineProvider>
     </Provider>
   </React.StrictMode>
