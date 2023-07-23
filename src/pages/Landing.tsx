@@ -21,8 +21,11 @@ import {
   BsGlobeAsiaAustralia,
 } from "react-icons/bs";
 import { FaPersonRunning } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <Header bg="dark" sx={{ border: "none" }} height={60} p="xs">
@@ -30,7 +33,12 @@ const Landing = () => {
           <Text color={accent} weight={600} size={20}>
             Quizzy
           </Text>
-          <Button color={accent} size="sm" radius="xs">
+          <Button
+            color={accent}
+            size="sm"
+            radius="xs"
+            onClick={() => navigate("/login")}
+          >
             Start Building
           </Button>
         </Flex>

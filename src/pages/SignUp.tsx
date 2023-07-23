@@ -8,6 +8,8 @@ import {
   TextInput,
   PasswordInput,
   Alert,
+  Card,
+  Divider,
 } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
 import { BsReverseListColumnsReverse } from "react-icons/bs";
@@ -20,6 +22,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { useForm } from "@mantine/form";
 import { useAppSelector } from "../store/store";
+import { BiLock } from "react-icons/bi";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -56,12 +59,15 @@ const SignUp = () => {
   };
   return (
     <Flex h={"100vh"} align="center" justify="center">
-      <Box sx={{ minWidth: "500px" }}>
-        <Flex mb={10} justify="center">
-          <BsReverseListColumnsReverse size={30} />
+      <Card w={400} radius="xs" withBorder>
+        <Flex justify="center">
+          <BiLock size={30} />
         </Flex>
-        <Title order={2} weight={500} align="center">
-          Sign Up
+        <Title color="orange" order={4} weight={500} align="center">
+          Welcome
+        </Title>
+        <Title color="gray" order={5} weight={500} align="center">
+          Create your account
         </Title>
         {error && (
           <Alert variant="filled" radius="xs" mt={10} color="red">
@@ -103,14 +109,20 @@ const SignUp = () => {
             Register
           </Button>
         </form>
-        <Flex justify="center" mt={20}>
-          <Link to="/" onClick={() => dispatch(resetErrors())}>
-            <Anchor size="sm" color="deep.0" href="/signup">
-              Current User?
-            </Anchor>
-          </Link>
-        </Flex>
-      </Box>
+        <Divider my={20} color="gray" labelPosition="center" label="or" />
+        <Button
+          color="orange"
+          variant="subtle"
+          onClick={() => {
+            dispatch(resetErrors());
+            navigate("/login");
+          }}
+          radius="xs"
+          fullWidth
+        >
+          Have an account?
+        </Button>
+      </Card>
     </Flex>
   );
 };

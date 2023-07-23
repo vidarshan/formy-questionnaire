@@ -2,6 +2,9 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import GuardedRoute from "./GuardedRoute";
 import Landing from "../pages/Landing";
+import Login from "../pages/Login";
+import SignUp from "../pages/SignUp";
+import NotFound from "../pages/NotFound";
 
 interface AppRoutesProp {
   /**
@@ -13,6 +16,7 @@ interface AppRoutesProp {
 const ROOT_ROUTE = "/";
 const HOME_ROUTE = "/home";
 const LOGIN_ROUTE = "/login";
+const REGISTER_ROUTE = "/register";
 
 const AppRoutes = (props: AppRoutesProp): JSX.Element => {
   const { isAuthenticated } = props;
@@ -31,7 +35,8 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
         }
       >
         {/* Login Route */}
-        <Route path={LOGIN_ROUTE} element={<p>Login Page</p>} />
+        <Route path={LOGIN_ROUTE} element={<Login />} />
+        <Route path={REGISTER_ROUTE} element={<SignUp />} />
       </Route>
       {/* Authenticated Routes */}
       <Route
@@ -45,7 +50,7 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
         <Route path={HOME_ROUTE} element={<p>Home Page</p>} />
       </Route>
       {/* Not found Route */}
-      <Route path="*" element={<p>Page Not Found</p>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

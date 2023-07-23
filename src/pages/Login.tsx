@@ -7,6 +7,10 @@ import {
   TextInput,
   Alert,
   PasswordInput,
+  Grid,
+  Container,
+  Card,
+  Divider,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,6 +24,8 @@ import {
 } from "../store/slices/authSlices";
 import { AppDispatch } from "../../store";
 import { useAppSelector } from "../store/store";
+import { accent } from "../config/colors";
+import { BiLock } from "react-icons/bi";
 
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,21 +56,17 @@ const Login = () => {
     dispatch(getUserInfo());
   };
 
-  useEffect(() => {
-    dispatch(getUserInfo());
-    if (token !== null) {
-      navigate("/");
-    }
-  }, [dispatch, navigate, token]);
-
   return (
     <Flex h="100vh" align="center" justify="center">
-      <Box sx={{ minWidth: "500px" }}>
-        <Flex mb={10} justify="center">
-          <BsReverseListColumnsReverse size={30} color="#FD7E14" />
+      <Card w={400} radius="xs" withBorder>
+        <Flex justify="center">
+          <BiLock size={30} />
         </Flex>
-        <Title order={2} weight={500} align="center">
-          Login - Make home page
+        <Title color="orange" order={4} weight={500} align="center">
+          Welcome Back
+        </Title>
+        <Title color="gray" order={5} weight={500} align="center">
+          Login to your account
         </Title>
         {error && (
           <Alert variant="filled" radius="xs" mt={10} color="red">
@@ -79,6 +81,7 @@ const Login = () => {
             placeholder="Enter your email"
             label="Email"
             {...form.getInputProps("email")}
+            required
           />
           <PasswordInput
             mt={20}
@@ -88,10 +91,11 @@ const Login = () => {
             visible={visible}
             onVisibilityChange={() => setVisible(!visible)}
             {...form.getInputProps("password")}
+            required
           />
           <Button
+            color="orange"
             type="submit"
-            color="deep.0"
             mt={30}
             radius="xs"
             fullWidth
@@ -100,14 +104,20 @@ const Login = () => {
             Log In
           </Button>
         </form>
-        <Flex justify="center" mt={20}>
-          <Link to="/register" onClick={() => dispatch(resetErrors())}>
-            <Anchor size="sm" color="deep.0">
-              New User?
-            </Anchor>
-          </Link>
-        </Flex>
-      </Box>
+        <Divider my={20} color="gray" labelPosition="center" label="or" />
+        <Button
+          color="orange"
+          variant="subtle"
+          onClick={() => {
+            dispatch(resetErrors());
+            navigate("/register");
+          }}
+          radius="xs"
+          fullWidth
+        >
+          New User?
+        </Button>
+      </Card>
     </Flex>
   );
 };
