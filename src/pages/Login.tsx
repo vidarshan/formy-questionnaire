@@ -16,13 +16,13 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BsReverseListColumnsReverse } from "react-icons/bs";
 import { useForm } from "@mantine/form";
-import { useDispatch } from "react-redux";
 import {
   getUserInfo,
   logInUser,
   resetErrors,
 } from "../store/slices/authSlices";
 import { AppDispatch } from "../../store";
+import { useDispatch } from "react-redux";
 import { useAppSelector } from "../store/store";
 import { accent } from "../config/colors";
 import { BiLock } from "react-icons/bi";
@@ -57,7 +57,7 @@ const Login = () => {
   };
 
   return (
-    <Flex h="100vh" align="center" justify="center">
+    <Flex px={10} h="100vh" align="center" justify="center">
       <Card w={400} radius="xs" withBorder>
         <Flex justify="center">
           <BiLock size={30} />

@@ -28,6 +28,8 @@ interface QuestionnaireState {
   editLoading: boolean;
   editError: boolean;
   participantMode: boolean;
+  submitAnswerLoading: boolean;
+  submitAnswerError: boolean;
 }
 
 interface Option {
@@ -66,6 +68,14 @@ interface QuestionPayload {
   options: any[];
   response: string | null;
   required: boolean;
+}
+
+interface AnswerPayload {
+  id: string;
+  username: string | null;
+  userEmail: string | null;
+  title: string;
+  responses: any[];
 }
 
 interface QuesionnaireEditPayload {
@@ -134,6 +144,8 @@ const initialState: QuestionnaireState = {
   editLoading: false,
   editError: false,
   participantMode: true,
+  submitAnswerLoading: false,
+  submitAnswerError: false,
 };
 
 interface UserObj {
@@ -258,6 +270,26 @@ export const publishQuestionnaire = createAsyncThunk(
   }
 );
 
+export const submitAnswer = createAsyncThunk(
+  "submitAnswer",
+  async (answerPayload: AnswerPayload, { getState }) => {
+    const state: RootState = getState();
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.user.token}`,
+      },
+    };
+
+    const questionnaire = await axios.put(
+      `${process.env.REACT_APP_BE_BASE_URL}/api/answer/${answerPayload.id}`,
+      {},
+      config
+    );
+    return questionnaire?.data;
+  }
+);
+
 export const QuestionnaireSlice = createSlice({
   name: "Questionnaire",
   initialState,
@@ -361,6 +393,18 @@ export const QuestionnaireSlice = createSlice({
       state.editError = true;
       state.editLoading = false;
     });
+    builder.addCase(submitAnswer.fulfilled, (state) => {
+      state.submitAnswerLoading = false;
+      state.submitAnswerError = false;
+    });
+    builder.addCase(submitAnswer.pending, (state) => {
+      state.submitAnswerLoading = true;
+      state.submitAnswerError = false;
+    });
+    builder.addCase(submitAnswer.rejected, (state, action) => {
+      state.submitAnswerLoading = false;
+      state.submitAnswerError = true;
+    });
   },
 });
 
@@ -371,6 +415,7 @@ export const {
   resetQuestion,
   setQuestionType,
   setQuestionOptions,
-  setOption, resetQuestionOptions
+  setOption,
+  resetQuestionOptions,
 } = QuestionnaireSlice.actions;
 export default QuestionnaireSlice.reducer;

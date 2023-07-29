@@ -84,7 +84,7 @@ const Inputs: FC<IInputs> = () => {
         ],
       })
     );
-    dispatch(getQuestionnaire(id));
+    // dispatch(getQuestionnaire(id));
     resetState();
   };
 

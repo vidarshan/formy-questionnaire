@@ -7,31 +7,34 @@ import {
   Box,
   Button,
   Flex,
+  Header,
 } from "@mantine/core";
-import React from "react";
+import React, { useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { AppDispatch } from "../store/store";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../../hooks";
+import { getQuestionnaire } from "../store/slices/questionnaireSlice";
 
 const Paper = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { id = "" } = useParams();
+
+  const d = useAppSelector((state) => state.questionnaire);
+  console.log("🚀 ~ file: Paper.tsx:23 ~ Paper ~ d:", d);
+
+  useEffect(() => {
+    dispatch(getQuestionnaire('ddd'));
+  }, []);
+
   return (
-    <Container size="xl" p={0}>
-      <Box>
-        <Card radius="xs" withBorder>
-          <Box>
-            <Text size={24}>Paper 1</Text>
-            <Text c="dimmed" size={18}>
-              Description of the paper
-            </Text>
-            <Divider mt={10} />
-          </Box>
-          <Flex mt={20} direction="row" justify="flex-end">
-            <Button mr={10} color="orange" radius="xs" variant="outline">
-              Cancel
-            </Button>
-            <Button color="orange" radius="xs">
-              Submit Paper
-            </Button>
-          </Flex>
+    <Container fluid>
+      <Flex>
+        <Card w="100%" mt={10} radius="xs" withBorder>
+          <Title></Title>
         </Card>
-      </Box>
+      </Flex>
     </Container>
   );
 };

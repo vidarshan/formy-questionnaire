@@ -58,7 +58,7 @@ const SignUp = () => {
     dispatch(registerUser({ name, email, password, isAdmin: false }));
   };
   return (
-    <Flex h={"100vh"} align="center" justify="center">
+    <Flex px={10} h={"100vh"} align="center" justify="center">
       <Card w={400} radius="xs" withBorder>
         <Flex justify="center">
           <BiLock size={30} />

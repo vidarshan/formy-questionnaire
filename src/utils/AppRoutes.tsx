@@ -5,6 +5,10 @@ import Landing from "../pages/Landing";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import NotFound from "../pages/NotFound";
+import Home from "../pages/Home";
+import Questionnaire from "../pages/Questionnaire";
+import EditQuestionnaire from "../pages/EditQuestionnaire";
+import Paper from "../pages/Paper";
 
 interface AppRoutesProp {
   /**
@@ -15,6 +19,8 @@ interface AppRoutesProp {
 
 const ROOT_ROUTE = "/";
 const HOME_ROUTE = "/home";
+const QUESTIONNAIRE_ROUTE = "/questionnaire/:id";
+const ANSWER_ROUTE = "/questionnaire/answer/:id";
 const LOGIN_ROUTE = "/login";
 const REGISTER_ROUTE = "/register";
 
@@ -47,7 +53,9 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
           />
         }
       >
-        <Route path={HOME_ROUTE} element={<p>Home Page</p>} />
+        <Route path={HOME_ROUTE} element={<Home />} />
+        <Route path={QUESTIONNAIRE_ROUTE} element={<Questionnaire />} />
+        <Route path={ANSWER_ROUTE} element={<Paper />} />
       </Route>
       {/* Not found Route */}
       <Route path="*" element={<NotFound />} />

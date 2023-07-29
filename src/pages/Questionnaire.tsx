@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import Shell from "../components/Shell";
 import {
   ActionIcon,
+  Box,
   Button,
   Card,
   Checkbox,
   Container,
   Flex,
+  Header,
   Modal,
   NumberInput,
   Radio,
@@ -29,7 +31,7 @@ import {
 } from "../store/slices/questionnaireSlice";
 import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { Question } from "../interfaces/Question";
 import { setAddQuestionOpen } from "../store/slices/interfaceSlice";
@@ -150,7 +152,37 @@ const Questionnaire = () => {
   }, [dispatch, id]);
 
   return (
-    <Shell>
+    <>
+      <Header height={60}>
+        <Flex
+          h="100%"
+          mx={10}
+          direction="row"
+          justify="space-between"
+          align="center"
+        >
+          <Flex>
+            <Text color="orange" weight={700}>
+              Quizzy
+            </Text>
+            <Box ml={10}>
+              <Link to="/">
+                <Text color="dark" weight={700}>
+                  Dashboard
+                </Text>
+              </Link>
+            </Box>
+            <Box ml={10}>
+              <Link to="/">
+                {" "}
+                <Text color="dark" weight={700}>
+                  Questionnaires
+                </Text>
+              </Link>
+            </Box>
+          </Flex>
+        </Flex>
+      </Header>
       {getLoading ? (
         <Spinner
           title="Loading questionnaire data..."
@@ -162,12 +194,10 @@ const Questionnaire = () => {
           <Inputs />
           <Flex direction="row" justify="space-between" align="center">
             <Flex direction="column">
-              <Title order={2} color="orange">
+              <Title color="green" order={3}>
                 {questionnaire.title}
               </Title>
-              <Title order={4} color="gray">
-                {questionnaire.description}
-              </Title>
+              <Text color="gray">{questionnaire.description}</Text>
             </Flex>
             <Flex>
               {userId === questionnaire?.user && (
@@ -241,7 +271,7 @@ const Questionnaire = () => {
           </Flex>
         </Container>
       )}
-    </Shell>
+    </>
   );
 };
 
