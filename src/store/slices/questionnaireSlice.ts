@@ -15,6 +15,10 @@ interface QuestionnaireState {
   isOneTime: boolean;
   createLoading: boolean;
   createError: boolean;
+  allQuestionnaires: any[];
+  published: number;
+  unPublished: number;
+  all: number;
   questionnaires: any[];
   keyword: string;
   pages: number;
@@ -33,6 +37,8 @@ interface QuestionnaireState {
   participantMode: boolean;
   submitAnswerLoading: boolean;
   submitAnswerError: boolean;
+  getStatsLoading: boolean;
+  getStatsError: boolean;
 }
 
 interface Option {
@@ -103,6 +109,10 @@ const initialState: QuestionnaireState = {
   isOneTime: false,
   createLoading: false,
   createError: false,
+  allQuestionnaires: [],
+  published: 0,
+  unPublished: 0,
+  all: 0,
   questionnaires: [],
   keyword: "",
   pages: 1,
@@ -153,6 +163,8 @@ const initialState: QuestionnaireState = {
   participantMode: true,
   submitAnswerLoading: false,
   submitAnswerError: false,
+  getStatsLoading: false,
+  getStatsError: false,
 };
 
 interface UserObj {
@@ -298,11 +310,28 @@ export const submitAnswer = createAsyncThunk(
       answerPayload,
       config
     );
-    console.log(
-      "🚀 ~ file: questionnaireSlice.ts:289 ~ questionnaire:",
-      questionnaire
+    return questionnaire?.data;
+  }
+);
+
+export const getQuestionnaireStats = createAsyncThunk(
+  "getStats",
+  async (_, { getState }) => {
+    const state: RootState = getState();
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.user.token}`,
+      },
+    };
+
+    const questionnaireStats = await axios.get(
+      `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/stats`,
+      config
     );
-    return "questionnaire?.data";
+
+    console.log(questionnaireStats);
+    return questionnaireStats?.data;
   }
 );
 
@@ -373,6 +402,7 @@ export const QuestionnaireSlice = createSlice({
       state.questionnaires = action.payload.questionnaires;
       state.page = action.payload.page;
       state.pages = action.payload.pages;
+      state.keyword = action.payload.keyword;
       state.getAllError = false;
       state.getAllLoading = false;
     });
@@ -419,9 +449,24 @@ export const QuestionnaireSlice = createSlice({
       state.submitAnswerLoading = true;
       state.submitAnswerError = false;
     });
-    builder.addCase(submitAnswer.rejected, (state, action) => {
+    builder.addCase(submitAnswer.rejected, (state) => {
       state.submitAnswerLoading = false;
       state.submitAnswerError = true;
+    });
+    builder.addCase(getQuestionnaireStats.fulfilled, (state, action) => {
+      state.all = action.payload.all;
+      state.unPublished = action.payload.unPublished;
+      state.published = action.payload.published;
+      state.getStatsLoading = false;
+      state.getStatsError = false;
+    });
+    builder.addCase(getQuestionnaireStats.pending, (state) => {
+      state.getStatsLoading = true;
+      state.getStatsError = false;
+    });
+    builder.addCase(getQuestionnaireStats.rejected, (state) => {
+      state.getStatsLoading = false;
+      state.getStatsError = true;
     });
   },
 });

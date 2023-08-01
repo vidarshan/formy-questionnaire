@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  AppShell,
   Badge,
   Box,
   Button,
@@ -9,8 +8,8 @@ import {
   Flex,
   Grid,
   Header,
+  Loader,
   Modal,
-  Navbar,
   Pagination,
   Switch,
   Table,
@@ -20,36 +19,19 @@ import {
   Title,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
-import {
-  BiAlignLeft,
-  BiCog,
-  BiHomeAlt,
-  BiLinkAlt,
-  BiPaperclip,
-  BiUserCircle,
-} from "react-icons/bi";
-import Dashboard from "./Dashboard";
+import { BiLinkAlt } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
 import {
   createQuestionnaire,
+  getQuestionnaireStats,
   getQuestionnaires,
 } from "../store/slices/questionnaireSlice";
 import { useForm } from "@mantine/form";
 import moment from "moment";
-import {
-  BsEye,
-  BsFillCheckCircleFill,
-  BsFillEyeFill,
-  BsLink45Deg,
-  BsPencilSquare,
-  BsSearch,
-  BsXCircleFill,
-  BsXLg,
-  BsXSquareFill,
-} from "react-icons/bs";
+import { BsEye, BsPencilSquare, BsSearch, BsXLg } from "react-icons/bs";
 import { PiSpinnerBold } from "react-icons/pi";
 import Empty from "../components/Empty";
 
@@ -58,13 +40,16 @@ const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
-  const { questionnaires, page, pages, getAllLoading } = useAppSelector(
-    (state) => state.questionnaire
-  );
-  console.log(
-    "🚀 ~ file: Home.tsx:31 ~ Home ~ questionnaires:",
-    questionnaires
-  );
+  const {
+    questionnaires,
+    page,
+    pages,
+    getAllLoading,
+    all,
+    unPublished,
+    published,
+    getStatsLoading,
+  } = useAppSelector((state) => state.questionnaire);
 
   const form = useForm({
     initialValues: {
@@ -98,6 +83,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(getQuestionnaires({ keyword: "", pageNumber: 1 }));
+    dispatch(getQuestionnaireStats());
   }, [dispatch]);
 
   const rows = questionnaires.map((element) => (
@@ -280,9 +266,13 @@ const Home = () => {
                 <Title color="orange" order={3}>
                   Questionnaires
                 </Title>
-                <Title color="orange" order={3}>
-                  34
-                </Title>
+                {getAllLoading ? (
+                  <Loader color="orange" size="xs" />
+                ) : (
+                  <Title color="orange" order={3}>
+                    {all}
+                  </Title>
+                )}
               </Flex>
             </Card>
           </Grid.Col>
@@ -290,11 +280,15 @@ const Home = () => {
             <Card radius="xs" withBorder>
               <Flex direction="row" align="center" justify="space-between">
                 <Title color="green" order={3}>
-                  Open
+                  Published
                 </Title>
-                <Title color="green" order={3}>
-                  34
-                </Title>
+                {getStatsLoading ? (
+                  <Loader color="green" size="xs" />
+                ) : (
+                  <Title color="green" order={3}>
+                    {published}
+                  </Title>
+                )}
               </Flex>
             </Card>
           </Grid.Col>
@@ -302,11 +296,15 @@ const Home = () => {
             <Card radius="xs" withBorder>
               <Flex direction="row" align="center" justify="space-between">
                 <Title color="blue" order={3}>
-                  Closed
+                  Unpublished
                 </Title>
-                <Title color="blue" order={3}>
-                  34
-                </Title>
+                {getAllLoading ? (
+                  <Loader color="blue" size="xs" />
+                ) : (
+                  <Title color="blue" order={3}>
+                    {unPublished}
+                  </Title>
+                )}
               </Flex>
             </Card>
           </Grid.Col>
@@ -319,8 +317,7 @@ const Home = () => {
             mt={30}
             mb={10}
           >
-            <Text size={16}>Dashboard</Text>
-
+            <Title order={4}>Questionnaires</Title>
             <TextInput
               icon={
                 getAllLoading ? (
@@ -330,7 +327,7 @@ const Home = () => {
                 )
               }
               radius="xs"
-              placeholder="Search for questionnaire"
+              placeholder="Search questionnaires"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
