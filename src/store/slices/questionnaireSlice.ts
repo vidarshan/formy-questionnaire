@@ -240,6 +240,7 @@ export const createQuestionnaire = createAsyncThunk(
       config
     );
     dispatch(getQuestionnaires({ keyword: "", pageNumber: 1 }));
+    dispatch(getQuestionnaireStats());
     return authResponse?.data;
   }
 );

@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   Container,
+  CopyButton,
   Flex,
   Grid,
   Header,
@@ -31,15 +32,23 @@ import {
 } from "../store/slices/questionnaireSlice";
 import { useForm } from "@mantine/form";
 import moment from "moment";
-import { BsEye, BsPencilSquare, BsSearch, BsXLg } from "react-icons/bs";
+import {
+  BsEye,
+  BsPencilSquare,
+  BsPlusLg,
+  BsSearch,
+  BsXLg,
+} from "react-icons/bs";
 import { PiSpinnerBold } from "react-icons/pi";
 import Empty from "../components/Empty";
+import { useClipboard } from "@mantine/hooks";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const clipboard = useClipboard({ timeout: 500 });
   const {
     questionnaires,
     page,
@@ -97,7 +106,7 @@ const Home = () => {
           variant="outline"
           color={element.isPublic ? "green" : "dark"}
         >
-          {element.isPublic ? "Open" : "Specific Users"}
+          {element.isPublic ? "Allowed" : "Specific Users"}
         </Badge>
       </td>
       <td>
@@ -110,31 +119,27 @@ const Home = () => {
           {element.isPublished ? "Pubished" : "Not Published"}
         </Badge>
       </td>
-      <td>
-        <Badge
-          size="sm"
-          radius="xs"
-          variant="outline"
-          color={element.isOneTime ? "green" : "dark"}
-        >
-          {element.isOneTime ? "Single" : "Multiple"}
-        </Badge>
-      </td>
       <td>{element.responses?.length}</td>
       <td>{moment(element.createdAt).format("DD-MM-YY HH:MM a")}</td>
       <td>{moment(element.updatedAt).format("DD-MM-YY HH:MM a")}</td>
       <td>
-        <Button
-          color="blue"
-          size="xs"
-          radius="xs"
-          variant="outline"
-          onClick={() => navigate(`/questionnaire/answer/${element._id}`)}
-          leftIcon={<BiLinkAlt />}
-          disabled={!element.isPublished}
+        <CopyButton
+          value={`http://localhost:3000/questionnaire/answer/${element._id}`}
         >
-          Get Link
-        </Button>
+          {({ copied, copy }) => (
+            <Button
+              color="blue"
+              size="xs"
+              radius="xs"
+              variant={copied ? "filled" : "outline"}
+              onClick={copy}
+              leftIcon={<BiLinkAlt />}
+              disabled={!element.isPublished}
+            >
+              {copied ? "Copied" : "Get Link"}
+            </Button>
+          )}
+        </CopyButton>
       </td>
       <td>
         <ActionIcon
@@ -166,6 +171,8 @@ const Home = () => {
         opened={open}
         onClose={() => setOpen(false)}
         title="Create Questionnaire"
+        centered
+        closeOnClickOutside={false}
       >
         <form
           onSubmit={form.onSubmit((values: any) =>
@@ -188,27 +195,27 @@ const Home = () => {
             {...form.getInputProps("description")}
           />
           <Switch
-            mt={10}
+            my={20}
             color="deep.0"
-            label="Open questionnaire"
-            description="This allows your questionnaire to be answered with an account"
+            label="Anonymous"
+            description="This allows your questionnaire to be answered without participant's details"
             {...form.getInputProps("isPublic")}
-          />
-          <Switch
-            mt={10}
-            color="deep.0"
-            label="One time answer"
-            description="One response per one user"
-            {...form.getInputProps("isOneTime")}
           />
           <Grid mt={10}>
             <Grid.Col span={6}>
-              <Button variant="outline" color="deep.0" radius="xs" fullWidth>
+              <Button variant="outline" color="dark" radius="xs" fullWidth>
                 Cancel
               </Button>
             </Grid.Col>
             <Grid.Col span={6}>
-              <Button type="submit" color="deep.0" radius="xs" fullWidth>
+              <Button
+                variant="outline"
+                type="submit"
+                color="deep.0"
+                radius="xs"
+                leftIcon={<BsPlusLg />}
+                fullWidth
+              >
                 Create questionnaire
               </Button>
             </Grid.Col>
@@ -249,6 +256,7 @@ const Home = () => {
               size="xs"
               radius="xs"
               onClick={() => setOpen(true)}
+              leftIcon={<BsPlusLg />}
             >
               Create Questionnaire
             </Button>
@@ -347,9 +355,8 @@ const Home = () => {
                   <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Open</th>
+                    <th>Anonymous</th>
                     <th>Published</th>
-                    <th>Single Response</th>
                     <th>Responses</th>
                     <th>Created</th>
                     <th>Updated</th>
