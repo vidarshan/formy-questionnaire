@@ -72,10 +72,11 @@ interface QuestionPayload {
 
 interface AnswerPayload {
   id: string;
-  username: string | null;
-  userEmail: string | null;
+  name: string;
+  email: string;
   title: string;
-  responses: any[];
+  description: string;
+  questions: QuestionPayload[];
 }
 
 interface QuesionnaireEditPayload {
@@ -283,10 +284,14 @@ export const submitAnswer = createAsyncThunk(
 
     const questionnaire = await axios.put(
       `${process.env.REACT_APP_BE_BASE_URL}/api/answer/${answerPayload.id}`,
-      {},
+      answerPayload,
       config
     );
-    return questionnaire?.data;
+    console.log(
+      "🚀 ~ file: questionnaireSlice.ts:289 ~ questionnaire:",
+      questionnaire
+    );
+    return "questionnaire?.data";
   }
 );
 

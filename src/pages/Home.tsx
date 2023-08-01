@@ -40,10 +40,13 @@ import { useForm } from "@mantine/form";
 import moment from "moment";
 import {
   BsFillCheckCircleFill,
+  BsFillEyeFill,
   BsLink45Deg,
   BsSearch,
   BsXCircleFill,
+  BsXSquareFill,
 } from "react-icons/bs";
+import Empty from "../components/Empty";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -126,22 +129,35 @@ const Home = () => {
           variant="outline"
           onClick={() => navigate(`/questionnaire/answer/${element._id}`)}
           leftIcon={<BiLinkAlt />}
+          disabled={!element.isPublished}
         >
           Get Link
         </Button>
       </td>
       <td>
-        <Button
-          color="green"
-          size="xs"
-          radius="xs"
-          onClick={() => navigate(`/questionnaire/${element._id}`)}
-        >
-          View Responses
-        </Button>
+        {element.isPublished ? (
+          <Button
+            color="green"
+            size="xs"
+            radius="xs"
+            onClick={() => navigate(`/responses/${element._id}`)}
+            leftIcon={<BsFillEyeFill />}
+          >
+            View Responses
+          </Button>
+        ) : (
+          <Button
+            color="green"
+            size="xs"
+            radius="xs"
+            onClick={() => navigate(`/questionnaire/${element._id}`)}
+          >
+            Edit Questionnaire
+          </Button>
+        )}
       </td>
       <td>
-        <Button color="red" size="xs" radius="xs">
+        <Button color="red" size="xs" radius="xs" leftIcon={<BsXSquareFill />}>
           Close
         </Button>
       </td>
@@ -303,27 +319,33 @@ const Home = () => {
               placeholder="Search for questionnaire"
             />
           </Flex>
-          <Table withBorder highlightOnHover striped>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Open</th>
-                <th>Published</th>
-                <th>Single Response</th>
-                <th>Responses</th>
-                <th>Created</th>
-                <th>Updated</th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </Table>
-          <Flex direction="row" justify="flex-end">
-            <Pagination mt={18} radius="xs" total={10} />
-          </Flex>
+          {rows?.length ? (
+            <>
+              <Table withBorder highlightOnHover striped>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Open</th>
+                    <th>Published</th>
+                    <th>Single Response</th>
+                    <th>Responses</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+              </Table>
+              <Flex direction="row" justify="flex-end">
+                <Pagination mt={18} radius="xs" total={10} />
+              </Flex>
+            </>
+          ) : (
+            <Empty title="No Questionnaires" />
+          )}
         </Box>
       </Container>
     </>

@@ -9,6 +9,8 @@ import Home from "../pages/Home";
 import Questionnaire from "../pages/Questionnaire";
 import EditQuestionnaire from "../pages/EditQuestionnaire";
 import Paper from "../pages/Paper";
+import Completed from "../pages/Completed";
+import Responses from "../pages/Responses";
 
 interface AppRoutesProp {
   /**
@@ -23,6 +25,8 @@ const QUESTIONNAIRE_ROUTE = "/questionnaire/:id";
 const ANSWER_ROUTE = "/questionnaire/answer/:id";
 const LOGIN_ROUTE = "/login";
 const REGISTER_ROUTE = "/register";
+const COMPLETED_ROUTE = "/completed";
+const RESPONSES_ROUTE = "/responses/:id";
 
 const AppRoutes = (props: AppRoutesProp): JSX.Element => {
   const { isAuthenticated } = props;
@@ -56,6 +60,8 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
         <Route path={HOME_ROUTE} element={<Home />} />
         <Route path={QUESTIONNAIRE_ROUTE} element={<Questionnaire />} />
         <Route path={ANSWER_ROUTE} element={<Paper />} />
+        <Route path={COMPLETED_ROUTE} element={<Completed />} />
+        <Route path={RESPONSES_ROUTE} element={<Responses />} />
       </Route>
       {/* Not found Route */}
       <Route path="*" element={<NotFound />} />
