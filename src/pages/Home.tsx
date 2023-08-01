@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   AppShell,
+  Badge,
   Box,
   Button,
   Card,
@@ -39,21 +40,27 @@ import {
 import { useForm } from "@mantine/form";
 import moment from "moment";
 import {
+  BsEye,
   BsFillCheckCircleFill,
   BsFillEyeFill,
   BsLink45Deg,
+  BsPencilSquare,
   BsSearch,
   BsXCircleFill,
+  BsXLg,
   BsXSquareFill,
 } from "react-icons/bs";
+import { PiSpinnerBold } from "react-icons/pi";
 import Empty from "../components/Empty";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
-  const { questionnaires } = useAppSelector((state) => state.questionnaire);
+  const [search, setSearch] = useState("");
+  const { questionnaires, page, pages, getAllLoading } = useAppSelector(
+    (state) => state.questionnaire
+  );
   console.log(
     "🚀 ~ file: Home.tsx:31 ~ Home ~ questionnaires:",
     questionnaires
@@ -90,7 +97,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    dispatch(getQuestionnaires());
+    dispatch(getQuestionnaires({ keyword: "", pageNumber: 1 }));
   }, [dispatch]);
 
   const rows = questionnaires.map((element) => (
@@ -98,32 +105,41 @@ const Home = () => {
       <td>{element.title}</td>
       <td>{element.description}</td>
       <td>
-        {element.isPublic ? (
-          <BsFillCheckCircleFill color="green" />
-        ) : (
-          <BsXCircleFill color="red" />
-        )}
+        <Badge
+          size="sm"
+          radius="xs"
+          variant="outline"
+          color={element.isPublic ? "green" : "dark"}
+        >
+          {element.isPublic ? "Open" : "Specific Users"}
+        </Badge>
       </td>
       <td>
-        {element.isPublished ? (
-          <BsFillCheckCircleFill color="green" />
-        ) : (
-          <BsXCircleFill color="red" />
-        )}
+        <Badge
+          size="sm"
+          radius="xs"
+          variant="outline"
+          color={element.isPublished ? "green" : "dark"}
+        >
+          {element.isPublished ? "Pubished" : "Not Published"}
+        </Badge>
       </td>
       <td>
-        {element.isOneTime ? (
-          <BsFillCheckCircleFill color="green" />
-        ) : (
-          <BsXCircleFill color="red" />
-        )}
+        <Badge
+          size="sm"
+          radius="xs"
+          variant="outline"
+          color={element.isOneTime ? "green" : "dark"}
+        >
+          {element.isOneTime ? "Single" : "Multiple"}
+        </Badge>
       </td>
       <td>{element.responses?.length}</td>
       <td>{moment(element.createdAt).format("DD-MM-YY HH:MM a")}</td>
       <td>{moment(element.updatedAt).format("DD-MM-YY HH:MM a")}</td>
       <td>
         <Button
-          color="green"
+          color="blue"
           size="xs"
           radius="xs"
           variant="outline"
@@ -135,31 +151,23 @@ const Home = () => {
         </Button>
       </td>
       <td>
-        {element.isPublished ? (
-          <Button
-            color="green"
-            size="xs"
-            radius="xs"
-            onClick={() => navigate(`/responses/${element._id}`)}
-            leftIcon={<BsFillEyeFill />}
-          >
-            View Responses
-          </Button>
-        ) : (
-          <Button
-            color="green"
-            size="xs"
-            radius="xs"
-            onClick={() => navigate(`/questionnaire/${element._id}`)}
-          >
-            Edit Questionnaire
-          </Button>
-        )}
+        <ActionIcon
+          color="green"
+          variant="outline"
+          radius="xs"
+          onClick={() =>
+            element.isPublished
+              ? navigate(`/responses/${element._id}`)
+              : navigate(`/questionnaire/${element._id}`)
+          }
+        >
+          {element.isPublished ? <BsEye /> : <BsPencilSquare />}
+        </ActionIcon>
       </td>
       <td>
-        <Button color="red" size="xs" radius="xs" leftIcon={<BsXSquareFill />}>
-          Close
-        </Button>
+        <ActionIcon color="red" variant="outline" radius="xs">
+          <BsXLg />
+        </ActionIcon>
       </td>
     </tr>
   ));
@@ -314,9 +322,25 @@ const Home = () => {
             <Text size={16}>Dashboard</Text>
 
             <TextInput
-              icon={<BsSearch />}
+              icon={
+                getAllLoading ? (
+                  <PiSpinnerBold className="spinner" />
+                ) : (
+                  <BsSearch />
+                )
+              }
               radius="xs"
               placeholder="Search for questionnaire"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                dispatch(
+                  getQuestionnaires({
+                    keyword: e.target.value,
+                    pageNumber: page,
+                  })
+                );
+              }}
             />
           </Flex>
           {rows?.length ? (
@@ -340,7 +364,16 @@ const Home = () => {
                 <tbody>{rows}</tbody>
               </Table>
               <Flex direction="row" justify="flex-end">
-                <Pagination mt={18} radius="xs" total={10} />
+                <Pagination
+                  size="sm"
+                  value={page}
+                  mt={18}
+                  radius="xs"
+                  total={pages}
+                  onChange={(e) =>
+                    dispatch(getQuestionnaires({ keyword: "", pageNumber: e }))
+                  }
+                />
               </Flex>
             </>
           ) : (

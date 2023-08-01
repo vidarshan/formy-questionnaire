@@ -16,6 +16,9 @@ interface QuestionnaireState {
   createLoading: boolean;
   createError: boolean;
   questionnaires: any[];
+  keyword: string;
+  pages: number;
+  page: number;
   questionnaire: any | null;
   option: Option;
   options: Option[] | [];
@@ -101,6 +104,9 @@ const initialState: QuestionnaireState = {
   createLoading: false,
   createError: false,
   questionnaires: [],
+  keyword: "",
+  pages: 1,
+  page: 1,
   option: { id: uuidv4(), label: "", value: "" },
   options: [],
   editableQuestion: {
@@ -154,6 +160,11 @@ interface UserObj {
   password: string;
 }
 
+interface QuestionnaireFetch {
+  pageNumber: number;
+  keyword: string;
+}
+
 interface RegisterObj {
   name: string;
   email: string;
@@ -182,7 +193,7 @@ export const getQuestionnaire = createAsyncThunk(
 
 export const getQuestionnaires = createAsyncThunk(
   "getAll",
-  async (_, { getState }) => {
+  async (quesionnairesFetch: QuestionnaireFetch, { getState }) => {
     const state: RootState = getState();
 
     const config = {
@@ -193,7 +204,7 @@ export const getQuestionnaires = createAsyncThunk(
     };
 
     const authResponse = await axios.get(
-      `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire`,
+      `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire?keyword=${quesionnairesFetch.keyword}&pageNumber=${quesionnairesFetch.pageNumber}`,
       config
     );
     return authResponse?.data;
@@ -216,7 +227,7 @@ export const createQuestionnaire = createAsyncThunk(
       questionnaire,
       config
     );
-    dispatch(getQuestionnaires());
+    dispatch(getQuestionnaires({ keyword: "", pageNumber: 1 }));
     return authResponse?.data;
   }
 );
@@ -359,7 +370,9 @@ export const QuestionnaireSlice = createSlice({
       state.createLoading = false;
     });
     builder.addCase(getQuestionnaires.fulfilled, (state, action) => {
-      state.questionnaires = action.payload;
+      state.questionnaires = action.payload.questionnaires;
+      state.page = action.payload.page;
+      state.pages = action.payload.pages;
       state.getAllError = false;
       state.getAllLoading = false;
     });

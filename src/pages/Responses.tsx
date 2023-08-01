@@ -1,4 +1,16 @@
-import { Button, Checkbox, Flex, Modal, NumberInput, Radio, Rating, Switch, Table, Text, Textarea } from "@mantine/core";
+import {
+  Button,
+  Checkbox,
+  Flex,
+  Modal,
+  NumberInput,
+  Radio,
+  Rating,
+  Switch,
+  Table,
+  Text,
+  Textarea,
+} from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -7,14 +19,30 @@ import { AppDispatch } from "../../store";
 import { useAppSelector } from "../store/store";
 import moment from "moment";
 import Spinner from "../components/Spinner";
+import { QuestionnaireResponse, Response } from "../interfaces/Questionnaire";
+import { BsFillRecordFill } from "react-icons/bs";
 
 const Responses = () => {
   const { id = "" } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { questionnaire, getLoading } = useAppSelector((state) => state.questionnaire);
-  console.log("🚀 ~ file: Responses.tsx:15 ~ Responses ~ questionnaire:", questionnaire)
+  const { questionnaire, getLoading } = useAppSelector(
+    (state) => state.questionnaire
+  );
   const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState('');
+  const [selected, setSelected] = useState<QuestionnaireResponse>({
+    createdAt: "",
+    description: "",
+    isLinkValid: false,
+    isOneTime: false,
+    isPublic: false,
+    isPublished: true,
+    questions: [],
+    responses: [],
+    title: "",
+    updatedAt: "",
+    user: "",
+    _id: "",
+  });
 
   const rows = (questionnaire.responses || []).map((element: any) => (
     <tr key={element._id}>
@@ -25,23 +53,24 @@ const Responses = () => {
       <td>{element.questions?.length}</td>
       <td>{moment(element.createdAt).format("DD-MM-YY HH:MM a")}</td>
       <td>{moment(element.updatedAt).format("DD-MM-YY HH:MM a")}</td>
-      <td> <Button
-            color="green"
-            size="xs"
-            radius="xs"
-            onClick={()=>{
-              setSelectedId(element._id)
-              setOpen(true)
-            }}
-            
-          >
-            View Response
-          </Button></td>
+      <td>
+        {" "}
+        <Button
+          color="green"
+          size="xs"
+          radius="xs"
+          onClick={() => {
+            setSelected(element);
+            setOpen(true);
+          }}
+        >
+          View Response
+        </Button>
+      </td>
     </tr>
   ));
 
-
-  const renderSelectedInput = (question: any, index: number, user: string) => {
+  const renderSelectedInput = (question: any, index: number) => {
     console.log(
       "🚀 ~ file: Questionnaire.tsx:61 ~ renderSelectedInput ~ question:",
       question
@@ -54,7 +83,8 @@ const Responses = () => {
               key={question._id}
               radius="xs"
               label={question?.title}
-          
+              value={question?.values === null ? "" : question?.values}
+              readOnly
             />
           </>
         );
@@ -68,14 +98,19 @@ const Responses = () => {
               mt={10}
               min={0}
               label={question?.title}
-          
+              value={question?.values === null ? 0 : question?.values}
+              readOnly
             />
           </>
         );
       case "radio":
-        console.log(question);
         return (
-          <Radio.Group key={question._id} label={question.title} mt={10}>
+          <Radio.Group
+            value={question?.values === null ? "" : question?.values}
+            key={question._id}
+            label={question.title}
+            mt={10}
+          >
             {question.options.map((rd: any) => {
               return (
                 <Flex mt={5} mb={5}>
@@ -84,6 +119,7 @@ const Responses = () => {
                     mt={10}
                     value={rd.value}
                     label={rd.value}
+                    readOnly
                   />
                 </Flex>
               );
@@ -92,7 +128,12 @@ const Responses = () => {
         );
       case "checkbox":
         return (
-          <Checkbox.Group mt={10} key={question._id} label={question.title}>
+          <Checkbox.Group
+            value={question?.values === null ? "" : question?.values}
+            mt={10}
+            key={question._id}
+            label={question.title}
+          >
             {question.options.map((ch: any) => {
               return (
                 <Flex mt={5} mb={5}>
@@ -103,6 +144,7 @@ const Responses = () => {
                     value={ch.value}
                     label={ch.value}
                     radius="xs"
+                    readOnly
                   />
                 </Flex>
               );
@@ -110,26 +152,54 @@ const Responses = () => {
           </Checkbox.Group>
         );
       case "switch":
-        return <Switch color="deep.0" label={question.title} mt={10} />;
+        return (
+          <Switch
+            value={question?.values === null ? false : question?.values}
+            color="deep.0"
+            label={question.title}
+            mt={10}
+            readOnly
+          />
+        );
       case "rating":
-        return <Rating title={question.title} mt={10} />;
+        return (
+          <Rating
+            value={question?.values === null ? 0 : question?.values}
+            title={question.title}
+            mt={10}
+            readOnly
+          />
+        );
       default:
         <Textarea
+          value={question?.values === null ? "" : question?.values}
           placeholder="Your comment"
           label="Your comment"
           withAsterisk
+          disabled
         />;
     }
   };
   const renderResponseContent = () => {
-    // const responseContent = (questionnaire.responses || []).find((res:any)=> res._id === selectedId);
-    // console.log("🚀 ~ file: Responses.tsx:126 ~ renderResponseContent ~ responseContent:", responseContent)
-    return <>
-  {/* {(responseContent.questions || []).map((q:any)=>{
-    return <Text>ddd</Text>
-  })} */}
-    </>
-  }
+    console.log(
+      "🚀 ~ file: Responses.tsx:135 ~ renderResponseContent ~ selected:",
+      selected
+    );
+    const responseContent: Response = (questionnaire.responses || []).find(
+      (res: any) => res._id === selected._id
+    );
+    if (responseContent && responseContent.questions !== undefined) {
+      return (
+        <>
+          {(responseContent.questions || []).map((q: any) => {
+            return renderSelectedInput(q, q._id);
+          })}
+        </>
+      );
+    } else {
+      return <Text></Text>;
+    }
+  };
 
   useEffect(() => {
     dispatch(getQuestionnaire(id));
@@ -137,30 +207,52 @@ const Responses = () => {
 
   return (
     <>
-    {getLoading ? <Spinner title="Loading Questionnaire" color="red" size="lg"/> : <>
-    <Modal opened={open} onClose={() => {
-      setOpen(false);
-      setSelectedId('');
-    }} title="Authentication">
-       {renderResponseContent()}
-      </Modal>
-      <Table withBorder highlightOnHover striped>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Participant</th>
-            <th>Email</th>
-            <th>No. of questions</th>
-            <th>Created</th>
-            <th>Updated</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
-    </>}
-     
+      {getLoading ? (
+        <Spinner title="Loading Questionnaire" color="red" size="lg" />
+      ) : (
+        <>
+          <Modal
+            size="xl"
+            opened={open}
+            centered
+            onClose={() => {
+              setOpen(false);
+              setSelected({
+                createdAt: "",
+                description: "",
+                isLinkValid: false,
+                isOneTime: false,
+                isPublic: false,
+                isPublished: true,
+                questions: [],
+                responses: [],
+                title: "",
+                updatedAt: "",
+                user: "",
+                _id: "",
+              });
+            }}
+            title="Authentication"
+          >
+            {renderResponseContent()}
+          </Modal>
+          <Table withBorder highlightOnHover striped>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Participant</th>
+                <th>Email</th>
+                <th>No. of questions</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </Table>
+        </>
+      )}
     </>
   );
 };

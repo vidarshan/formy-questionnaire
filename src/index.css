@@ -5,6 +5,22 @@ html, div, h1, h2, h3, h4, h5, h6,p{
 
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+  }
+
+.spinner {
+  animation: spin infinite 2s linear;
+}
+
+
+
+
 body{
 margin: 0;
 }
@@ -12,3 +28,4 @@ margin: 0;
 a{
   text-decoration: none;
 }
+
