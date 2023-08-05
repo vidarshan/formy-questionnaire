@@ -19,11 +19,8 @@ import {
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  answerQuestion,
-  getQuestionnaire,
-  submitAnswer,
-} from "../store/slices/questionnaireSlice";
+import { answerQuestion } from "../store/slices/questionnaireSlice";
+import { submitAnswer } from "../store/slices/responseSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { useAppSelector } from "../store/store";
@@ -35,6 +32,7 @@ import {
   BsFillFilePersonFill,
 } from "react-icons/bs";
 import { useForm } from "@mantine/form";
+import { getResponseQuestionnaire } from "../store/slices/responseSlice";
 
 const Paper = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -157,7 +155,7 @@ const Paper = () => {
   const onSubmitAnswer = () => {
     console.log(editableQuestionnaire);
     let answerObj = {
-      id: editableQuestionnaire._id,
+      questionnaireId: editableQuestionnaire._id,
       name: form.values.name,
       email: form.values.email,
       title: editableQuestionnaire.title,
@@ -169,7 +167,7 @@ const Paper = () => {
   };
 
   useEffect(() => {
-    dispatch(getQuestionnaire(id));
+    dispatch(getResponseQuestionnaire(id));
   }, [dispatch, id]);
 
   return (

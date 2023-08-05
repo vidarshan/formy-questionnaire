@@ -33,6 +33,7 @@ import {
 import { useForm } from "@mantine/form";
 import moment from "moment";
 import {
+  BsArrowDownRight,
   BsEye,
   BsPencilSquare,
   BsPlusLg,
@@ -41,14 +42,12 @@ import {
 } from "react-icons/bs";
 import { PiSpinnerBold } from "react-icons/pi";
 import Empty from "../components/Empty";
-import { useClipboard } from "@mantine/hooks";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
-  const clipboard = useClipboard({ timeout: 500 });
   const {
     questionnaires,
     page,
@@ -260,7 +259,13 @@ const Home = () => {
             >
               Create Questionnaire
             </Button>
-            <Button color="red" ml={10} size="xs" radius="xs">
+            <Button
+              color="red"
+              ml={10}
+              size="xs"
+              radius="xs"
+              leftIcon={<BsArrowDownRight />}
+            >
               Log Out
             </Button>
           </Box>

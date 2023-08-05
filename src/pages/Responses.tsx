@@ -188,9 +188,12 @@ const Responses = () => {
     const responseContent: Response = (questionnaire.responses || []).find(
       (res: any) => res._id === selected._id
     );
+
     if (responseContent && responseContent.questions !== undefined) {
       return (
         <>
+          {" "}
+          <Text>dddd</Text>
           {(responseContent.questions || []).map((q: any) => {
             return renderSelectedInput(q, q._id);
           })}
@@ -212,7 +215,7 @@ const Responses = () => {
       ) : (
         <>
           <Modal
-            size="xl"
+            size="md"
             opened={open}
             centered
             onClose={() => {
@@ -232,7 +235,8 @@ const Responses = () => {
                 _id: "",
               });
             }}
-            title="Authentication"
+            title="Response"
+            closeOnClickOutside={false}
           >
             {renderResponseContent()}
           </Modal>

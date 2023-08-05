@@ -4,12 +4,14 @@ import thunkMiddleware from "redux-thunk";
 import { UserSlice } from "./slices/authSlices";
 import { QuestionnaireSlice } from "./slices/questionnaireSlice";
 import { InterfaceSlice } from "./slices/interfaceSlice";
+import { ResponseSlice } from "./slices/responseSlice";
 
 export const store = configureStore({
   reducer: {
     user: UserSlice.reducer,
     questionnaire: QuestionnaireSlice.reducer,
     interface: InterfaceSlice.reducer,
+    response: ResponseSlice.reducer,
   },
   middleware: [thunkMiddleware],
 });

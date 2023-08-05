@@ -35,8 +35,6 @@ interface QuestionnaireState {
   editLoading: boolean;
   editError: boolean;
   participantMode: boolean;
-  submitAnswerLoading: boolean;
-  submitAnswerError: boolean;
   getStatsLoading: boolean;
   getStatsError: boolean;
 }
@@ -69,7 +67,7 @@ interface CreateQuestionnairePayload {
   questions: any[];
 }
 
-interface QuestionPayload {
+export interface QuestionPayload {
   title: string;
   type: string | null;
   values: string | number | null;
@@ -77,15 +75,6 @@ interface QuestionPayload {
   options: any[];
   response: string | null;
   required: boolean;
-}
-
-interface AnswerPayload {
-  id: string;
-  name: string;
-  email: string;
-  title: string;
-  description: string;
-  questions: QuestionPayload[];
 }
 
 interface QuesionnaireEditPayload {
@@ -161,8 +150,6 @@ const initialState: QuestionnaireState = {
   editLoading: false,
   editError: false,
   participantMode: true,
-  submitAnswerLoading: false,
-  submitAnswerError: false,
   getStatsLoading: false,
   getStatsError: false,
 };
@@ -194,7 +181,6 @@ export const getQuestionnaire = createAsyncThunk(
         Authorization: `Bearer ${state?.user?.token}`,
       },
     };
-
     const questionnaireResponse = await axios.get(
       `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/${id}`,
       config
@@ -289,26 +275,6 @@ export const publishQuestionnaire = createAsyncThunk(
     const questionnaire = await axios.put(
       `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/${id}/publish`,
       {},
-      config
-    );
-    return questionnaire?.data;
-  }
-);
-
-export const submitAnswer = createAsyncThunk(
-  "submitAnswer",
-  async (answerPayload: AnswerPayload, { getState }) => {
-    const state: RootState = getState();
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${state.user.token}`,
-      },
-    };
-
-    const questionnaire = await axios.put(
-      `${process.env.REACT_APP_BE_BASE_URL}/api/answer/${answerPayload.id}`,
-      answerPayload,
       config
     );
     return questionnaire?.data;
@@ -441,18 +407,6 @@ export const QuestionnaireSlice = createSlice({
     builder.addCase(publishQuestionnaire.rejected, (state, action) => {
       state.editError = true;
       state.editLoading = false;
-    });
-    builder.addCase(submitAnswer.fulfilled, (state) => {
-      state.submitAnswerLoading = false;
-      state.submitAnswerError = false;
-    });
-    builder.addCase(submitAnswer.pending, (state) => {
-      state.submitAnswerLoading = true;
-      state.submitAnswerError = false;
-    });
-    builder.addCase(submitAnswer.rejected, (state) => {
-      state.submitAnswerLoading = false;
-      state.submitAnswerError = true;
     });
     builder.addCase(getQuestionnaireStats.fulfilled, (state, action) => {
       state.all = action.payload.all;
