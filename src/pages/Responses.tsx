@@ -1,26 +1,38 @@
 import {
+  Alert,
+  Box,
   Button,
   Checkbox,
+  Container,
   Flex,
+  Header,
   Modal,
   NumberInput,
+  Pagination,
   Radio,
   Rating,
   Switch,
   Table,
   Text,
+  TextInput,
   Textarea,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getQuestionnaire } from "../store/slices/questionnaireSlice";
 import { AppDispatch } from "../../store";
 import { useAppSelector } from "../store/store";
 import moment from "moment";
 import Spinner from "../components/Spinner";
 import { QuestionnaireResponse, Response } from "../interfaces/Questionnaire";
-import { BsFillRecordFill } from "react-icons/bs";
+import {
+  BsArrowDownRight,
+  BsFillRecordFill,
+  BsPersonCircle,
+  BsPlusLg,
+} from "react-icons/bs";
+import { usePagination } from "@mantine/hooks";
 
 const Responses = () => {
   const { id = "" } = useParams();
@@ -28,6 +40,8 @@ const Responses = () => {
   const { questionnaire, getLoading } = useAppSelector(
     (state) => state.questionnaire
   );
+  const pagination = usePagination({ total: 10, initialPage: 1 });
+
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<QuestionnaireResponse>({
     createdAt: "",
@@ -42,6 +56,8 @@ const Responses = () => {
     updatedAt: "",
     user: "",
     _id: "",
+    name: "",
+    email: "",
   });
 
   const rows = (questionnaire.responses || []).map((element: any) => (
@@ -59,6 +75,7 @@ const Responses = () => {
           color="green"
           size="xs"
           radius="xs"
+          variant="outline"
           onClick={() => {
             setSelected(element);
             setOpen(true);
@@ -71,10 +88,6 @@ const Responses = () => {
   ));
 
   const renderSelectedInput = (question: any, index: number) => {
-    console.log(
-      "🚀 ~ file: Questionnaire.tsx:61 ~ renderSelectedInput ~ question:",
-      question
-    );
     switch (question?.type) {
       case "text":
         return (
@@ -193,7 +206,29 @@ const Responses = () => {
       return (
         <>
           {" "}
-          <Text>dddd</Text>
+          <Alert
+            mb={10}
+            icon={<BsPersonCircle />}
+            title="Personal Details"
+            color="indigo"
+            variant="outline"
+            radius="xs"
+          >
+            <>
+              <TextInput
+                value={selected.name === null ? "" : selected.name}
+                label="Participant Name"
+                size="xs"
+                readOnly
+              />
+              <TextInput
+                value={selected.email === null ? "" : selected.email}
+                label="Participant Email"
+                size="xs"
+                readOnly
+              />
+            </>
+          </Alert>
           {(responseContent.questions || []).map((q: any) => {
             return renderSelectedInput(q, q._id);
           })}
@@ -233,6 +268,8 @@ const Responses = () => {
                 updatedAt: "",
                 user: "",
                 _id: "",
+                name: "",
+                email: "",
               });
             }}
             title="Response"
@@ -240,21 +277,73 @@ const Responses = () => {
           >
             {renderResponseContent()}
           </Modal>
-          <Table withBorder highlightOnHover striped>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Participant</th>
-                <th>Email</th>
-                <th>No. of questions</th>
-                <th>Created</th>
-                <th>Updated</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </Table>
+          <Header height={60}>
+            <Flex
+              h="100%"
+              mx={10}
+              direction="row"
+              justify="space-between"
+              align="center"
+            >
+              <Flex>
+                <Text color="orange" weight={700}>
+                  Quizzy
+                </Text>
+                <Box ml={10}>
+                  <Link to="/">
+                    <Text color="dark" weight={700}>
+                      Dashboard
+                    </Text>
+                  </Link>
+                </Box>
+                <Box ml={10}>
+                  <Link to="/">
+                    {" "}
+                    <Text color="dark" weight={700}>
+                      Questionnaires
+                    </Text>
+                  </Link>
+                </Box>
+              </Flex>
+              <Box>
+                <Button
+                  color="orange"
+                  size="xs"
+                  radius="xs"
+                  onClick={() => setOpen(true)}
+                  leftIcon={<BsPlusLg />}
+                >
+                  Create Questionnaire
+                </Button>
+                <Button
+                  color="red"
+                  ml={10}
+                  size="xs"
+                  radius="xs"
+                  leftIcon={<BsArrowDownRight />}
+                >
+                  Log Out
+                </Button>
+              </Box>
+            </Flex>
+          </Header>
+          <Container mt={30} size="xl">
+            <Table withBorder highlightOnHover striped>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Participant</th>
+                  <th>Email</th>
+                  <th>No. of questions</th>
+                  <th>Created</th>
+                  <th>Updated</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>{rows}</tbody>
+            </Table>
+          </Container>
         </>
       )}
     </>

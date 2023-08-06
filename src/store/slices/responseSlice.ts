@@ -8,6 +8,8 @@ interface ResponseState {
   paper: any | null;
   getLoading: boolean;
   getError: boolean;
+  submitAnswerSuccess: string;
+  detailsConfirmed: boolean;
   submitAnswerLoading: boolean;
   submitAnswerError: boolean;
 }
@@ -37,6 +39,8 @@ const initialState: ResponseState = {
   },
   getLoading: false,
   getError: false,
+  submitAnswerSuccess: "initial",
+  detailsConfirmed: false,
   submitAnswerLoading: false,
   submitAnswerError: false,
 };
@@ -67,7 +71,32 @@ export const submitAnswer = createAsyncThunk(
 export const ResponseSlice = createSlice({
   name: "Response",
   initialState,
-  reducers: {},
+  reducers: {
+    resetResponseState(state) {
+      state.paper = {
+        _id: "",
+        title: "",
+        description: "",
+        isLinkValid: false,
+        isOneTime: false,
+        isPublic: false,
+        isPublished: false,
+        questions: [],
+        user: "",
+        createdAt: "",
+        updatedAt: "",
+      };
+      state.getLoading = false;
+      state.getError = false;
+      state.submitAnswerSuccess = "initial";
+      state.detailsConfirmed = false;
+      state.submitAnswerLoading = false;
+      state.submitAnswerError = false;
+    },
+    confirmDetails(state, action) {
+      state.detailsConfirmed = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getResponseQuestionnaire.fulfilled, (state, action) => {
       state.paper = action.payload;
@@ -83,6 +112,7 @@ export const ResponseSlice = createSlice({
       state.getLoading = false;
     });
     builder.addCase(submitAnswer.fulfilled, (state) => {
+      state.submitAnswerSuccess = "submitted";
       state.submitAnswerLoading = false;
       state.submitAnswerError = false;
     });
@@ -97,5 +127,5 @@ export const ResponseSlice = createSlice({
   },
 });
 
-export const {} = ResponseSlice.actions;
+export const { resetResponseState, confirmDetails } = ResponseSlice.actions;
 export default ResponseSlice.reducer;

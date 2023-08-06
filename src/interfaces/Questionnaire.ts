@@ -43,4 +43,6 @@ export interface QuestionnaireResponse {
   updatedAt: string;
   user: string;
   _id: string;
+  name: string;
+  email: string;
 }

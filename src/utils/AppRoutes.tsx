@@ -36,6 +36,7 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
       {/* Unguarded Routes */}
       <Route path={ROOT_ROUTE} element={<Landing />} />
       <Route path={ANSWER_ROUTE} element={<Paper />} />
+      <Route path={COMPLETED_ROUTE} element={<Completed />} />
       {/* Non-Authenticated Routes: accessible only if user in not authenticated */}
       <Route
         element={
@@ -60,7 +61,6 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
       >
         <Route path={HOME_ROUTE} element={<Home />} />
         <Route path={QUESTIONNAIRE_ROUTE} element={<Questionnaire />} />
-        <Route path={COMPLETED_ROUTE} element={<Completed />} />
         <Route path={RESPONSES_ROUTE} element={<Responses />} />
       </Route>
       {/* Not found Route */}
