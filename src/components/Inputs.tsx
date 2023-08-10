@@ -37,6 +37,8 @@ import {
   setAddAnswerOpen,
 } from "../store/slices/interfaceSlice";
 import { v4 as uuidv4 } from "uuid";
+import { Bs123, BsFillPlusCircleFill, BsJustify } from "react-icons/bs";
+import { useMediaQuery } from "@mantine/hooks";
 
 const Inputs: FC<IInputs> = () => {
   const { id = "" } = useParams();
@@ -48,6 +50,7 @@ const Inputs: FC<IInputs> = () => {
     (state) => state.interface
   );
   const [answerEnabled, setAnswerEnabled] = useState(false);
+  const extraSmallScreen = useMediaQuery("(min-width: 540px)");
 
   const resetState = () => {
     dispatch(resetQuestion());
@@ -84,7 +87,6 @@ const Inputs: FC<IInputs> = () => {
         ],
       })
     );
-    // dispatch(getQuestionnaire(id));
     resetState();
   };
 
@@ -94,7 +96,9 @@ const Inputs: FC<IInputs> = () => {
         return (
           <>
             <Card mt={20} radius="xs" withBorder>
-              <Title order={4}>Question Preview</Title>
+              <Text size="sm" weight={500} color="dimmed">
+                Question Preview
+              </Text>
               <Textarea
                 value={
                   editableQuestion.answers === null
@@ -103,15 +107,20 @@ const Inputs: FC<IInputs> = () => {
                 }
                 readOnly
                 radius="xs"
+                size="xs"
                 mt={10}
+                icon={<BsJustify />}
                 label={editableQuestion.title}
               />
             </Card>
             <Card mt={20} radius="xs" withBorder>
-              <Title order={4}>Set Details</Title>
+              <Text size="sm" weight={500} color="dimmed">
+                Set Details
+              </Text>
               <TextInput
                 mt={10}
                 radius="xs"
+                size="xs"
                 label="Input title"
                 placeholder="Question title"
                 onChange={(e) =>
@@ -121,17 +130,6 @@ const Inputs: FC<IInputs> = () => {
                 }
                 withAsterisk
               />
-              <Checkbox
-                mt={20}
-                mb={20}
-                radius="xs"
-                color="pink"
-                checked={addAnswerOpen}
-                label="Add an answer to this question"
-                onChange={() => {
-                  dispatch(setAddAnswerOpen(!addAnswerOpen));
-                }}
-              />
               {addAnswerOpen && (
                 <Textarea
                   value={
@@ -140,8 +138,10 @@ const Inputs: FC<IInputs> = () => {
                       : editableQuestion.values
                   }
                   radius="xs"
+                  size="xs"
                   mt={10}
                   label={editableQuestion.title}
+                  icon={<BsJustify />}
                   onChange={(e) =>
                     dispatch(
                       setQuestion({
@@ -167,6 +167,7 @@ const Inputs: FC<IInputs> = () => {
                 radius="xs"
                 readOnly
                 mt={10}
+                icon={<Bs123 />}
                 label={editableQuestion?.title}
               />
             </Card>
@@ -176,6 +177,7 @@ const Inputs: FC<IInputs> = () => {
                 mt={10}
                 value={editableQuestion?.title}
                 radius="xs"
+                size="xs"
                 label="Input title"
                 placeholder="Question title"
                 onChange={(e) =>
@@ -186,18 +188,6 @@ const Inputs: FC<IInputs> = () => {
                     })
                   )
                 }
-                withAsterisk
-              />
-              <Checkbox
-                mt={20}
-                mb={20}
-                radius="xs"
-                color="pink"
-                checked={addAnswerOpen}
-                label="Add an answer to this question"
-                onChange={() => {
-                  dispatch(setAddAnswerOpen(!addAnswerOpen));
-                }}
               />
               {addAnswerOpen && (
                 <NumberInput
@@ -208,6 +198,7 @@ const Inputs: FC<IInputs> = () => {
                   }
                   mt={10}
                   label={editableQuestion?.title}
+                  icon={<Bs123 />}
                   onChange={(e) => {
                     dispatch(
                       setQuestion({
@@ -259,6 +250,8 @@ const Inputs: FC<IInputs> = () => {
                 mt={10}
                 label="Input title"
                 placeholder="Question title"
+                size="xs"
+                radius="xs"
                 value={editableQuestion?.title}
                 onChange={(e) =>
                   dispatch(
@@ -270,10 +263,12 @@ const Inputs: FC<IInputs> = () => {
                 }
               />
               <Grid mt={20}>
-                <Grid.Col span={10}>
+                <Grid.Col span={9}>
                   <TextInput
                     placeholder="New radio input"
                     value={option.value}
+                    radius="xs"
+                    size="xs"
                     onChange={(e) =>
                       dispatch(
                         setOption({
@@ -285,13 +280,15 @@ const Inputs: FC<IInputs> = () => {
                     }
                   />
                 </Grid.Col>
-                <Grid.Col span={2}>
+                <Grid.Col span={3}>
                   <Button
                     variant="outline"
-                    color="deep.0"
+                    color="green"
                     radius="xs"
+                    size="xs"
                     fullWidth
                     disabled={option.value === ""}
+                    leftIcon={<BsFillPlusCircleFill />}
                     onClick={() => {
                       if (option.value !== "") {
                         dispatch(setQuestionOptions());
@@ -309,17 +306,6 @@ const Inputs: FC<IInputs> = () => {
                   </Button>
                 </Grid.Col>
               </Grid>
-              <Checkbox
-                mt={20}
-                mb={20}
-                radius="xs"
-                color="pink"
-                label="Add an answer to this question"
-                checked={addAnswerOpen}
-                onChange={() => {
-                  dispatch(setAddAnswerOpen(!addAnswerOpen));
-                }}
-              />
               {addAnswerOpen && (
                 <Radio.Group
                   value={editableQuestion.values}
@@ -394,6 +380,8 @@ const Inputs: FC<IInputs> = () => {
                 mt={10}
                 label="Input title"
                 placeholder="Question title"
+                size="xs"
+                radius="xs"
                 value={editableQuestion?.title}
                 onChange={(e) =>
                   dispatch(
@@ -405,10 +393,12 @@ const Inputs: FC<IInputs> = () => {
                 }
               />
               <Grid mt={20}>
-                <Grid.Col span={10}>
+                <Grid.Col span={9}>
                   <TextInput
                     placeholder="New checkbox"
                     value={option.value}
+                    size="xs"
+                    radius="xs"
                     onChange={(e) =>
                       dispatch(
                         setOption({
@@ -420,13 +410,15 @@ const Inputs: FC<IInputs> = () => {
                     }
                   />
                 </Grid.Col>
-                <Grid.Col span={2}>
+                <Grid.Col span={3}>
                   <Button
                     variant="outline"
-                    color="deep.0"
+                    color="green"
+                    size="xs"
                     radius="xs"
                     fullWidth
                     disabled={option.value === ""}
+                    leftIcon={<BsFillPlusCircleFill />}
                     onClick={() => {
                       if (option.value !== "") {
                         dispatch(setQuestionOptions());
@@ -444,17 +436,6 @@ const Inputs: FC<IInputs> = () => {
                   </Button>
                 </Grid.Col>
               </Grid>
-              <Checkbox
-                mt={20}
-                mb={20}
-                radius="xs"
-                color="pink"
-                checked={addAnswerOpen}
-                label="Add an answer to this question"
-                onChange={() => {
-                  dispatch(setAddAnswerOpen(!addAnswerOpen));
-                }}
-              />
               {addAnswerOpen && (
                 <Checkbox.Group
                   mt={10}
@@ -512,6 +493,7 @@ const Inputs: FC<IInputs> = () => {
             <Card mt={20} radius="xs" withBorder>
               <Title order={4}>Set Details</Title>
               <TextInput
+                size="xs"
                 value={editableQuestion.title}
                 onChange={(e) =>
                   dispatch(
@@ -526,16 +508,6 @@ const Inputs: FC<IInputs> = () => {
                 label="Input title"
                 placeholder="Question title"
               />
-              <Checkbox
-                mt={20}
-                mb={20}
-                radius="xs"
-                color="dark"
-                checked={answerEnabled}
-                label="Add an answer to this question"
-                onChange={() => setAnswerEnabled(!answerEnabled)}
-              />
-
               {answerEnabled && (
                 <Switch
                   color="deep.0"
@@ -584,6 +556,7 @@ const Inputs: FC<IInputs> = () => {
               <Title order={4}>Set Details</Title>
               <TextInput
                 mt={10}
+                size="xs"
                 value={editableQuestion.title}
                 onChange={(e) =>
                   dispatch(
@@ -595,15 +568,6 @@ const Inputs: FC<IInputs> = () => {
                 }
                 label="Input title"
                 placeholder="Question title"
-              />
-              <Checkbox
-                mt={20}
-                mb={20}
-                radius="xs"
-                color="dark"
-                checked={answerEnabled}
-                label="Add an answer to this question"
-                onChange={() => setAnswerEnabled(!answerEnabled)}
               />
               {answerEnabled && (
                 <Flex direction="column">
@@ -636,6 +600,7 @@ const Inputs: FC<IInputs> = () => {
         <Textarea
           placeholder="Your comment"
           label="Your comment"
+          icon={<BsJustify />}
           withAsterisk
         />;
     }
@@ -644,7 +609,7 @@ const Inputs: FC<IInputs> = () => {
   return (
     <Modal
       h={300}
-      size="lg"
+      size={!extraSmallScreen ? "xs" : "md"}
       opened={addQuestionOpen}
       onClose={() => {
         dispatch(setAddQuestionOpen(false));
@@ -657,10 +622,10 @@ const Inputs: FC<IInputs> = () => {
       centered
     >
       <Select
+        size="xs"
         radius="xs"
-        color="deep.0"
         value={editableQuestion.type}
-        label="Question Input Type"
+        label="Question Type"
         placeholder="Pick one"
         dropdownPosition="bottom"
         onChange={(v) => {
@@ -678,26 +643,15 @@ const Inputs: FC<IInputs> = () => {
       />
       {renderSelectedInput(editableQuestion.type)}
       <Grid mt={10}>
-        <Grid.Col span={6}>
-          <Button
-            onClick={() => {
-              dispatch(setAddQuestionOpen(false));
-              resetState();
-            }}
-            variant="outline"
-            color="pink"
-            radius="xs"
-            fullWidth
-          >
-            Cancel
-          </Button>
-        </Grid.Col>
-        <Grid.Col span={6}>
+        <Grid.Col span={12}>
           <Button
             disabled={editableQuestion.title === ""}
-            color="pink"
+            color="green"
             radius="xs"
+            size="xs"
+            variant="outline"
             fullWidth
+            leftIcon={<BsFillPlusCircleFill />}
             onClick={() => {
               onQuestionnaireEdit();
               dispatch(setAddQuestionOpen(false));

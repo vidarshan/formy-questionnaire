@@ -31,7 +31,7 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
-  const { loading, error, token } = useAppSelector((state) => state.user);
+  const { loading, error } = useAppSelector((state) => state.user);
 
   interface IValues {
     email: string;
@@ -62,10 +62,10 @@ const Login = () => {
         <Flex justify="center">
           <BiLock size={30} />
         </Flex>
-        <Title color="orange" order={4} weight={500} align="center">
+        <Title color="grape" order={4} weight={500} align="center">
           Welcome Back
         </Title>
-        <Title color="gray" order={5} weight={500} align="center">
+        <Title order={5} weight={500} align="center">
           Login to your account
         </Title>
         {error && (
@@ -94,7 +94,7 @@ const Login = () => {
             required
           />
           <Button
-            color="orange"
+            color="grape"
             type="submit"
             mt={30}
             radius="xs"
@@ -106,8 +106,8 @@ const Login = () => {
         </form>
         <Divider my={20} color="gray" labelPosition="center" label="or" />
         <Button
-          color="orange"
-          variant="subtle"
+          color="gray"
+          variant="outline"
           onClick={() => {
             dispatch(resetErrors());
             navigate("/register");

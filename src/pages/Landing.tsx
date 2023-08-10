@@ -28,7 +28,7 @@ const Landing = () => {
 
   return (
     <>
-      <Header bg="dark" sx={{ border: "none" }} height={60} p="xs">
+      <Header sx={{ border: "none" }} height={60} p="xs">
         <Flex justify="space-between" align="center" h="100%">
           <Text color={accent} weight={600} size={20}>
             Quizzy
@@ -43,7 +43,7 @@ const Landing = () => {
           </Button>
         </Flex>
       </Header>
-      <Paper bg="dark" radius="xs">
+      {/* <Paper bg="dark" radius="xs">
         <Flex
           pt={100}
           pb={100}
@@ -68,7 +68,7 @@ const Landing = () => {
             Sign Up and Build Questionnaires Now
           </Button>
         </Flex>
-      </Paper>
+      </Paper> */}
       <Container pb={50} size="xl">
         <Title align="center" mt={20} mb={20}>
           Features

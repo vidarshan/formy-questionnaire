@@ -20,7 +20,7 @@ import {
   Title,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
-import { BiLinkAlt } from "react-icons/bi";
+import { BiLinkAlt, BiX } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { AppDispatch } from "../../store";
@@ -29,12 +29,17 @@ import {
   createQuestionnaire,
   getQuestionnaireStats,
   getQuestionnaires,
+  unPublishQuestionnaire,
 } from "../store/slices/questionnaireSlice";
 import { useForm } from "@mantine/form";
 import moment from "moment";
 import {
   BsArrowDownRight,
   BsEye,
+  BsFileEarmarkLock,
+  BsFillFileXFill,
+  BsFillPlusCircleFill,
+  BsLock,
   BsPencilSquare,
   BsPlusLg,
   BsSearch,
@@ -42,12 +47,19 @@ import {
 } from "react-icons/bs";
 import { PiSpinnerBold } from "react-icons/pi";
 import Empty from "../components/Empty";
+import NavBar from "../components/NavBar";
+import { useMediaQuery } from "@mantine/hooks";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [unPublishOpen, setUnPublishOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState("");
+  const smallScreen = useMediaQuery("(min-width: 990px)");
+  const extraSmallScreen = useMediaQuery("(min-width: 540px)");
+
   const {
     questionnaires,
     page,
@@ -96,55 +108,99 @@ const Home = () => {
 
   const rows = questionnaires.map((element) => (
     <tr key={element._id}>
-      <td>{element.title}</td>
-      <td>{element.description}</td>
+      <td>
+        <Text size="xs">{element.title}</Text>
+      </td>
+      {smallScreen && (
+        <td>
+          <Text size="xs">{element.description}</Text>
+        </td>
+      )}
+
       <td>
         <Badge
-          size="sm"
+          size={!extraSmallScreen ? "xs" : "sm"}
           radius="xs"
           variant="outline"
-          color={element.isPublic ? "green" : "dark"}
+          color={element.isPublic ? "green" : "blue"}
         >
-          {element.isPublic ? "Allowed" : "Specific Users"}
+          {element.isPublic
+            ? `${smallScreen ? "Allowed" : "All"}`
+            : `${smallScreen ? "Specific Users" : "Some"}`}
         </Badge>
       </td>
       <td>
         <Badge
-          size="sm"
+          size={!extraSmallScreen ? "xs" : "sm"}
           radius="xs"
           variant="outline"
-          color={element.isPublished ? "green" : "dark"}
+          color={element.isPublished ? "green" : "red"}
         >
-          {element.isPublished ? "Pubished" : "Not Published"}
+          {element.isPublished
+            ? `${smallScreen ? "Published" : "Yes"}`
+            : `${smallScreen ? "Not Published" : "No"}`}
         </Badge>
       </td>
-      <td>{element.responses?.length}</td>
-      <td>{moment(element.createdAt).format("DD-MM-YY HH:MM a")}</td>
-      <td>{moment(element.updatedAt).format("DD-MM-YY HH:MM a")}</td>
+      {extraSmallScreen && (
+        <td>
+          <Text size="xs">{element.responses?.length}</Text>
+        </td>
+      )}
+
+      {smallScreen && (
+        <td>
+          <Text size="xs">
+            {moment(element.createdAt).format("DD-MM-YY HH:MM a")}
+          </Text>
+        </td>
+      )}
+      {smallScreen && (
+        <td>
+          <Text size="xs">
+            {moment(element.updatedAt).format("DD-MM-YY HH:MM a")}
+          </Text>
+        </td>
+      )}
+
       <td>
         <CopyButton
           value={`http://localhost:3000/questionnaire/answer/${element._id}`}
         >
           {({ copied, copy }) => (
-            <Button
-              color="blue"
-              size="xs"
-              radius="xs"
-              variant={copied ? "filled" : "outline"}
-              onClick={copy}
-              leftIcon={<BiLinkAlt />}
-              disabled={!element.isPublished}
-            >
-              {copied ? "Copied" : "Get Link"}
-            </Button>
+            <>
+              {smallScreen ? (
+                <Button
+                  color="blue"
+                  size="xs"
+                  radius="xs"
+                  variant={copied ? "filled" : "outline"}
+                  onClick={copy}
+                  leftIcon={<BiLinkAlt />}
+                  disabled={!element.isPublished}
+                >
+                  {copied ? "Copied" : "Get Link"}
+                </Button>
+              ) : (
+                <ActionIcon
+                  color={extraSmallScreen ? "blue" : "red"}
+                  size={!extraSmallScreen ? "xs" : "sm"}
+                  disabled={!element.isPublished}
+                  variant="outline"
+                  radius="xs"
+                >
+                  <BiLinkAlt />
+                </ActionIcon>
+              )}
+            </>
           )}
         </CopyButton>
       </td>
       <td>
         <ActionIcon
-          color="green"
+          color="blue"
           variant="outline"
           radius="xs"
+          size={!extraSmallScreen ? "xs" : "md"}
           onClick={() =>
             element.isPublished
               ? navigate(`/responses/${element._id}`)
@@ -155,9 +211,34 @@ const Home = () => {
         </ActionIcon>
       </td>
       <td>
-        <ActionIcon color="red" variant="outline" radius="xs">
-          <BsXLg />
-        </ActionIcon>
+        {smallScreen ? (
+          <Button
+            leftIcon={<BsXLg />}
+            variant="outline"
+            color="red"
+            size="xs"
+            radius="xs"
+            onClick={() => {
+              setSelectedId(element._id);
+              setUnPublishOpen(true);
+            }}
+          >
+            Unpublish
+          </Button>
+        ) : (
+          <ActionIcon
+            color="red"
+            variant="outline"
+            radius="xs"
+            size={!extraSmallScreen ? "xs" : "sm"}
+            onClick={() => {
+              setSelectedId(element._id);
+              setUnPublishOpen(true);
+            }}
+          >
+            <BiX />
+          </ActionIcon>
+        )}
       </td>
     </tr>
   ));
@@ -165,7 +246,37 @@ const Home = () => {
   return (
     <>
       <Modal
-        size="lg"
+        opened={unPublishOpen}
+        onClose={() => setUnPublishOpen(false)}
+        title="Unpublish"
+        radius="xs"
+        closeOnClickOutside={false}
+        size={!extraSmallScreen ? "xs" : "md"}
+        centered
+      >
+        <Text size="xs">
+          Confirming unpublish will make this questionnaire closed and stop
+          collecting responses. Do you want to continue?
+        </Text>
+        <Button
+          mt={10}
+          size="xs"
+          variant="outline"
+          color="red"
+          radius="xs"
+          fullWidth
+          leftIcon={<BsLock />}
+          onClick={() => {
+            dispatch(unPublishQuestionnaire(selectedId));
+            setSelectedId("");
+            setUnPublishOpen(false);
+          }}
+        >
+          Unpublish Questionnaire
+        </Button>
+      </Modal>
+      <Modal
+        size={!extraSmallScreen ? "xs" : "lg"}
         radius="xs"
         opened={open}
         onClose={() => setOpen(false)}
@@ -195,24 +306,22 @@ const Home = () => {
           />
           <Switch
             my={20}
-            color="deep.0"
+            color="green"
             label="Anonymous"
-            description="This allows your questionnaire to be answered without participant's details"
+            description="This allows your questionnaire to be answered without participant's details (Name and Email)"
             {...form.getInputProps("isPublic")}
           />
           <Grid mt={10}>
-            <Grid.Col span={6}>
-              <Button variant="outline" color="dark" radius="xs" fullWidth>
-                Cancel
-              </Button>
-            </Grid.Col>
-            <Grid.Col span={6}>
+            <Grid.Col span={12}>
               <Button
                 variant="outline"
                 type="submit"
-                color="deep.0"
+                color="green"
                 radius="xs"
-                leftIcon={<BsPlusLg />}
+                leftIcon={<BsFillPlusCircleFill />}
+                disabled={
+                  form.values.title === "" || form.values.description === ""
+                }
                 fullWidth
               >
                 Create questionnaire
@@ -221,68 +330,19 @@ const Home = () => {
           </Grid>
         </form>
       </Modal>
-      <Header height={60}>
-        <Flex
-          h="100%"
-          mx={10}
-          direction="row"
-          justify="space-between"
-          align="center"
-        >
-          <Flex>
-            <Text color="orange" weight={700}>
-              Quizzy
-            </Text>
-            <Box ml={10}>
-              <Link to="/">
-                <Text color="dark" weight={700}>
-                  Dashboard
-                </Text>
-              </Link>
-            </Box>
-            <Box ml={10}>
-              <Link to="/">
-                {" "}
-                <Text color="dark" weight={700}>
-                  Questionnaires
-                </Text>
-              </Link>
-            </Box>
-          </Flex>
-          <Box>
-            <Button
-              color="orange"
-              size="xs"
-              radius="xs"
-              onClick={() => setOpen(true)}
-              leftIcon={<BsPlusLg />}
-            >
-              Create Questionnaire
-            </Button>
-            <Button
-              color="red"
-              ml={10}
-              size="xs"
-              radius="xs"
-              leftIcon={<BsArrowDownRight />}
-            >
-              Log Out
-            </Button>
-          </Box>
-        </Flex>
-      </Header>
-      <Container size="xl">
+      <NavBar setCreateOpen={setOpen} />
+      <Container fluid>
         <Grid mt={30}>
           <Grid.Col span={4}>
             <Card radius="xs" withBorder>
               <Flex direction="row" align="center" justify="space-between">
-                <Title color="orange" order={3}>
-                  Questionnaires
+                <Title color="red" order={smallScreen ? 3 : 5}>
+                  {!extraSmallScreen ? "All" : "Questionnaires"}
                 </Title>
                 {getAllLoading ? (
-                  <Loader color="orange" size="xs" />
+                  <Loader color="red" size="xs" />
                 ) : (
-                  <Title color="orange" order={3}>
+                  <Title color="red" order={smallScreen ? 3 : 5}>
                     {all}
                   </Title>
                 )}
@@ -292,13 +352,13 @@ const Home = () => {
           <Grid.Col span={4}>
             <Card radius="xs" withBorder>
               <Flex direction="row" align="center" justify="space-between">
-                <Title color="green" order={3}>
+                <Title color="green" order={smallScreen ? 3 : 5}>
                   Published
                 </Title>
                 {getStatsLoading ? (
                   <Loader color="green" size="xs" />
                 ) : (
-                  <Title color="green" order={3}>
+                  <Title color="green" order={smallScreen ? 3 : 5}>
                     {published}
                   </Title>
                 )}
@@ -308,13 +368,13 @@ const Home = () => {
           <Grid.Col span={4}>
             <Card radius="xs" withBorder>
               <Flex direction="row" align="center" justify="space-between">
-                <Title color="blue" order={3}>
+                <Title color="blue" order={smallScreen ? 3 : 5}>
                   Unpublished
                 </Title>
                 {getAllLoading ? (
                   <Loader color="blue" size="xs" />
                 ) : (
-                  <Title color="blue" order={3}>
+                  <Title color="blue" order={smallScreen ? 3 : 5}>
                     {unPublished}
                   </Title>
                 )}
@@ -359,12 +419,12 @@ const Home = () => {
                 <thead>
                   <tr>
                     <th>Name</th>
-                    <th>Description</th>
+                    {smallScreen && <th>Description</th>}
                     <th>Anonymous</th>
                     <th>Published</th>
-                    <th>Responses</th>
-                    <th>Created</th>
-                    <th>Updated</th>
+                    {extraSmallScreen && <th>Responses</th>}
+                    {smallScreen && <th>Created</th>}
+                    {smallScreen && <th>Updated</th>}
                     <th></th>
                     <th></th>
                     <th></th>
@@ -372,6 +432,7 @@ const Home = () => {
                 </thead>
                 <tbody>{rows}</tbody>
               </Table>
+
               <Flex direction="row" justify="flex-end">
                 <Pagination
                   size="sm"
@@ -379,6 +440,7 @@ const Home = () => {
                   mt={18}
                   radius="xs"
                   total={pages}
+                  color="red"
                   onChange={(e) =>
                     dispatch(getQuestionnaires({ keyword: "", pageNumber: e }))
                   }

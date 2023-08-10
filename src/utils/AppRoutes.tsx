@@ -20,7 +20,7 @@ interface AppRoutesProp {
 }
 
 const ROOT_ROUTE = "/";
-const HOME_ROUTE = "/home";
+const HOME_ROUTE = "/";
 const QUESTIONNAIRE_ROUTE = "/questionnaire/:id";
 const ANSWER_ROUTE = "/questionnaire/answer/:id";
 const LOGIN_ROUTE = "/login";
@@ -34,7 +34,6 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
   return (
     <Routes>
       {/* Unguarded Routes */}
-      <Route path={ROOT_ROUTE} element={<Landing />} />
       <Route path={ANSWER_ROUTE} element={<Paper />} />
       <Route path={COMPLETED_ROUTE} element={<Completed />} />
       {/* Non-Authenticated Routes: accessible only if user in not authenticated */}

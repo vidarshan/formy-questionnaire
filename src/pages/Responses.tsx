@@ -33,6 +33,7 @@ import {
   BsPlusLg,
 } from "react-icons/bs";
 import { usePagination } from "@mantine/hooks";
+import Empty from "../components/Empty";
 
 const Responses = () => {
   const { id = "" } = useParams();
@@ -273,6 +274,7 @@ const Responses = () => {
               });
             }}
             title="Response"
+            radius="xs"
             closeOnClickOutside={false}
           >
             {renderResponseContent()}
@@ -327,22 +329,27 @@ const Responses = () => {
               </Box>
             </Flex>
           </Header>
+          {console.log(questionnaire.responses)}
           <Container mt={30} size="xl">
-            <Table withBorder highlightOnHover striped>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Participant</th>
-                  <th>Email</th>
-                  <th>No. of questions</th>
-                  <th>Created</th>
-                  <th>Updated</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>{rows}</tbody>
-            </Table>
+            {rows.length ? (
+              <Table withBorder highlightOnHover striped>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Participant</th>
+                    <th>Email</th>
+                    <th>No. of questions</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+              </Table>
+            ) : (
+              <Empty title="No Responses" />
+            )}
           </Container>
         </>
       )}

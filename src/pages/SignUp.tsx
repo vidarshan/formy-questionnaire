@@ -63,10 +63,10 @@ const SignUp = () => {
         <Flex justify="center">
           <BiLock size={30} />
         </Flex>
-        <Title color="orange" order={4} weight={500} align="center">
+        <Title color="grape" order={4} weight={500} align="center">
           Welcome
         </Title>
-        <Title color="gray" order={5} weight={500} align="center">
+        <Title order={5} weight={500} align="center">
           Create your account
         </Title>
         {error && (
@@ -81,6 +81,7 @@ const SignUp = () => {
             placeholder="Enter your name"
             label="Name"
             {...form.getInputProps("name")}
+            withAsterisk
           />
           <TextInput
             mt={20}
@@ -88,6 +89,7 @@ const SignUp = () => {
             placeholder="Enter your email"
             label="Email"
             {...form.getInputProps("email")}
+            withAsterisk
           />
           <PasswordInput
             mt={20}
@@ -97,11 +99,12 @@ const SignUp = () => {
             visible={visible}
             onVisibilityChange={() => setVisible(!visible)}
             {...form.getInputProps("password")}
+            withAsterisk
           />
           <Button
             loading={loading}
             type="submit"
-            color="deep.0"
+            color="grape"
             mt={30}
             radius="xs"
             fullWidth
@@ -111,8 +114,8 @@ const SignUp = () => {
         </form>
         <Divider my={20} color="gray" labelPosition="center" label="or" />
         <Button
-          color="orange"
-          variant="subtle"
+          color="grape"
+          variant="outline"
           onClick={() => {
             dispatch(resetErrors());
             navigate("/login");

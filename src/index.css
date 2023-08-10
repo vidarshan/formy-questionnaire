@@ -29,3 +29,7 @@ a{
   text-decoration: none;
 }
 
+.mantine-Container-root{
+  padding-left: 10px;
+  padding-right: 10px;
+}

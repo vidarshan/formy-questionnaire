@@ -37,6 +37,8 @@ interface QuestionnaireState {
   participantMode: boolean;
   getStatsLoading: boolean;
   getStatsError: boolean;
+  unpublishLoading: boolean;
+  unpublishError: boolean;
 }
 
 interface Option {
@@ -152,6 +154,8 @@ const initialState: QuestionnaireState = {
   participantMode: true,
   getStatsLoading: false,
   getStatsError: false,
+  unpublishLoading: false,
+  unpublishError: false,
 };
 
 interface UserObj {
@@ -257,6 +261,7 @@ export const editQuestionnaire = createAsyncThunk(
       questionObj,
       config
     );
+    dispatch(getQuestionnaire(editPayload.id));
     return questionnaire?.data;
   }
 );
@@ -277,6 +282,27 @@ export const publishQuestionnaire = createAsyncThunk(
       {},
       config
     );
+    return questionnaire?.data;
+  }
+);
+
+export const unPublishQuestionnaire = createAsyncThunk(
+  "unpublish",
+  async (id: string, { getState, dispatch }) => {
+    const state: RootState = getState();
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.user.token}`,
+      },
+    };
+
+    const questionnaire = await axios.put(
+      `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire/${id}/unpublish`,
+      {},
+      config
+    );
+    dispatch(getQuestionnaires({ keyword: "", pageNumber: 1 }));
     return questionnaire?.data;
   }
 );
@@ -422,6 +448,18 @@ export const QuestionnaireSlice = createSlice({
     builder.addCase(getQuestionnaireStats.rejected, (state) => {
       state.getStatsLoading = false;
       state.getStatsError = true;
+    });
+    builder.addCase(unPublishQuestionnaire.fulfilled, (state, action) => {
+      state.unpublishLoading = false;
+      state.unpublishError = false;
+    });
+    builder.addCase(unPublishQuestionnaire.pending, (state) => {
+      state.unpublishLoading = true;
+      state.unpublishError = false;
+    });
+    builder.addCase(unPublishQuestionnaire.rejected, (state) => {
+      state.unpublishLoading = false;
+      state.unpublishError = true;
     });
   },
 });
