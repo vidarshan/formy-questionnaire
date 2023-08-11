@@ -277,7 +277,7 @@ const Questionnaire = () => {
               </Flex>
             </Flex>
             {questionnaire?.questions.length === 0 ? (
-              <Empty title="No Questionnaires" />
+              <Empty title="No Questions" />
             ) : (
               <>
                 {questionnaire !== null &&

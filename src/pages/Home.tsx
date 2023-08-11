@@ -8,7 +8,6 @@ import {
   CopyButton,
   Flex,
   Grid,
-  Header,
   Loader,
   Modal,
   Pagination,
@@ -21,7 +20,7 @@ import {
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { BiLinkAlt, BiX } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
@@ -34,14 +33,10 @@ import {
 import { useForm } from "@mantine/form";
 import moment from "moment";
 import {
-  BsArrowDownRight,
   BsEye,
-  BsFileEarmarkLock,
-  BsFillFileXFill,
   BsFillPlusCircleFill,
   BsLock,
   BsPencilSquare,
-  BsPlusLg,
   BsSearch,
   BsXLg,
 } from "react-icons/bs";
@@ -49,6 +44,7 @@ import { PiSpinnerBold } from "react-icons/pi";
 import Empty from "../components/Empty";
 import NavBar from "../components/NavBar";
 import { useMediaQuery } from "@mantine/hooks";
+import Spinner from "../components/Spinner";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -413,42 +409,50 @@ const Home = () => {
               }}
             />
           </Flex>
-          {rows?.length ? (
-            <>
-              <Table withBorder highlightOnHover striped>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    {smallScreen && <th>Description</th>}
-                    <th>Anonymous</th>
-                    <th>Published</th>
-                    {extraSmallScreen && <th>Responses</th>}
-                    {smallScreen && <th>Created</th>}
-                    {smallScreen && <th>Updated</th>}
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>{rows}</tbody>
-              </Table>
-
-              <Flex direction="row" justify="flex-end">
-                <Pagination
-                  size="sm"
-                  value={page}
-                  mt={18}
-                  radius="xs"
-                  total={pages}
-                  color="red"
-                  onChange={(e) =>
-                    dispatch(getQuestionnaires({ keyword: "", pageNumber: e }))
-                  }
-                />
-              </Flex>
-            </>
+          {getAllLoading ? (
+            <Spinner color="grape" size="lg" title="Loading Questionnaires" />
           ) : (
-            <Empty title="No Questionnaires" />
+            <>
+              {rows?.length ? (
+                <>
+                  <Table withBorder highlightOnHover striped>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        {smallScreen && <th>Description</th>}
+                        <th>Anonymous</th>
+                        <th>Published</th>
+                        {extraSmallScreen && <th>Responses</th>}
+                        {smallScreen && <th>Created</th>}
+                        {smallScreen && <th>Updated</th>}
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>{rows}</tbody>
+                  </Table>
+
+                  <Flex direction="row" justify="flex-end">
+                    <Pagination
+                      size="sm"
+                      value={page}
+                      mt={18}
+                      radius="xs"
+                      total={pages}
+                      color="red"
+                      onChange={(e) =>
+                        dispatch(
+                          getQuestionnaires({ keyword: "", pageNumber: e })
+                        )
+                      }
+                    />
+                  </Flex>
+                </>
+              ) : (
+                <Empty title="No Questionnaires" />
+              )}
+            </>
           )}
         </Box>
       </Container>

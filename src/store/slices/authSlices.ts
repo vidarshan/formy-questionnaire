@@ -8,6 +8,10 @@ interface UserState {
   userId: string | null;
   error: string | null;
   loading: boolean;
+  registerLoading: boolean;
+  registerError: string | boolean;
+  loginError: string | boolean;
+  loginLoading: boolean;
 }
 
 interface UserPayload {
@@ -24,6 +28,10 @@ const initialState: UserState = {
   userId: null,
   error: null,
   loading: false,
+  loginError: false,
+  loginLoading: false,
+  registerError: false,
+  registerLoading: false,
 };
 
 interface UserObj {
@@ -66,7 +74,7 @@ export const getUserInfo = createAsyncThunk("getUser", async () => {
   return userObj;
 });
 
-export const logInUser = createAsyncThunk("login", async (user: UserObj,{getState, dispatch}) => {
+export const logInUser = createAsyncThunk("login", async (user: UserObj) => {
   const authResponse = await axios.post(
     `${process.env.REACT_APP_BE_BASE_URL}/api/users/login`,
     user
@@ -96,32 +104,32 @@ export const UserSlice = createSlice({
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.userId = action.payload._id;
-      state.error = null;
-      state.loading = false;
+      state.registerError = false;
+      state.registerLoading = false;
     });
     builder.addCase(registerUser.pending, (state) => {
-      state.error = null;
-      state.loading = true;
+      state.registerError = false;
+      state.registerLoading = true;
     });
     builder.addCase(registerUser.rejected, (state) => {
-      state.error = "Existing credentials. Try again.";
-      state.loading = false;
+      state.registerError = "Existing credentials. Try again.";
+      state.registerLoading = false;
+    });
+    builder.addCase(logInUser.pending, (state) => {
+      state.loginError = false;
+      state.loginLoading = true;
     });
     builder.addCase(logInUser.fulfilled, (state, action) => {
       state.token = action.payload.token;
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.userId = action.payload._id;
-      state.error = null;
-      state.loading = false;
+      state.loginError = false;
+      state.loginLoading = false;
     });
-    builder.addCase(logInUser.pending, (state) => {
-      state.error = null;
-      state.loading = true;
-    });
-    builder.addCase(logInUser.rejected, (state, action) => {
-      state.error = "Wrong credentials. Try again.";
-      state.loading = false;
+    builder.addCase(logInUser.rejected, (state) => {
+      state.loginError = "Wrong credentials. Try again.";
+      state.loginLoading = false;
     });
     builder.addCase(logOutUser.fulfilled, (state) => {
       state.token = null;

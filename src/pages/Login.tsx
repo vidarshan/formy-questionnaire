@@ -31,7 +31,7 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
-  const { loading, error } = useAppSelector((state) => state.user);
+  const { loginLoading, error } = useAppSelector((state) => state.user);
 
   interface IValues {
     email: string;
@@ -55,7 +55,6 @@ const Login = () => {
     dispatch(logInUser({ email, password }));
     dispatch(getUserInfo());
   };
-
   return (
     <Flex px={10} h="100vh" align="center" justify="center">
       <Card w={400} radius="xs" withBorder>
@@ -99,11 +98,12 @@ const Login = () => {
             mt={30}
             radius="xs"
             fullWidth
-            loading={loading}
+            loading={loginLoading}
           >
             Log In
           </Button>
         </form>
+
         <Divider my={20} color="gray" labelPosition="center" label="or" />
         <Button
           color="gray"

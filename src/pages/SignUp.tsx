@@ -28,7 +28,9 @@ const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [visible, setVisible] = useState(false);
-  const { loading, error, token } = useAppSelector((state) => state.user);
+  const { registerLoading, registerError } = useAppSelector(
+    (state) => state.user
+  );
 
   interface IValues {
     name: string;
@@ -69,9 +71,9 @@ const SignUp = () => {
         <Title order={5} weight={500} align="center">
           Create your account
         </Title>
-        {error && (
+        {registerError && (
           <Alert variant="filled" radius="xs" mt={10} color="red">
-            {error}
+            {registerError}
           </Alert>
         )}
         <form onSubmit={form.onSubmit((values) => onRegister(values))}>
@@ -102,7 +104,7 @@ const SignUp = () => {
             withAsterisk
           />
           <Button
-            loading={loading}
+            loading={registerLoading}
             type="submit"
             color="grape"
             mt={30}

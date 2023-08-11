@@ -205,6 +205,11 @@ export const getQuestionnaires = createAsyncThunk(
       },
     };
 
+    const userObj = {
+      id: state.user.userId,
+    };
+
+    console.log(state.user.userId);
     const authResponse = await axios.get(
       `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire?keyword=${quesionnairesFetch.keyword}&pageNumber=${quesionnairesFetch.pageNumber}`,
       config
