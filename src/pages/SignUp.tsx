@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  Anchor,
-  Box,
   Button,
   Flex,
   Title,
@@ -11,13 +9,8 @@ import {
   Card,
   Divider,
 } from "@mantine/core";
-import { Link, useNavigate } from "react-router-dom";
-import { BsReverseListColumnsReverse } from "react-icons/bs";
-import {
-  getUserInfo,
-  registerUser,
-  resetErrors,
-} from "../store/slices/authSlices";
+import { useNavigate } from "react-router-dom";
+import { registerUser, resetErrors } from "../store/slices/authSlices";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { useForm } from "@mantine/form";
@@ -111,7 +104,7 @@ const SignUp = () => {
             radius="xs"
             fullWidth
           >
-            Register
+            {registerLoading ? "Registering. Please wait." : "Login"}
           </Button>
         </form>
         <Divider my={20} color="gray" labelPosition="center" label="or" />

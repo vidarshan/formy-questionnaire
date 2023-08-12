@@ -14,24 +14,6 @@ interface GuardedRouteProps {
   redirectRoute?: string;
 }
 
-/**
- * Component for guarding restricted routes
- *
- * @example Default usage
- * ```ts
- * <GuardedRoute
- *	 isRouteAccessible={true}
- * />
- * ```
- *
- * @example Usage with custom redirected route
- * ```ts
- * <GuardedRoute
- *	 isRouteAccessible={false}
- *	 redirectRoute={'/login'}
- * />
- * ```
- */
 const GuardedRoute = ({
   isRouteAccessible = false,
   redirectRoute = "/",

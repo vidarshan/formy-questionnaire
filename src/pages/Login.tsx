@@ -1,20 +1,16 @@
 import {
-  Anchor,
-  Box,
   Button,
   Flex,
   Title,
   TextInput,
   Alert,
   PasswordInput,
-  Grid,
-  Container,
   Card,
   Divider,
+  Text,
 } from "@mantine/core";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { BsReverseListColumnsReverse } from "react-icons/bs";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import {
   getUserInfo,
@@ -24,14 +20,13 @@ import {
 import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../store/store";
-import { accent } from "../config/colors";
 import { BiLock } from "react-icons/bi";
 
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
-  const { loginLoading, error } = useAppSelector((state) => state.user);
+  const { loginLoading, loginError } = useAppSelector((state) => state.user);
 
   interface IValues {
     email: string;
@@ -67,12 +62,20 @@ const Login = () => {
         <Title order={5} weight={500} align="center">
           Login to your account
         </Title>
-        {error && (
+        {loginError && (
           <Alert variant="filled" radius="xs" mt={10} color="red">
-            {error}
+            {loginError}
           </Alert>
         )}
-
+        <Alert variant="light" radius="xs" mt={10} color="green">
+          <>
+            <Text>Use credentials below a full demo</Text>
+            <Text mt={5} size="xs">
+              Email: johndoe@gmail.com
+            </Text>
+            <Text size="xs"> Password: 123456 </Text>
+          </>
+        </Alert>
         <form onSubmit={form.onSubmit((values) => onLogin(values))}>
           <TextInput
             mt={20}
@@ -100,7 +103,7 @@ const Login = () => {
             fullWidth
             loading={loginLoading}
           >
-            Log In
+            {loginLoading ? "Logging in. Please wait." : "Login"}
           </Button>
         </form>
 

@@ -1,3 +1,3 @@
 export interface NavbarProps {
-  setCreateOpen: (arg: boolean) => any;
+  setCreateOpen?: (arg: boolean) => any | null;
 }

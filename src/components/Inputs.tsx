@@ -22,7 +22,6 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import {
   editQuestionnaire,
-  getQuestionnaire,
   resetQuestion,
   resetQuestionOptions,
   setOption,
@@ -49,7 +48,7 @@ const Inputs: FC<IInputs> = () => {
   const { addQuestionOpen, addAnswerOpen } = useAppSelector(
     (state) => state.interface
   );
-  const [answerEnabled, setAnswerEnabled] = useState(false);
+  const [answerEnabled] = useState(false);
   const extraSmallScreen = useMediaQuery("(min-width: 540px)");
 
   const resetState = () => {
@@ -338,7 +337,6 @@ const Inputs: FC<IInputs> = () => {
           </>
         );
       case "checkbox":
-        console.log(editableQuestion);
         return (
           <>
             <Card mt={20} radius="xs" withBorder>
@@ -473,7 +471,6 @@ const Inputs: FC<IInputs> = () => {
           </>
         );
       case "switch":
-        console.log(editableQuestion);
         return (
           <>
             <Card mt={20} radius="xs" withBorder>

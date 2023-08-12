@@ -17,6 +17,7 @@ import {
   TextInput,
   Textarea,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { BiLinkAlt, BiX } from "react-icons/bi";
@@ -55,6 +56,7 @@ const Home = () => {
   const [selectedId, setSelectedId] = useState("");
   const smallScreen = useMediaQuery("(min-width: 990px)");
   const extraSmallScreen = useMediaQuery("(min-width: 540px)");
+  const { createLoading } = useAppSelector((state) => state.questionnaire);
 
   const {
     questionnaires,
@@ -117,19 +119,19 @@ const Home = () => {
         <Badge
           size={!extraSmallScreen ? "xs" : "sm"}
           radius="xs"
-          variant="outline"
+          variant="filled"
           color={element.isPublic ? "green" : "blue"}
         >
           {element.isPublic
-            ? `${smallScreen ? "Allowed" : "All"}`
-            : `${smallScreen ? "Specific Users" : "Some"}`}
+            ? `${smallScreen ? "Required" : "All"}`
+            : `${smallScreen ? "Required" : "All"}`}
         </Badge>
       </td>
       <td>
         <Badge
           size={!extraSmallScreen ? "xs" : "sm"}
           radius="xs"
-          variant="outline"
+          variant="filled"
           color={element.isPublished ? "green" : "red"}
         >
           {element.isPublished
@@ -165,23 +167,29 @@ const Home = () => {
           {({ copied, copy }) => (
             <>
               {smallScreen ? (
-                <Button
-                  color="blue"
-                  size="xs"
-                  radius="xs"
-                  variant={copied ? "filled" : "outline"}
-                  onClick={copy}
-                  leftIcon={<BiLinkAlt />}
-                  disabled={!element.isPublished}
+                <Tooltip
+                  label="Share this link with participants to access"
+                  position="left"
+                  withArrow
                 >
-                  {copied ? "Copied" : "Get Link"}
-                </Button>
+                  <Button
+                    color="grape"
+                    size="xs"
+                    radius="xs"
+                    variant={copied ? "outline" : "filled"}
+                    onClick={copy}
+                    leftIcon={<BiLinkAlt />}
+                    disabled={!element.isPublished}
+                  >
+                    {copied ? "Copied" : "Get Link"}
+                  </Button>
+                </Tooltip>
               ) : (
                 <ActionIcon
                   color={extraSmallScreen ? "blue" : "red"}
                   size={!extraSmallScreen ? "xs" : "sm"}
                   disabled={!element.isPublished}
-                  variant="outline"
+                  variant="filled"
                   radius="xs"
                 >
                   <BiLinkAlt />
@@ -192,39 +200,56 @@ const Home = () => {
         </CopyButton>
       </td>
       <td>
-        <ActionIcon
-          color="blue"
-          variant="outline"
-          radius="xs"
-          size={!extraSmallScreen ? "xs" : "md"}
-          onClick={() =>
+        <Tooltip
+          label={
             element.isPublished
-              ? navigate(`/responses/${element._id}`)
-              : navigate(`/questionnaire/${element._id}`)
+              ? "View questionnaire responses"
+              : "Edit questionnaire"
           }
+          position="left"
+          withArrow
         >
-          {element.isPublished ? <BsEye /> : <BsPencilSquare />}
-        </ActionIcon>
+          <ActionIcon
+            color="green"
+            variant="filled"
+            radius="xs"
+            size={!extraSmallScreen ? "xs" : "md"}
+            onClick={() =>
+              element.isPublished
+                ? navigate(`/responses/${element._id}`)
+                : navigate(`/questionnaire/${element._id}`)
+            }
+          >
+            {element.isPublished ? <BsEye /> : <BsPencilSquare />}
+          </ActionIcon>
+        </Tooltip>
       </td>
       <td>
         {smallScreen ? (
-          <Button
-            leftIcon={<BsXLg />}
-            variant="outline"
-            color="red"
-            size="xs"
-            radius="xs"
-            onClick={() => {
-              setSelectedId(element._id);
-              setUnPublishOpen(true);
-            }}
+          <Tooltip
+            label="Unpublishing will stop collecting responses"
+            position="left"
+            withArrow
           >
-            Unpublish
-          </Button>
+            <Button
+              leftIcon={<BsXLg />}
+              variant="filled"
+              color="red"
+              size="xs"
+              radius="xs"
+              disabled={!element.isPublished}
+              onClick={() => {
+                setSelectedId(element._id);
+                setUnPublishOpen(true);
+              }}
+            >
+              Unpublish
+            </Button>
+          </Tooltip>
         ) : (
           <ActionIcon
             color="red"
-            variant="outline"
+            variant="filled"
             radius="xs"
             size={!extraSmallScreen ? "xs" : "sm"}
             onClick={() => {
@@ -318,6 +343,7 @@ const Home = () => {
                 disabled={
                   form.values.title === "" || form.values.description === ""
                 }
+                loading={createLoading}
                 fullWidth
               >
                 Create questionnaire
@@ -335,7 +361,7 @@ const Home = () => {
                 <Title color="red" order={smallScreen ? 3 : 5}>
                   {!extraSmallScreen ? "All" : "Questionnaires"}
                 </Title>
-                {getAllLoading ? (
+                {getStatsLoading ? (
                   <Loader color="red" size="xs" />
                 ) : (
                   <Title color="red" order={smallScreen ? 3 : 5}>
@@ -367,7 +393,7 @@ const Home = () => {
                 <Title color="blue" order={smallScreen ? 3 : 5}>
                   Unpublished
                 </Title>
-                {getAllLoading ? (
+                {getStatsLoading ? (
                   <Loader color="blue" size="xs" />
                 ) : (
                   <Title color="blue" order={smallScreen ? 3 : 5}>
@@ -420,7 +446,7 @@ const Home = () => {
                       <tr>
                         <th>Name</th>
                         {smallScreen && <th>Description</th>}
-                        <th>Anonymous</th>
+                        <th>Participant Details</th>
                         <th>Published</th>
                         {extraSmallScreen && <th>Responses</th>}
                         {smallScreen && <th>Created</th>}

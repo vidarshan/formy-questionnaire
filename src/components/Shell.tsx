@@ -1,8 +1,6 @@
 import {
   Box,
   Button,
-  Card,
-  Container,
   Flex,
   Grid,
   Header,
@@ -19,9 +17,8 @@ import { useDispatch } from "react-redux";
 import { useForm } from "@mantine/form";
 import {
   createQuestionnaire,
-  getQuestionnaires,
 } from "../store/slices/questionnaireSlice";
-import { getUserInfo, logOutUser } from "../store/slices/authSlices";
+import {  logOutUser } from "../store/slices/authSlices";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 
@@ -30,7 +27,6 @@ const Shell: FC<IShell> = ({ children }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [questionOpen, setQuestionOpen] = useState(false);
-  const { createLoading } = useAppSelector((state) => state.questionnaire);
   const { token } = useAppSelector((state) => state.user);
 
   const form = useForm({

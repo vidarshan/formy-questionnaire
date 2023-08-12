@@ -33,3 +33,7 @@ a{
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.mantine-Tooltip-tooltip{
+  font-size: 10px;
+}

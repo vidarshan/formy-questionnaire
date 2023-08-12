@@ -1,4 +1,4 @@
-import { Card, Grid, Paper, Text, Title } from "@mantine/core";
+import { Card, Grid, Paper, Title } from "@mantine/core";
 import React from "react";
 
 const Dashboard = () => {

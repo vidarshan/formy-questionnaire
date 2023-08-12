@@ -1,14 +1,11 @@
 import {
   Alert,
-  Box,
   Button,
   Checkbox,
   Container,
   Flex,
-  Header,
   Modal,
   NumberInput,
-  Pagination,
   Radio,
   Rating,
   Switch,
@@ -19,21 +16,16 @@ import {
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getQuestionnaire } from "../store/slices/questionnaireSlice";
 import { AppDispatch } from "../../store";
 import { useAppSelector } from "../store/store";
 import moment from "moment";
 import Spinner from "../components/Spinner";
 import { QuestionnaireResponse, Response } from "../interfaces/Questionnaire";
-import {
-  BsArrowDownRight,
-  BsFillRecordFill,
-  BsPersonCircle,
-  BsPlusLg,
-} from "react-icons/bs";
-import { usePagination } from "@mantine/hooks";
+import { BsPersonCircle } from "react-icons/bs";
 import Empty from "../components/Empty";
+import NavBar from "../components/NavBar";
 
 const Responses = () => {
   const { id = "" } = useParams();
@@ -41,7 +33,6 @@ const Responses = () => {
   const { questionnaire, getLoading } = useAppSelector(
     (state) => state.questionnaire
   );
-  const pagination = usePagination({ total: 10, initialPage: 1 });
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<QuestionnaireResponse>({
@@ -195,10 +186,6 @@ const Responses = () => {
     }
   };
   const renderResponseContent = () => {
-    console.log(
-      "🚀 ~ file: Responses.tsx:135 ~ renderResponseContent ~ selected:",
-      selected
-    );
     const responseContent: Response = (questionnaire.responses || []).find(
       (res: any) => res._id === selected._id
     );
@@ -279,57 +266,7 @@ const Responses = () => {
           >
             {renderResponseContent()}
           </Modal>
-          <Header height={60}>
-            <Flex
-              h="100%"
-              mx={10}
-              direction="row"
-              justify="space-between"
-              align="center"
-            >
-              <Flex>
-                <Text color="orange" weight={700}>
-                  Quizzy
-                </Text>
-                <Box ml={10}>
-                  <Link to="/">
-                    <Text color="dark" weight={700}>
-                      Dashboard
-                    </Text>
-                  </Link>
-                </Box>
-                <Box ml={10}>
-                  <Link to="/">
-                    {" "}
-                    <Text color="dark" weight={700}>
-                      Questionnaires
-                    </Text>
-                  </Link>
-                </Box>
-              </Flex>
-              <Box>
-                <Button
-                  color="orange"
-                  size="xs"
-                  radius="xs"
-                  onClick={() => setOpen(true)}
-                  leftIcon={<BsPlusLg />}
-                >
-                  Create Questionnaire
-                </Button>
-                <Button
-                  color="red"
-                  ml={10}
-                  size="xs"
-                  radius="xs"
-                  leftIcon={<BsArrowDownRight />}
-                >
-                  Log Out
-                </Button>
-              </Box>
-            </Flex>
-          </Header>
-          {console.log(questionnaire.responses)}
+          <NavBar />
           <Container mt={30} size="xl">
             {rows.length ? (
               <Table withBorder highlightOnHover striped>

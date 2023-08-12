@@ -3,11 +3,9 @@ import {
   Container,
   Title,
   Text,
-  Divider,
   Box,
   Button,
   Flex,
-  Header,
   Textarea,
   NumberInput,
   Radio,
@@ -16,28 +14,20 @@ import {
   Rating,
   TextInput,
   Alert,
-  Modal,
 } from "@mantine/core";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { answerQuestion } from "../store/slices/questionnaireSlice";
-import {
-  confirmDetails,
-  resetResponseState,
-  submitAnswer,
-} from "../store/slices/responseSlice";
+import { confirmDetails, submitAnswer } from "../store/slices/responseSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { useAppSelector } from "../store/store";
 import Spinner from "../components/Spinner";
 import {
   Bs123,
-  BsArrowLeft,
   BsFillCheckCircleFill,
   BsFillEnvelopeAtFill,
-  BsFillFileEarmarkTextFill,
   BsFillFilePersonFill,
-  BsFillFileTextFill,
   BsJustify,
 } from "react-icons/bs";
 import { useForm } from "@mantine/form";
@@ -45,7 +35,6 @@ import { getResponseQuestionnaire } from "../store/slices/responseSlice";
 
 const Paper = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
   const { id = "" } = useParams();
   const { questionnaire, getLoading, editableQuestionnaire } = useAppSelector(
     (state) => state.questionnaire
@@ -53,11 +42,6 @@ const Paper = () => {
   const { submitAnswerLoading, submitAnswerSuccess, detailsConfirmed } =
     useAppSelector((state) => state.response);
   const { userId } = useAppSelector((state) => state.user);
-  interface DetailsProps {
-    email: string;
-    name: string;
-  }
-
   const form = useForm({
     initialValues: {
       email: "",
@@ -85,6 +69,7 @@ const Paper = () => {
             <Textarea
               key={question._id}
               radius="xs"
+              mt={15}
               label={question?.title}
               onChange={(e) => onAnswerQuestion(index, e.target.value)}
               icon={<BsJustify />}
@@ -98,7 +83,7 @@ const Paper = () => {
               key={question._id}
               type="number"
               radius="xs"
-              mt={10}
+              mt={15}
               min={0}
               label={question?.title}
               icon={<Bs123 />}
@@ -107,14 +92,18 @@ const Paper = () => {
           </>
         );
       case "radio":
-        console.log(question);
         return (
-          <Radio.Group key={question._id} label={question.title} mt={10}>
+          <Radio.Group
+            key={question._id}
+            label={question.title}
+            mt={15}
+            onChange={(e) => onAnswerQuestion(index, e)}
+          >
             {question.options.map((rd: any) => {
               return (
                 <Flex mt={5} mb={5}>
                   <Radio
-                    color="deep.0"
+                    color="grape"
                     mt={10}
                     value={rd.value}
                     label={rd.value}
@@ -126,13 +115,18 @@ const Paper = () => {
         );
       case "checkbox":
         return (
-          <Checkbox.Group mt={10} key={question._id} label={question.title}>
+          <Checkbox.Group
+            mt={15}
+            key={question._id}
+            label={question.title}
+            onChange={(e) => onAnswerQuestion(index, e)}
+          >
             {question.options.map((ch: any) => {
               return (
                 <Flex mt={5} mb={5}>
                   {" "}
                   <Checkbox
-                    color="deep.0"
+                    color="grape"
                     mt={10}
                     value={ch.value}
                     label={ch.value}
@@ -144,9 +138,31 @@ const Paper = () => {
           </Checkbox.Group>
         );
       case "switch":
-        return <Switch color="deep.0" label={question.title} mt={10} />;
+        return (
+          <>
+            <Text size="sm" weight={500} mt={20}>
+              {question.title}
+            </Text>{" "}
+            <Switch
+              color="grape"
+              mt={5}
+              onChange={(e) => onAnswerQuestion(index, e.target.checked)}
+            />
+          </>
+        );
       case "rating":
-        return <Rating title={question.title} mt={10} />;
+        return (
+          <>
+            <Text size="sm" weight={500} mt={20}>
+              {question.title}
+            </Text>
+            <Rating
+              mt={5}
+              title={question.title}
+              onChange={(e) => onAnswerQuestion(index, e)}
+            />
+          </>
+        );
       default:
         <Textarea
           placeholder="Your comment"
@@ -158,7 +174,6 @@ const Paper = () => {
   };
 
   const onSubmitAnswer = () => {
-    console.log(editableQuestionnaire);
     let answerObj = {
       questionnaireId: editableQuestionnaire._id,
       name: form.values.name,
@@ -188,141 +203,133 @@ const Paper = () => {
                     Thank you
                   </Text>
                   <Text size="sm" weight={500}>
-                    Your response has been submitted.
+                    Your response has been submitted. You can close this tab
+                    now.
                   </Text>
                 </Flex>
               </Flex>
-              <Button
-                color="dark"
-                leftIcon={<BsArrowLeft />}
-                size="xs"
-                radius="xs"
-                onClick={() => {
-                  navigate("/");
-                  dispatch(resetResponseState());
-                }}
-              >
-                Go Back
-              </Button>
             </Flex>
           </Card>
         </Container>
       )}
 
-      <Flex>
-        <Card w="100%" mt={10} radius="xs" withBorder>
-          {getLoading ? (
-            <Spinner title="Loading Questionnaire" color="red" size="lg" />
-          ) : (
-            <>
-              {submitAnswerSuccess === "initial" && (
-                <>
-                  <Title order={3}>{questionnaire.title}</Title>
-                  <Text>{questionnaire.description}</Text>
-                  {!detailsConfirmed ? (
-                    <>
+      {submitAnswerSuccess !== "submitted" && (
+        <Flex>
+          <Card w="100%" mt={10} radius="xs" withBorder>
+            {getLoading ? (
+              <Spinner title="Loading Questionnaire" color="red" size="lg" />
+            ) : (
+              <>
+                {submitAnswerSuccess === "initial" && (
+                  <>
+                    <Title color="grape" order={3}>
+                      {questionnaire.title}
+                    </Title>
+                    <Text>{questionnaire.description}</Text>
+                    {!detailsConfirmed ? (
+                      <>
+                        <Alert
+                          title={"Provide your name and email"}
+                          my={10}
+                          radius="xs"
+                          color="blue"
+                          variant="light"
+                          icon={<BsFillFilePersonFill />}
+                        >
+                          <></>
+                        </Alert>
+
+                        <form
+                          onSubmit={form.onSubmit((values) => {
+                            dispatch(confirmDetails(true));
+                          })}
+                        >
+                          <TextInput
+                            placeholder="Your email"
+                            type="email"
+                            icon={<BsFillEnvelopeAtFill />}
+                            radius="xs"
+                            {...form.getInputProps("email")}
+                            required
+                            withAsterisk
+                            disabled={detailsConfirmed}
+                          />
+                          <TextInput
+                            mt={10}
+                            type="text"
+                            placeholder="Your name"
+                            icon={<BsFillFilePersonFill />}
+                            radius="xs"
+                            {...form.getInputProps("name")}
+                            required
+                            withAsterisk
+                            disabled={detailsConfirmed}
+                          />
+                          <Flex mt={10} justify="flex-end">
+                            <Button
+                              disabled={detailsConfirmed}
+                              color="grape"
+                              size="xs"
+                              radius="xs"
+                              type="submit"
+                              variant="filled"
+                              leftIcon={<BsFillCheckCircleFill />}
+                            >
+                              Confirm & Start
+                            </Button>
+                          </Flex>
+                        </form>
+                      </>
+                    ) : (
                       <Alert
-                        title={"Provide your name and email"}
+                        title={"Name and email saved"}
                         my={10}
                         radius="xs"
-                        color="blue"
+                        color="green"
                         variant="light"
-                        icon={<BsFillFilePersonFill />}
+                        icon={<BsFillCheckCircleFill />}
                       >
                         <></>
                       </Alert>
+                    )}
 
-                      <form
-                        onSubmit={form.onSubmit((values) => {
-                          dispatch(confirmDetails(true));
-                        })}
-                      >
-                        <TextInput
-                          placeholder="Your email"
-                          type="email"
-                          icon={<BsFillEnvelopeAtFill />}
-                          radius="xs"
-                          {...form.getInputProps("email")}
-                          required
-                          withAsterisk
-                          disabled={detailsConfirmed}
-                        />
-                        <TextInput
-                          mt={10}
-                          type="text"
-                          placeholder="Your name"
-                          icon={<BsFillFilePersonFill />}
-                          radius="xs"
-                          {...form.getInputProps("name")}
-                          required
-                          withAsterisk
-                          disabled={detailsConfirmed}
-                        />
-                        <Flex mt={10} justify="flex-end">
+                    {detailsConfirmed && (
+                      <Box>
+                        {(questionnaire.questions || []).map(
+                          (q: any, index: number) => {
+                            return (
+                              <>
+                                {renderSelectedInput(
+                                  q,
+                                  index,
+                                  userId === null ? "" : userId
+                                )}
+                              </>
+                            );
+                          }
+                        )}
+                        <Flex direction="row" justify="flex-end">
                           <Button
-                            disabled={detailsConfirmed}
-                            color="green"
                             size="xs"
                             radius="xs"
-                            type="submit"
-                            variant="outline"
+                            variant="filled"
+                            color="grape"
+                            onClick={() => onSubmitAnswer()}
+                            loading={submitAnswerLoading}
+                            leftIcon={<BsFillCheckCircleFill />}
                           >
-                            Confirm & Start
+                            Submit Questionnaire
                           </Button>
                         </Flex>
-                      </form>
-                    </>
-                  ) : (
-                    <Alert
-                      title={"Name and email saved"}
-                      my={10}
-                      radius="xs"
-                      color="green"
-                      variant="light"
-                      icon={<BsFillCheckCircleFill />}
-                    >
-                      <></>
-                    </Alert>
-                  )}
-
-                  {detailsConfirmed && (
-                    <Box>
-                      {(questionnaire.questions || []).map(
-                        (q: any, index: number) => {
-                          return (
-                            <>
-                              {renderSelectedInput(
-                                q,
-                                index,
-                                userId === null ? "" : userId
-                              )}
-                            </>
-                          );
-                        }
-                      )}
-                      <Flex direction="row" justify="flex-end">
-                        {/* <Button mr={10} size="xs" radius="xs">
-                          Check Answers
-                        </Button> */}
-                        <Button
-                          size="xs"
-                          radius="xs"
-                          variant="outline"
-                          color="green"
-                          onClick={() => onSubmitAnswer()}
-                          loading={submitAnswerLoading}
-                        >
-                          Submit Questionnaire
-                        </Button>
-                      </Flex>
-                    </Box>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </Card>
-      </Flex>
+                      </Box>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </Card>
+        </Flex>
+      )}
     </Container>
   );
 };

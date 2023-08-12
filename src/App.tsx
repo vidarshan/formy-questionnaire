@@ -9,8 +9,6 @@ import { getUserInfo } from "./store/slices/authSlices";
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { token } = useAppSelector((state) => state.user);
-  console.log("🚀 ~ file: App.tsx:11 ~ App ~ token:", token);
-
   useEffect(() => {
     dispatch(getUserInfo());
   }, [dispatch]);

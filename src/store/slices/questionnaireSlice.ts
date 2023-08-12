@@ -39,6 +39,8 @@ interface QuestionnaireState {
   getStatsError: boolean;
   unpublishLoading: boolean;
   unpublishError: boolean;
+  publishLoading: boolean;
+  publishError: boolean;
 }
 
 interface Option {
@@ -156,23 +158,13 @@ const initialState: QuestionnaireState = {
   getStatsError: false,
   unpublishLoading: false,
   unpublishError: false,
+  publishLoading: false,
+  publishError: false,
 };
-
-interface UserObj {
-  email: string;
-  password: string;
-}
 
 interface QuestionnaireFetch {
   pageNumber: number;
   keyword: string;
-}
-
-interface RegisterObj {
-  name: string;
-  email: string;
-  password: string;
-  isAdmin: boolean;
 }
 
 export const getQuestionnaire = createAsyncThunk(
@@ -205,11 +197,6 @@ export const getQuestionnaires = createAsyncThunk(
       },
     };
 
-    const userObj = {
-      id: state.user.userId,
-    };
-
-    console.log(state.user.userId);
     const authResponse = await axios.get(
       `${process.env.REACT_APP_BE_BASE_URL}/api/quesionnaire?keyword=${quesionnairesFetch.keyword}&pageNumber=${quesionnairesFetch.pageNumber}`,
       config
@@ -328,7 +315,6 @@ export const getQuestionnaireStats = createAsyncThunk(
       config
     );
 
-    console.log(questionnaireStats);
     return questionnaireStats?.data;
   }
 );
@@ -379,16 +365,16 @@ export const QuestionnaireSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(createQuestionnaire.fulfilled, (state, action) => {
-      state.createError = false;
-      state.createLoading = false;
-    });
-    builder.addCase(createQuestionnaire.pending, (state) => {
+    builder.addCase(createQuestionnaire.fulfilled, (state) => {
       notifications.show({
         title: "Questionnaire Created",
         message: "Proceed to add your content",
         radius: "xs",
       });
+      state.createError = false;
+      state.createLoading = false;
+    });
+    builder.addCase(createQuestionnaire.pending, (state) => {
       state.createError = false;
       state.createLoading = true;
     });
@@ -428,16 +414,16 @@ export const QuestionnaireSlice = createSlice({
     });
     builder.addCase(publishQuestionnaire.fulfilled, (state, action) => {
       state.questionnaire = action.payload;
-      state.editError = false;
-      state.editLoading = false;
+      state.publishLoading = false;
+      state.publishError = false;
     });
     builder.addCase(publishQuestionnaire.pending, (state) => {
-      state.editError = false;
-      state.editLoading = true;
+      state.publishLoading = true;
+      state.publishError = false;
     });
     builder.addCase(publishQuestionnaire.rejected, (state, action) => {
-      state.editError = true;
-      state.editLoading = false;
+      state.publishLoading = false;
+      state.publishError = true;
     });
     builder.addCase(getQuestionnaireStats.fulfilled, (state, action) => {
       state.all = action.payload.all;

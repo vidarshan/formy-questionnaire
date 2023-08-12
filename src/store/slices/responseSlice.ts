@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "../../../store";
-import { v4 as uuidv4 } from "uuid";
 import { QuestionPayload } from "./questionnaireSlice";
 
 interface ResponseState {

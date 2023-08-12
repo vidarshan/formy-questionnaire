@@ -1,65 +1,50 @@
 import React, { useEffect, useState } from "react";
-import Shell from "../components/Shell";
 import {
-  ActionIcon,
-  Box,
   Button,
   Card,
   Checkbox,
   Container,
   Flex,
-  Header,
   Modal,
   NumberInput,
   Radio,
   Rating,
-  ScrollArea,
-  Select,
   Switch,
   Text,
-  TextInput,
   Textarea,
   Title,
 } from "@mantine/core";
 import Inputs from "../components/Inputs";
 import {
   answerQuestion,
-  editQuestionnaire,
   getQuestionnaire,
   publishQuestionnaire,
-  switchView,
 } from "../store/slices/questionnaireSlice";
 import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { Question } from "../interfaces/Question";
 import { setAddQuestionOpen } from "../store/slices/interfaceSlice";
 import {
   Bs123,
-  BsCheck2,
-  BsEye,
-  BsFileCheck,
-  BsFileEarmarkCheck,
   BsFillCheckCircleFill,
   BsFillPlusCircleFill,
-  BsFillXCircleFill,
   BsJustify,
-  BsPlusCircle,
-  BsPlusLg,
 } from "react-icons/bs";
 import Spinner from "../components/Spinner";
 import Empty from "../components/Empty";
 import { useMediaQuery } from "@mantine/hooks";
+import NavBar from "../components/NavBar";
 
 const Questionnaire = () => {
   const { id = "" } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [openPublishConfirmation, setOpenPublishConfirmation] = useState(false);
-  const [openCloseConfirmation, setOpenCloseConfirmation] = useState(false);
-  const { questionnaire, participantMode, editableQuestionnaire, getLoading } =
-    useAppSelector((state) => state.questionnaire);
+  const { questionnaire, publishLoading, getLoading } = useAppSelector(
+    (state) => state.questionnaire
+  );
   const extraSmallScreen = useMediaQuery("(min-width: 540px)");
   const { userId } = useAppSelector((state) => state.user);
 
@@ -202,42 +187,13 @@ const Questionnaire = () => {
           onClick={() => {
             onPublishQuestionnaire();
             setOpenPublishConfirmation(false);
-            navigate("/home");
+            navigate("/");
           }}
         >
           Publish Questionnaire
         </Button>
       </Modal>
-      <Header height={60}>
-        <Flex
-          h="100%"
-          mx={10}
-          direction="row"
-          justify="space-between"
-          align="center"
-        >
-          <Flex>
-            <Text color="orange" weight={700}>
-              Quizzy
-            </Text>
-            <Box ml={10}>
-              <Link to="/">
-                <Text color="dark" weight={700}>
-                  Dashboard
-                </Text>
-              </Link>
-            </Box>
-            <Box ml={10}>
-              <Link to="/">
-                {" "}
-                <Text color="dark" weight={700}>
-                  Questionnaires
-                </Text>
-              </Link>
-            </Box>
-          </Flex>
-        </Flex>
-      </Header>
+      <NavBar />
       {getLoading ? (
         <Spinner
           title="Loading questionnaire data..."
@@ -264,7 +220,7 @@ const Questionnaire = () => {
                         size="xs"
                         radius="xs"
                         color="green"
-                        variant="outline"
+                        variant="filled"
                         fullWidth
                         onClick={() => dispatch(setAddQuestionOpen(true))}
                         leftIcon={<BsFillPlusCircleFill />}
@@ -293,26 +249,23 @@ const Questionnaire = () => {
           </Card>
 
           <Flex direction="row" justify="flex-end">
-            <Button
-              w="fit-content"
-              mt={20}
-              size="xs"
-              radius="xs"
-              fullWidth
-              disabled={getLoading || questionnaire?.questions.length === 0}
-              color={questionnaire.isPublished ? "red" : "green"}
-              leftIcon={<BsFillCheckCircleFill />}
-              variant="outline"
-              onClick={() => {
-                questionnaire.isPublished
-                  ? console.log("ddd")
-                  : setOpenPublishConfirmation(true);
-              }}
-            >
-              {questionnaire.isPublished
-                ? "Close Questionnaire"
-                : "Publish Questionnaire"}
-            </Button>
+            {!questionnaire.isPublished && (
+              <Button
+                w="fit-content"
+                mt={20}
+                size="xs"
+                radius="xs"
+                fullWidth
+                disabled={getLoading || questionnaire?.questions.length === 0}
+                color={questionnaire.isPublished ? "red" : "green"}
+                leftIcon={<BsFillCheckCircleFill />}
+                variant="outline"
+                loading={publishLoading}
+                onClick={() => setOpenPublishConfirmation(true)}
+              >
+                Publish Questionnaire
+              </Button>
+            )}
           </Flex>
         </Container>
       )}
