@@ -152,7 +152,7 @@ const Home = () => {
 
       <td>
         <CopyButton
-          value={`http://localhost:3000/questionnaire/answer/${element._id}`}
+          value={`${process.env.REACT_APP_FE_BASE_URL}/questionnaire/answer/${element._id}`}
         >
           {({ copied, copy }) => (
             <>
