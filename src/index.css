@@ -37,3 +37,11 @@ a{
 .mantine-Tooltip-tooltip{
   font-size: 10px;
 }
+
+
+@media only screen and (max-width: 850px) {
+  .response-table{
+    background-color: aqua;
+   overflow-x: scroll;
+  }
+}

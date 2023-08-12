@@ -179,7 +179,7 @@ const Questionnaire = () => {
         <Button
           mt={10}
           size="xs"
-          variant="outline"
+          variant="filled"
           color="green"
           radius="xs"
           fullWidth
@@ -259,7 +259,7 @@ const Questionnaire = () => {
                 disabled={getLoading || questionnaire?.questions.length === 0}
                 color={questionnaire.isPublished ? "red" : "green"}
                 leftIcon={<BsFillCheckCircleFill />}
-                variant="outline"
+                variant="filled"
                 loading={publishLoading}
                 onClick={() => setOpenPublishConfirmation(true)}
               >

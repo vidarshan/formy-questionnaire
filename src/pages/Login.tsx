@@ -69,11 +69,16 @@ const Login = () => {
         )}
         <Alert variant="light" radius="xs" mt={10} color="green">
           <>
-            <Text>Use credentials below a full demo</Text>
-            <Text mt={5} size="xs">
+            <Text size="xs" weight={600}>
+              Use credentials below a full demo
+            </Text>
+            <Text color="gray" mt={5} size="xs">
               Email: johndoe@gmail.com
             </Text>
-            <Text size="xs"> Password: 123456 </Text>
+            <Text color="gray" size="xs">
+              {" "}
+              Password: 123456{" "}
+            </Text>
           </>
         </Alert>
         <form onSubmit={form.onSubmit((values) => onLogin(values))}>

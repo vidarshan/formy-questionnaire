@@ -34,7 +34,7 @@ import {
 import { useForm } from "@mantine/form";
 import moment from "moment";
 import {
-  BsEye,
+  BsFillEyeFill,
   BsFillPlusCircleFill,
   BsLock,
   BsPencilSquare,
@@ -186,7 +186,7 @@ const Home = () => {
                 </Tooltip>
               ) : (
                 <ActionIcon
-                  color={extraSmallScreen ? "blue" : "red"}
+                  color="blue"
                   size={!extraSmallScreen ? "xs" : "sm"}
                   disabled={!element.isPublished}
                   variant="filled"
@@ -220,7 +220,7 @@ const Home = () => {
                 : navigate(`/questionnaire/${element._id}`)
             }
           >
-            {element.isPublished ? <BsEye /> : <BsPencilSquare />}
+            {element.isPublished ? <BsFillEyeFill /> : <BsPencilSquare />}
           </ActionIcon>
         </Tooltip>
       </td>
@@ -335,7 +335,7 @@ const Home = () => {
           <Grid mt={10}>
             <Grid.Col span={12}>
               <Button
-                variant="outline"
+                variant="filled"
                 type="submit"
                 color="green"
                 radius="xs"
@@ -353,18 +353,18 @@ const Home = () => {
         </form>
       </Modal>
       <NavBar setCreateOpen={setOpen} />
-      <Container fluid>
+      <Container size="xl">
         <Grid mt={30}>
           <Grid.Col span={4}>
             <Card radius="xs" withBorder>
               <Flex direction="row" align="center" justify="space-between">
-                <Title color="red" order={smallScreen ? 3 : 5}>
+                <Title color="grape" order={smallScreen ? 3 : 5}>
                   {!extraSmallScreen ? "All" : "Questionnaires"}
                 </Title>
                 {getStatsLoading ? (
-                  <Loader color="red" size="xs" />
+                  <Loader color="grape" size="xs" />
                 ) : (
-                  <Title color="red" order={smallScreen ? 3 : 5}>
+                  <Title color="grape" order={smallScreen ? 3 : 5}>
                     {all}
                   </Title>
                 )}
@@ -440,7 +440,7 @@ const Home = () => {
           ) : (
             <>
               {rows?.length ? (
-                <>
+                <div className="response-table">
                   <Table withBorder highlightOnHover striped>
                     <thead>
                       <tr>
@@ -466,7 +466,7 @@ const Home = () => {
                       mt={18}
                       radius="xs"
                       total={pages}
-                      color="red"
+                      color="grape"
                       onChange={(e) =>
                         dispatch(
                           getQuestionnaires({ keyword: "", pageNumber: e })
@@ -474,7 +474,7 @@ const Home = () => {
                       }
                     />
                   </Flex>
-                </>
+                </div>
               ) : (
                 <Empty title="No Questionnaires" />
               )}

@@ -23,7 +23,7 @@ import { useAppSelector } from "../store/store";
 import moment from "moment";
 import Spinner from "../components/Spinner";
 import { QuestionnaireResponse, Response } from "../interfaces/Questionnaire";
-import { BsPersonCircle } from "react-icons/bs";
+import { BsFillEyeFill, BsPersonCircle } from "react-icons/bs";
 import Empty from "../components/Empty";
 import NavBar from "../components/NavBar";
 
@@ -64,10 +64,11 @@ const Responses = () => {
       <td>
         {" "}
         <Button
-          color="green"
+          color="grape"
           size="xs"
           radius="xs"
-          variant="outline"
+          variant="filled"
+          leftIcon={<BsFillEyeFill />}
           onClick={() => {
             setSelected(element);
             setOpen(true);
@@ -120,7 +121,7 @@ const Responses = () => {
               return (
                 <Flex mt={5} mb={5}>
                   <Radio
-                    color="deep.0"
+                    color="grape"
                     mt={10}
                     value={rd.value}
                     label={rd.value}
@@ -144,7 +145,7 @@ const Responses = () => {
                 <Flex mt={5} mb={5}>
                   {" "}
                   <Checkbox
-                    color="deep.0"
+                    color="grape"
                     mt={10}
                     value={ch.value}
                     label={ch.value}
@@ -158,22 +159,31 @@ const Responses = () => {
         );
       case "switch":
         return (
-          <Switch
-            value={question?.values === null ? false : question?.values}
-            color="deep.0"
-            label={question.title}
-            mt={10}
-            readOnly
-          />
+          <>
+            <Text mt={20} weight={500} size="0.875rem">
+              {question.title}
+            </Text>
+            <Switch
+              value={question?.values === null ? false : question?.values}
+              color="grape"
+              mt={10}
+              readOnly
+            />
+          </>
         );
       case "rating":
         return (
-          <Rating
-            value={question?.values === null ? 0 : question?.values}
-            title={question.title}
-            mt={10}
-            readOnly
-          />
+          <>
+            <Text mt={20} weight={500} size="0.875rem">
+              {question.title}
+            </Text>
+            <Rating
+              value={question?.values === null ? 0 : question?.values}
+              title={question.title}
+              mt={10}
+              readOnly
+            />
+          </>
         );
       default:
         <Textarea
@@ -198,8 +208,8 @@ const Responses = () => {
             mb={10}
             icon={<BsPersonCircle />}
             title="Personal Details"
-            color="indigo"
-            variant="outline"
+            color="grape"
+            variant="light"
             radius="xs"
           >
             <>
@@ -267,7 +277,7 @@ const Responses = () => {
             {renderResponseContent()}
           </Modal>
           <NavBar />
-          <Container mt={30} size="xl">
+          <Container className="response-table" mt={30} size="xl">
             {rows.length ? (
               <Table withBorder highlightOnHover striped>
                 <thead>

@@ -1,13 +1,6 @@
-import {
-  Button,
-  Flex,
-  Header,
-  Text,
-} from "@mantine/core";
+import { Button, Flex, Header, Text } from "@mantine/core";
 import React, { FC } from "react";
-import {
-  BsFillPlusCircleFill,
-} from "react-icons/bs";
+import { BsFillPlusCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { NavbarProps } from "../interfaces/Navbar";
 import { VscSignOut } from "react-icons/vsc";
@@ -20,7 +13,7 @@ const NavBar: FC<NavbarProps> = ({ setCreateOpen }) => {
   const { token } = useAppSelector((state) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   return (
-    <Header height={60}>
+    <Header bg="red" height={60}>
       <Flex
         h="100%"
         mx={10}
@@ -30,7 +23,7 @@ const NavBar: FC<NavbarProps> = ({ setCreateOpen }) => {
       >
         <Flex>
           <Link to="/">
-            <Text color="orange" weight={700}>
+            <Text color="grape" weight={700}>
               Formy
             </Text>
           </Link>
