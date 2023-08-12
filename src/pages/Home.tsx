@@ -1,5 +1,4 @@
 import {
-  ActionIcon,
   Badge,
   Box,
   Button,
@@ -20,7 +19,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
-import { BiLinkAlt, BiX } from "react-icons/bi";
+import { BiLinkAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { AppDispatch } from "../../store";
@@ -109,56 +108,47 @@ const Home = () => {
       <td>
         <Text size="xs">{element.title}</Text>
       </td>
-      {smallScreen && (
-        <td>
-          <Text size="xs">{element.description}</Text>
-        </td>
-      )}
+
+      <td>
+        <Text size="xs">{element.description}</Text>
+      </td>
 
       <td>
         <Badge
-          size={!extraSmallScreen ? "xs" : "sm"}
+          size="sm"
           radius="xs"
           variant="filled"
           color={element.isPublic ? "green" : "blue"}
         >
-          {element.isPublic
-            ? `${smallScreen ? "Required" : "All"}`
-            : `${smallScreen ? "Required" : "All"}`}
+          {element.isPublic ? "All" : "Required"}
         </Badge>
       </td>
       <td>
         <Badge
-          size={!extraSmallScreen ? "xs" : "sm"}
+          size="sm"
           radius="xs"
           variant="filled"
           color={element.isPublished ? "green" : "red"}
         >
-          {element.isPublished
-            ? `${smallScreen ? "Published" : "Yes"}`
-            : `${smallScreen ? "Not Published" : "No"}`}
+          {element.isPublished ? "Yes" : "No"}
         </Badge>
       </td>
-      {extraSmallScreen && (
-        <td>
-          <Text size="xs">{element.responses?.length}</Text>
-        </td>
-      )}
 
-      {smallScreen && (
-        <td>
-          <Text size="xs">
-            {moment(element.createdAt).format("DD-MM-YY HH:MM a")}
-          </Text>
-        </td>
-      )}
-      {smallScreen && (
-        <td>
-          <Text size="xs">
-            {moment(element.updatedAt).format("DD-MM-YY HH:MM a")}
-          </Text>
-        </td>
-      )}
+      <td>
+        <Text size="xs">{element.responses?.length}</Text>
+      </td>
+
+      <td>
+        <Text size="xs">
+          {moment(element.createdAt).format("DD-MM-YY HH:MM a")}
+        </Text>
+      </td>
+
+      <td>
+        <Text size="xs">
+          {moment(element.updatedAt).format("DD-MM-YY HH:MM a")}
+        </Text>
+      </td>
 
       <td>
         <CopyButton
@@ -166,35 +156,23 @@ const Home = () => {
         >
           {({ copied, copy }) => (
             <>
-              {smallScreen ? (
-                <Tooltip
-                  label="Share this link with participants to access"
-                  position="left"
-                  withArrow
-                >
-                  <Button
-                    color="grape"
-                    size="xs"
-                    radius="xs"
-                    variant={copied ? "outline" : "filled"}
-                    onClick={copy}
-                    leftIcon={<BiLinkAlt />}
-                    disabled={!element.isPublished}
-                  >
-                    {copied ? "Copied" : "Get Link"}
-                  </Button>
-                </Tooltip>
-              ) : (
-                <ActionIcon
-                  color="blue"
-                  size={!extraSmallScreen ? "xs" : "sm"}
-                  disabled={!element.isPublished}
-                  variant="filled"
+              <Tooltip
+                label="Share this link with participants to access"
+                position="left"
+                withArrow
+              >
+                <Button
+                  color="grape"
+                  size="xs"
                   radius="xs"
+                  variant={copied ? "outline" : "filled"}
+                  onClick={copy}
+                  leftIcon={<BiLinkAlt />}
+                  disabled={!element.isPublished}
                 >
-                  <BiLinkAlt />
-                </ActionIcon>
-              )}
+                  {copied ? "Copied" : "Get Link"}
+                </Button>
+              </Tooltip>
             </>
           )}
         </CopyButton>
@@ -209,57 +187,45 @@ const Home = () => {
           position="left"
           withArrow
         >
-          <ActionIcon
+          <Button
             color="green"
             variant="filled"
             radius="xs"
-            size={!extraSmallScreen ? "xs" : "md"}
+            size="xs"
             onClick={() =>
               element.isPublished
                 ? navigate(`/responses/${element._id}`)
                 : navigate(`/questionnaire/${element._id}`)
             }
+            leftIcon={
+              element.isPublished ? <BsFillEyeFill /> : <BsPencilSquare />
+            }
           >
-            {element.isPublished ? <BsFillEyeFill /> : <BsPencilSquare />}
-          </ActionIcon>
+            {element.isPublished ? "View" : "Edit"}
+          </Button>
         </Tooltip>
       </td>
       <td>
-        {smallScreen ? (
-          <Tooltip
-            label="Unpublishing will stop collecting responses"
-            position="left"
-            withArrow
-          >
-            <Button
-              leftIcon={<BsXLg />}
-              variant="filled"
-              color="red"
-              size="xs"
-              radius="xs"
-              disabled={!element.isPublished}
-              onClick={() => {
-                setSelectedId(element._id);
-                setUnPublishOpen(true);
-              }}
-            >
-              Unpublish
-            </Button>
-          </Tooltip>
-        ) : (
-          <ActionIcon
-            color="red"
+        <Tooltip
+          label="Unpublishing will stop collecting responses"
+          position="left"
+          withArrow
+        >
+          <Button
+            leftIcon={<BsXLg />}
             variant="filled"
+            color="red"
+            size="xs"
             radius="xs"
-            size={!extraSmallScreen ? "xs" : "sm"}
+            disabled={!element.isPublished}
             onClick={() => {
               setSelectedId(element._id);
               setUnPublishOpen(true);
             }}
           >
-            <BiX />
-          </ActionIcon>
-        )}
+            Unpublish
+          </Button>
+        </Tooltip>
       </td>
     </tr>
   ));
@@ -445,12 +411,12 @@ const Home = () => {
                     <thead>
                       <tr>
                         <th>Name</th>
-                        {smallScreen && <th>Description</th>}
+                        <th>Description</th>
                         <th>Participant Details</th>
                         <th>Published</th>
-                        {extraSmallScreen && <th>Responses</th>}
-                        {smallScreen && <th>Created</th>}
-                        {smallScreen && <th>Updated</th>}
+                        <th>Responses</th>
+                        <th>Created</th>
+                        <th>Updated</th>
                         <th></th>
                         <th></th>
                         <th></th>

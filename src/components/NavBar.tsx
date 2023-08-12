@@ -13,7 +13,7 @@ const NavBar: FC<NavbarProps> = ({ setCreateOpen }) => {
   const { token } = useAppSelector((state) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   return (
-    <Header bg="red" height={60}>
+    <Header height={60}>
       <Flex
         h="100%"
         mx={10}

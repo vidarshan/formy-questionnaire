@@ -86,6 +86,7 @@ const Responses = () => {
         return (
           <>
             <Textarea
+              mt={20}
               key={question._id}
               radius="xs"
               label={question?.title}

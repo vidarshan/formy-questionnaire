@@ -191,7 +191,7 @@ const Paper = () => {
   }, [dispatch, id]);
 
   return (
-    <Container fluid>
+    <Container size="xl">
       {submitAnswerSuccess === "submitted" && (
         <Container fluid>
           <Card w="100%" mt={10} radius="xs" withBorder>
@@ -229,7 +229,7 @@ const Paper = () => {
                     {!detailsConfirmed ? (
                       <>
                         <Alert
-                          title={"Provide your name and email"}
+                          title={"Provide your name and email to start"}
                           my={10}
                           radius="xs"
                           color="blue"
