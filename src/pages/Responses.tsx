@@ -56,9 +56,8 @@ const Responses = () => {
     <tr key={element._id}>
       <td>{element.title}</td>
       <td>{element.description}</td>
-      <td>{element.name}</td>
-      <td>{element.email}</td>
-      <td>{element.questions?.length}</td>
+      <td>{element.name === "" ? "Anonymous" : element.name}</td>
+      <td>{element.email === "" ? "Anonymous" : element.name}</td>
       <td>{moment(element.createdAt).format("DD-MM-YY HH:MM a")}</td>
       <td>{moment(element.updatedAt).format("DD-MM-YY HH:MM a")}</td>
       <td>
@@ -215,13 +214,13 @@ const Responses = () => {
           >
             <>
               <TextInput
-                value={selected.name === null ? "" : selected.name}
+                value={selected.name === "" ? "Anonymous" : selected.name}
                 label="Participant Name"
                 size="xs"
                 readOnly
               />
               <TextInput
-                value={selected.email === null ? "" : selected.email}
+                value={selected.email === "" ? "Anonymous" : selected.email}
                 label="Participant Email"
                 size="xs"
                 readOnly
@@ -287,7 +286,6 @@ const Responses = () => {
                     <th>Description</th>
                     <th>Participant</th>
                     <th>Email</th>
-                    <th>No. of questions</th>
                     <th>Created</th>
                     <th>Updated</th>
                     <th></th>

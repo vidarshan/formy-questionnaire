@@ -7,7 +7,6 @@ import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 import Questionnaire from "../pages/Questionnaire";
 import Paper from "../pages/Paper";
-import Completed from "../pages/Completed";
 import Responses from "../pages/Responses";
 import Landing from "../pages/Landing";
 
@@ -21,7 +20,6 @@ const QUESTIONNAIRE_ROUTE = "/questionnaire/:id";
 const ANSWER_ROUTE = "/questionnaire/answer/:id";
 const LOGIN_ROUTE = "/login";
 const REGISTER_ROUTE = "/register";
-const COMPLETED_ROUTE = "/completed";
 const RESPONSES_ROUTE = "/responses/:id";
 
 const AppRoutes = (props: AppRoutesProp): JSX.Element => {
@@ -30,7 +28,6 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
   return (
     <Routes>
       <Route path={ANSWER_ROUTE} element={<Paper />} />
-      <Route path={COMPLETED_ROUTE} element={<Completed />} />
       <Route path={HOME_ROUTE} element={<Landing />} />
       <Route
         element={

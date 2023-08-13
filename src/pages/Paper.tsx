@@ -182,6 +182,10 @@ const Paper = () => {
       description: editableQuestionnaire.description,
       questions: editableQuestionnaire.questions,
     };
+    console.log(
+      "🚀 ~ file: Paper.tsx:185 ~ onSubmitAnswer ~ answerObj:",
+      answerObj
+    );
 
     dispatch(submitAnswer(answerObj));
   };
@@ -189,7 +193,7 @@ const Paper = () => {
   useEffect(() => {
     dispatch(getResponseQuestionnaire(id));
   }, [dispatch, id]);
-
+  console.log(questionnaire.isPublic);
   return (
     <Container size="xl">
       {submitAnswerSuccess === "submitted" && (
@@ -212,7 +216,6 @@ const Paper = () => {
           </Card>
         </Container>
       )}
-
       {submitAnswerSuccess !== "submitted" && (
         <Flex>
           <Card w="100%" mt={10} radius="xs" withBorder>
@@ -226,71 +229,89 @@ const Paper = () => {
                       {questionnaire.title}
                     </Title>
                     <Text>{questionnaire.description}</Text>
-                    {!detailsConfirmed ? (
+                    {!questionnaire.isPublic ? (
                       <>
-                        <Alert
-                          title={"Provide your name and email to start"}
-                          my={10}
-                          radius="xs"
-                          color="blue"
-                          variant="light"
-                          icon={<BsFillFilePersonFill />}
-                        >
-                          <></>
-                        </Alert>
-
-                        <form
-                          onSubmit={form.onSubmit((values) => {
-                            dispatch(confirmDetails(true));
-                          })}
-                        >
-                          <TextInput
-                            placeholder="Your email"
-                            type="email"
-                            icon={<BsFillEnvelopeAtFill />}
-                            radius="xs"
-                            {...form.getInputProps("email")}
-                            required
-                            withAsterisk
-                            disabled={detailsConfirmed}
-                          />
-                          <TextInput
-                            mt={10}
-                            type="text"
-                            placeholder="Your name"
-                            icon={<BsFillFilePersonFill />}
-                            radius="xs"
-                            {...form.getInputProps("name")}
-                            required
-                            withAsterisk
-                            disabled={detailsConfirmed}
-                          />
-                          <Flex mt={10} justify="flex-end">
-                            <Button
-                              disabled={detailsConfirmed}
-                              color="grape"
-                              size="xs"
+                        {!detailsConfirmed ? (
+                          <>
+                            <Alert
+                              title={"Provide your name and email to start"}
+                              my={10}
                               radius="xs"
-                              type="submit"
-                              variant="filled"
-                              leftIcon={<BsFillCheckCircleFill />}
+                              color="blue"
+                              variant="light"
+                              icon={<BsFillFilePersonFill />}
                             >
-                              Confirm & Start
-                            </Button>
-                          </Flex>
-                        </form>
+                              <></>
+                            </Alert>
+
+                            <form
+                              onSubmit={form.onSubmit((values) => {
+                                dispatch(confirmDetails(true));
+                              })}
+                            >
+                              <TextInput
+                                placeholder="Your email"
+                                type="email"
+                                icon={<BsFillEnvelopeAtFill />}
+                                radius="xs"
+                                {...form.getInputProps("email")}
+                                required
+                                withAsterisk
+                                disabled={detailsConfirmed}
+                              />
+                              <TextInput
+                                mt={10}
+                                type="text"
+                                placeholder="Your name"
+                                icon={<BsFillFilePersonFill />}
+                                radius="xs"
+                                {...form.getInputProps("name")}
+                                required
+                                withAsterisk
+                                disabled={detailsConfirmed}
+                              />
+                              <Flex mt={10} justify="flex-end">
+                                <Button
+                                  disabled={detailsConfirmed}
+                                  color="grape"
+                                  size="xs"
+                                  radius="xs"
+                                  type="submit"
+                                  variant="filled"
+                                  leftIcon={<BsFillCheckCircleFill />}
+                                >
+                                  Confirm & Start
+                                </Button>
+                              </Flex>
+                            </form>
+                          </>
+                        ) : (
+                          <Alert
+                            title={"Name and email saved"}
+                            my={10}
+                            radius="xs"
+                            color="green"
+                            variant="light"
+                            icon={<BsFillCheckCircleFill />}
+                          >
+                            <></>
+                          </Alert>
+                        )}
                       </>
                     ) : (
-                      <Alert
-                        title={"Name and email saved"}
-                        my={10}
-                        radius="xs"
-                        color="green"
-                        variant="light"
-                        icon={<BsFillCheckCircleFill />}
-                      >
-                        <></>
-                      </Alert>
+                      <Flex direction="row" justify="flex-end" mt={10}>
+                        <Button
+                          disabled={detailsConfirmed}
+                          color="grape"
+                          size="xs"
+                          radius="xs"
+                          variant="filled"
+                          leftIcon={<BsFillCheckCircleFill />}
+                          onClick={() => dispatch(confirmDetails(true))}
+                        >
+                          Confirm & Start
+                        </Button>
+                      </Flex>
                     )}
 
                     {detailsConfirmed && (
