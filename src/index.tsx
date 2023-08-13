@@ -23,7 +23,7 @@ root.render(
             xs: "0",
           },
           breakpoints: {
-            xs: "30em",
+            xs: "200px",
             sm: "48em",
             md: "64em",
             lg: "74em",

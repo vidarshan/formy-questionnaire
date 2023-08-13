@@ -9,12 +9,14 @@ import Questionnaire from "../pages/Questionnaire";
 import Paper from "../pages/Paper";
 import Completed from "../pages/Completed";
 import Responses from "../pages/Responses";
+import Landing from "../pages/Landing";
 
 interface AppRoutesProp {
   isAuthenticated: boolean;
 }
 
 const ROOT_ROUTE = "/";
+const HOME_ROUTE = "/home";
 const QUESTIONNAIRE_ROUTE = "/questionnaire/:id";
 const ANSWER_ROUTE = "/questionnaire/answer/:id";
 const LOGIN_ROUTE = "/login";
@@ -29,6 +31,7 @@ const AppRoutes = (props: AppRoutesProp): JSX.Element => {
     <Routes>
       <Route path={ANSWER_ROUTE} element={<Paper />} />
       <Route path={COMPLETED_ROUTE} element={<Completed />} />
+      <Route path={HOME_ROUTE} element={<Landing />} />
       <Route
         element={
           <GuardedRoute

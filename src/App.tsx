@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./utils/AppRoutes";
 import { AppDispatch } from "../store";

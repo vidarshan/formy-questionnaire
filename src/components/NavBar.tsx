@@ -1,6 +1,6 @@
 import { Button, Flex, Header, Text } from "@mantine/core";
 import React, { FC } from "react";
-import { BsFillPlusCircleFill } from "react-icons/bs";
+import { BsFillHouseDoorFill, BsFillPlusCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { NavbarProps } from "../interfaces/Navbar";
 import { VscSignOut } from "react-icons/vsc";
@@ -9,7 +9,7 @@ import { AppDispatch } from "../../store";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../store/store";
 
-const NavBar: FC<NavbarProps> = ({ setCreateOpen }) => {
+const NavBar: FC<NavbarProps> = ({ setCreateOpen, login }) => {
   const { token } = useAppSelector((state) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   return (
@@ -46,7 +46,7 @@ const NavBar: FC<NavbarProps> = ({ setCreateOpen }) => {
               </Button>
             </>
           )}
-          {token !== null && (
+          {token !== null && !login && (
             <Button
               ml={10}
               color="red"
@@ -60,6 +60,38 @@ const NavBar: FC<NavbarProps> = ({ setCreateOpen }) => {
             </Button>
           )}
         </Flex>
+        {login && (
+          <>
+            {token === null ? (
+              <Flex>
+                <Link to="/login">
+                  <Button
+                    ml={10}
+                    color="grape"
+                    variant="filled"
+                    radius="xs"
+                    size="xs"
+                  >
+                    Log in
+                  </Button>
+                </Link>
+              </Flex>
+            ) : (
+              <Link to="/">
+                <Button
+                  ml={10}
+                  color="grape"
+                  variant="filled"
+                  radius="xs"
+                  size="xs"
+                  leftIcon={<BsFillHouseDoorFill />}
+                >
+                  Dashboard
+                </Button>
+              </Link>
+            )}
+          </>
+        )}
       </Flex>
     </Header>
   );
