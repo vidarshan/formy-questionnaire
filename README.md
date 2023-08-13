@@ -51,14 +51,6 @@ https://github.com/vidarshan/formy-questionnaire-api
 
 - Free to reuse with proper references to this repo or my Github profile. A star for this repo before doing that would make me happy🙂.
 
-## 💿 Content
-
-- Replace content in the `data/work.tsx` and `data/data.ts` files with your own content.
-
-## 🗒️ Note
-
-- The stackoverflow key is needed to show the stackoverflow reputation, gold, silver and bronze medal count on the about section of the site. Not providing them would pull out an hardcoded value from the redux state.
-
 ## 💬 Inquiries
 
 - Email me via vidarshanadithya3@gmail.com to contact me directly.
