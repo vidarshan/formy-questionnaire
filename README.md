@@ -1,70 +1,64 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h1 align="center">🗂️ Formy</h1>
 
-## Available Scripts
+<h5 align="center">
+  https://quesionnaire-builder.vercel.app/home
+</h5>
 
-In the project directory, you can run:
+<h4 align="center">
+A questionnaire generating platform that allows users to create forms with questions and share the built questionnaires with participants in order to collect responses.
+</h4>
 
-### `npm start`
+<div align="center">
+<img src="https://github.com/vidarshan/formy-questionnaire/assets/48169745/5226e47b-8e64-4bdb-8fcd-40e37f64e907" />
+</div>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<br/>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Backend Repo
+- Access backend repo for this full stack project
+https://github.com/vidarshan/formy-questionnaire-api
 
-### `npm test`
+## 🎛️ Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Typescript
+- React JS
+- Mantine
+- Redux Toolkit
+- Vercel
 
-### `npm run build`
+## 👷‍♂️ Setup Project
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Step 1 - Clone repository.
+- Step 2 : Install packages with `npm`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+       npm install
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+- Step 3 : Create a file named `.env` in the root level. Add the following `env` variables, and replace with your values.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+        REACT_APP_BE_BASE_URL=<your_content>
+        REACT_APP_FE_BASE_URL=<your_content>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Step 4 : Run command
 
-## Learn More
+        npm start
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🔄 Reuse
 
-### Code Splitting
+- Free to reuse with proper references to this repo or my Github profile. A star for this repo before doing that would make me happy🙂.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 💿 Content
 
-### Analyzing the Bundle Size
+- Replace content in the `data/work.tsx` and `data/data.ts` files with your own content.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🗒️ Note
 
-### Making a Progressive Web App
+- The stackoverflow key is needed to show the stackoverflow reputation, gold, silver and bronze medal count on the about section of the site. Not providing them would pull out an hardcoded value from the redux state.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 💬 Inquiries
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Email me via vidarshanadithya3@gmail.com to contact me directly.
